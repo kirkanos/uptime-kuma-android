@@ -1,0 +1,23 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:11.318Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "HTTP request + response",
+  "name": "push.down",
+  "method": "GET",
+  "url": "/api/push/REDACTED(len=32)?status=down&msg=recorder+says+down",
+  "requestHeaders": [],
+  "status": 200,
+  "contentType": "application/json; charset=utf-8",
+  "body": {
+    "ok": true
+  }
+}

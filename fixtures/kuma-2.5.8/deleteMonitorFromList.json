@@ -1,0 +1,36 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "deleteMonitorFromList",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"deleteMonitorFromList\" emit, in order.",
+  "totalReceived": 2,
+  "sampleKeys": [
+    "all"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:40:11.161Z",
+      "key": "all",
+      "args": [
+        18
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:11.164Z",
+      "key": "all",
+      "args": [
+        18
+      ]
+    }
+  ]
+}

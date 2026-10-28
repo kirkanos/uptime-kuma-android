@@ -1,0 +1,259 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:09.926Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "monitorImportantHeartbeatListPaged.all",
+  "event": "monitorImportantHeartbeatListPaged",
+  "request": [
+    null,
+    0,
+    25
+  ],
+  "response": {
+    "ok": true,
+    "data": [
+      {
+        "monitorID": 7,
+        "status": 0,
+        "time": "2026-10-28 22:35:29.807",
+        "msg": "recorder says down",
+        "ping": null,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 7,
+        "status": 1,
+        "time": "2026-10-28 22:35:29.802",
+        "msg": "OK",
+        "ping": 42,
+        "important": 1,
+        "duration": 2,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 7,
+        "status": 0,
+        "time": "2026-10-28 22:31:46.498",
+        "msg": "recorder says down",
+        "ping": null,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 7,
+        "status": 1,
+        "time": "2026-10-28 22:31:46.489",
+        "msg": "OK",
+        "ping": 42,
+        "important": 1,
+        "duration": 18,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 7,
+        "status": 0,
+        "time": "2026-10-28 22:27:06.410",
+        "msg": "recorder says down",
+        "ping": null,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 7,
+        "status": 1,
+        "time": "2026-10-28 22:27:06.396",
+        "msg": "OK",
+        "ping": 42,
+        "important": 1,
+        "duration": 18,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 10,
+        "status": 3,
+        "time": "2026-10-28 22:26:07.721",
+        "msg": "Monitor under maintenance",
+        "ping": null,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 9,
+        "status": 0,
+        "time": "2026-10-28 22:26:07.715",
+        "msg": "connect ECONNREFUSED 127.0.0.1:9",
+        "ping": null,
+        "important": 1,
+        "duration": 0,
+        "retries": 2,
+        "response": null
+      },
+      {
+        "monitorID": 7,
+        "status": 0,
+        "time": "2026-10-28 22:26:07.694",
+        "msg": "No heartbeat in the time window",
+        "ping": null,
+        "important": 1,
+        "duration": 20,
+        "retries": 1,
+        "response": null
+      },
+      {
+        "monitorID": 13,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.768",
+        "msg": "3 ms",
+        "ping": 3,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 12,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.761",
+        "msg": "200 - OK",
+        "ping": 78,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 11,
+        "status": 2,
+        "time": "2026-10-28 22:25:47.743",
+        "msg": "Pending child monitors: Group child HTTP example.com",
+        "ping": 3,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 10,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.730",
+        "msg": "200 - OK",
+        "ping": 106,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 9,
+        "status": 2,
+        "time": "2026-10-28 22:25:47.724",
+        "msg": "connect ECONNREFUSED 127.0.0.1:9",
+        "ping": null,
+        "important": 1,
+        "duration": 0,
+        "retries": 1,
+        "response": null
+      },
+      {
+        "monitorID": 8,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.712",
+        "msg": "200 - OK",
+        "ping": 102,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 6,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.696",
+        "msg": "Records: 104.20.23.154 | 172.66.147.243",
+        "ping": 22,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 5,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.687",
+        "msg": "",
+        "ping": 17.7,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 4,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.672",
+        "msg": "4 ms",
+        "ping": 4,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 3,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.660",
+        "msg": "JSON query passes (comparing entryPage == entryPage)",
+        "ping": 8,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 2,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.650",
+        "msg": "200 - OK, keyword is found",
+        "ping": 89,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      },
+      {
+        "monitorID": 1,
+        "status": 1,
+        "time": "2026-10-28 22:25:47.633",
+        "msg": "200 - OK",
+        "ping": 97,
+        "important": 1,
+        "duration": 0,
+        "retries": 0,
+        "response": null
+      }
+    ]
+  },
+  "callbackArgs": 1,
+  "durationMs": 1
+}

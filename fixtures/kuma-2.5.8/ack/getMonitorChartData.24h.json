@@ -1,0 +1,155 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:09.921Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "getMonitorChartData.24h",
+  "event": "getMonitorChartData",
+  "request": [
+    1,
+    24
+  ],
+  "response": {
+    "ok": true,
+    "data": [
+      {
+        "up": 1,
+        "down": 0,
+        "avgPing": 89,
+        "minPing": 89,
+        "maxPing": 89,
+        "timestamp": 1793227200
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 95.33333333333333,
+        "minPing": 83,
+        "maxPing": 115,
+        "timestamp": 1793227140
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 84.33333333333333,
+        "minPing": 77,
+        "maxPing": 93,
+        "timestamp": 1793227080
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 92,
+        "minPing": 78,
+        "maxPing": 113,
+        "timestamp": 1793227020
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 93.66666666666667,
+        "minPing": 90,
+        "maxPing": 101,
+        "timestamp": 1793226960
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 87.66666666666667,
+        "minPing": 81,
+        "maxPing": 92,
+        "timestamp": 1793226900
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 93,
+        "minPing": 85,
+        "maxPing": 106,
+        "timestamp": 1793226840
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 98,
+        "minPing": 88,
+        "maxPing": 116,
+        "timestamp": 1793226780
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 85.33333333333333,
+        "minPing": 79,
+        "maxPing": 91,
+        "timestamp": 1793226720
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 423.3333333333333,
+        "minPing": 88,
+        "maxPing": 1091,
+        "timestamp": 1793226660
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 82,
+        "minPing": 80,
+        "maxPing": 84,
+        "timestamp": 1793226600
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 422.6666666666667,
+        "minPing": 87,
+        "maxPing": 1093,
+        "timestamp": 1793226540
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 752,
+        "minPing": 78,
+        "maxPing": 2096,
+        "timestamp": 1793226480
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 416.3333333333333,
+        "minPing": 76,
+        "maxPing": 1082,
+        "timestamp": 1793226420
+      },
+      {
+        "up": 3,
+        "down": 0,
+        "avgPing": 92.33333333333333,
+        "minPing": 86,
+        "maxPing": 99,
+        "timestamp": 1793226360
+      },
+      {
+        "up": 1,
+        "down": 0,
+        "avgPing": 97,
+        "minPing": 97,
+        "maxPing": 97,
+        "timestamp": 1793226300
+      }
+    ]
+  },
+  "callbackArgs": 1,
+  "durationMs": 0
+}

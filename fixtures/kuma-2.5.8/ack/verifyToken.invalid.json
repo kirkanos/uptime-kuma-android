@@ -1,0 +1,28 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:42:11.585Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "verifyToken.invalid",
+  "event": "verifyToken",
+  "request": [
+    "000000",
+    "REDACTED(len=15)"
+  ],
+  "response": {
+    "ok": false,
+    "msg": "authInvalidToken",
+    "msgi18n": true,
+    "valid": false
+  },
+  "callbackArgs": 1,
+  "durationMs": 61
+}

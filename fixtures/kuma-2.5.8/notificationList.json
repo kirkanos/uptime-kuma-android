@@ -1,0 +1,94 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "notificationList",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"notificationList\" emit, in order.",
+  "totalReceived": 3,
+  "sampleKeys": [
+    "all"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:39:57.760Z",
+      "key": "all",
+      "args": [
+        [
+          {
+            "id": 1,
+            "name": "Dev webhook",
+            "active": true,
+            "userId": 1,
+            "isDefault": false,
+            "config": "{\"name\":\"Dev webhook\",\"type\":\"webhook\",\"isDefault\":false,\"applyExisting\":false,\"webhookURL\":\"http://ntfy:80/upTESTTOPIC-webhook\",\"webhookContentType\":\"json\",\"webhookCustomBody\":\"\",\"webhookAdditionalHeaders\":\"\",\"httpMethod\":\"POST\"}"
+          },
+          {
+            "id": 2,
+            "name": "Dev ntfy",
+            "active": true,
+            "userId": 1,
+            "isDefault": false,
+            "config": "{\"name\":\"Dev ntfy\",\"type\":\"ntfy\",\"isDefault\":false,\"applyExisting\":false,\"ntfyserverurl\":\"http://ntfy:80\",\"ntfytopic\":\"upTESTTOPIC\",\"ntfyPriority\":5,\"ntfyPriorityDown\":5,\"ntfyAuthenticationMethod\":\"none\",\"ntfyusername\":\"\",\"ntfypassword\":\"\",\"ntfyaccesstoken\":\"\",\"ntfyIcon\":\"\",\"ntfyUseTemplate\":false,\"ntfyCall\":false}"
+          }
+        ]
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.343Z",
+      "key": "all",
+      "args": [
+        [
+          {
+            "id": 1,
+            "name": "Dev webhook",
+            "active": true,
+            "userId": 1,
+            "isDefault": false,
+            "config": "{\"name\":\"Dev webhook\",\"type\":\"webhook\",\"isDefault\":false,\"applyExisting\":false,\"webhookURL\":\"http://ntfy:80/upTESTTOPIC-webhook\",\"webhookContentType\":\"json\",\"webhookCustomBody\":\"\",\"webhookAdditionalHeaders\":\"\",\"httpMethod\":\"POST\"}"
+          },
+          {
+            "id": 2,
+            "name": "Dev ntfy",
+            "active": true,
+            "userId": 1,
+            "isDefault": false,
+            "config": "{\"name\":\"Dev ntfy\",\"type\":\"ntfy\",\"isDefault\":false,\"applyExisting\":false,\"ntfyserverurl\":\"http://ntfy:80\",\"ntfytopic\":\"upTESTTOPIC\",\"ntfyPriority\":5,\"ntfyPriorityDown\":5,\"ntfyAuthenticationMethod\":\"none\",\"ntfyusername\":\"\",\"ntfypassword\":\"\",\"ntfyaccesstoken\":\"\",\"ntfyIcon\":\"\",\"ntfyUseTemplate\":false,\"ntfyCall\":false}"
+          }
+        ]
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:42:30.611Z",
+      "key": "all",
+      "args": [
+        [
+          {
+            "id": 1,
+            "name": "Dev webhook",
+            "active": true,
+            "userId": 1,
+            "isDefault": false,
+            "config": "{\"name\":\"Dev webhook\",\"type\":\"webhook\",\"isDefault\":false,\"applyExisting\":false,\"webhookURL\":\"http://ntfy:80/upTESTTOPIC-webhook\",\"webhookContentType\":\"json\",\"webhookCustomBody\":\"\",\"webhookAdditionalHeaders\":\"\",\"httpMethod\":\"POST\"}"
+          },
+          {
+            "id": 2,
+            "name": "Dev ntfy",
+            "active": true,
+            "userId": 1,
+            "isDefault": false,
+            "config": "{\"name\":\"Dev ntfy\",\"type\":\"ntfy\",\"isDefault\":false,\"applyExisting\":false,\"ntfyserverurl\":\"http://ntfy:80\",\"ntfytopic\":\"upTESTTOPIC\",\"ntfyPriority\":5,\"ntfyPriorityDown\":5,\"ntfyAuthenticationMethod\":\"none\",\"ntfyusername\":\"\",\"ntfypassword\":\"\",\"ntfyaccesstoken\":\"\",\"ntfyIcon\":\"\",\"ntfyUseTemplate\":false,\"ntfyCall\":false}"
+          }
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:11.289Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "HTTP request + response",
+  "name": "badge.uptime-24h",
+  "method": "GET",
+  "url": "/api/badge/1/uptime/24",
+  "requestHeaders": [],
+  "status": 200,
+  "contentType": "image/svg+xml; charset=utf-8",
+  "body": "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"138\" height=\"20\" role=\"img\" aria-label=\"Uptime (24h): 100.0%\"><title>Uptime (24h): 100.0%</title><linearGradient id=\"s\" x2=\"0\" y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/><stop offset=\"1\" stop-opacity=\".1\"/></linearGradient><clipPath id=\"r\"><rect width=\"138\" height=\"20\" rx=\"3\" fill=\"#fff\"/></clipPath><g clip-path=\"url(#r)\"><rect width=\"85\" height=\"20\" fill=\"#555\"/><rect x=\"85\" width=\"53\" height=\"20\" fill=\"#66c20a\"/><rect width=\"138\" height=\"20\" fill=\"url(#s)\"/></g><g fill=\"#fff\" text-anchor=\"middle\" font-family=\"Verdana,Geneva,DejaVu Sans,sans-serif\" text-rendering=\"geometricPrecision\" font-size=\"110\"><text aria-hidden=\"true\" x=\"435\" y=\"150\" fill=\"#010101\" fill-opacity=\".3\" transform=\"scale(.1)\" textLength=\"750\">Uptime (24h)</text><text x=\"435\" y=\"140\" transform=\"scale(.1)\" fill=\"#fff\" textLength=\"750\">Uptime (24h)</text><text aria-hidden=\"true\" x=\"1105\" y=\"150\" fill=\"#010101\" fill-opacity=\".3\" transform=\"scale(.1)\" textLength=\"430\">100.0%</text><text x=\"1105\" y=\"140\" transform=\"scale(.1)\" fill=\"#fff\" textLength=\"430\">100.0%</text></g></svg>"
+}

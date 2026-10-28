@@ -1,0 +1,18 @@
+{
+  "name": "kuma-seed",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Drives a local Uptime Kuma 2.5.x over Socket.IO: first-run setup, seeding test monitors, and recording payload fixtures for the Android client.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup": "node setup.mjs",
+    "seed": "node seed.mjs",
+    "record": "node record.mjs"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.1"
+  }
+}

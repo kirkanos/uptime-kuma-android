@@ -1,0 +1,54 @@
+# Local Uptime Kuma 2.5.x dev/test stack for the Android client.
+#
+#   docker compose -f infra/docker-compose.dev.yml up -d
+#   docker compose -f infra/docker-compose.dev.yml down        # keeps ./.data
+#   docker compose -f infra/docker-compose.dev.yml down -v     # (no named volumes; wipe ./infra/.data manually)
+#
+# Ports (chosen to avoid clashes with other local stacks):
+#   Kuma  -> http://localhost:3001
+#   ntfy  -> http://localhost:2586
+#
+# State lives in bind mounts under ./infra/.data (gitignored).
+
+services:
+  kuma:
+    image: louislam/uptime-kuma:2.5.8
+    container_name: kuma-dev
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      # Skip the 2.x "choose your database" first-run page and go straight to SQLite.
+      UPTIME_KUMA_DB_TYPE: sqlite
+    volumes:
+      - ./.data/kuma:/app/data
+    healthcheck:
+      # extra/healthcheck ships with the image and probes http://localhost:3001/
+      test: ["CMD", "extra/healthcheck"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  ntfy:
+    image: binwiederhier/ntfy:v2.34.0
+    container_name: kuma-dev-ntfy
+    restart: unless-stopped
+    command: ["serve"]
+    ports:
+      - "2586:80"
+    environment:
+      NTFY_BASE_URL: http://localhost:2586
+      NTFY_AUTH_DEFAULT_ACCESS: deny-all
+      NTFY_AUTH_FILE: /var/lib/ntfy/user.db
+      NTFY_CACHE_FILE: /var/cache/ntfy/cache.db
+      NTFY_ENABLE_LOGIN: "true"
+    volumes:
+      - ./.data/ntfy/lib:/var/lib/ntfy
+      - ./.data/ntfy/cache:/var/cache/ntfy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --tries=1 http://localhost:80/v1/health -O - | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s

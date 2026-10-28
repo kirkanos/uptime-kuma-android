@@ -1,0 +1,60 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:09.958Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "add.validation-error.interval",
+  "event": "add",
+  "request": [
+    {
+      "type": "http",
+      "name": "Recorder temp HTTP 668YC5",
+      "parent": null,
+      "url": "https://example.com/?recorder=1",
+      "method": "GET",
+      "interval": 0,
+      "retryInterval": 20,
+      "resendInterval": 0,
+      "maxretries": 0,
+      "timeout": 16,
+      "notificationIDList": {},
+      "ignoreTls": false,
+      "upsideDown": false,
+      "expiryNotification": false,
+      "domainExpiryNotification": true,
+      "maxredirects": 10,
+      "accepted_statuscodes": [
+        "200-299"
+      ],
+      "dns_resolve_type": "A",
+      "dns_resolve_server": "1.1.1.1",
+      "docker_container": "",
+      "docker_host": null,
+      "proxyId": null,
+      "httpBodyEncoding": "json",
+      "kafkaProducerBrokers": [],
+      "kafkaProducerSaslOptions": {
+        "mechanism": "None"
+      },
+      "rabbitmqNodes": [],
+      "conditions": [],
+      "saveResponse": false,
+      "saveErrorResponse": true,
+      "responseMaxLength": 1024
+    }
+  ],
+  "response": {
+    "ok": false,
+    "msg": "Interval cannot be less than 1 seconds"
+  },
+  "callbackArgs": 1,
+  "durationMs": 1
+}

@@ -1,0 +1,154 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "maintenanceList",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"maintenanceList\" emit, in order.",
+  "totalReceived": 5,
+  "sampleKeys": [
+    "all"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:39:57.760Z",
+      "key": "all",
+      "args": [
+        {
+          "1": {
+            "id": 1,
+            "title": "Dev maintenance (single)",
+            "description": "Seeded by kuma-seed; covers 'Under maintenance HTTP' so status-3 heartbeats exist.",
+            "strategy": "single",
+            "intervalDay": 1,
+            "active": true,
+            "dateRange": [
+              "2026-10-28 23:20:47",
+              "2026-10-29 02:25:47"
+            ],
+            "timeRange": [
+              {
+                "hours": 0,
+                "minutes": 0
+              },
+              {
+                "hours": 0,
+                "minutes": 0
+              }
+            ],
+            "weekdays": [],
+            "daysOfMonth": [],
+            "timeslotList": [
+              {
+                "startDate": "2026-10-28 23:20:47",
+                "endDate": "2026-10-29 02:25:47"
+              }
+            ],
+            "cron": "",
+            "durationMinutes": null,
+            "timezone": "Europe/Berlin",
+            "timezoneOption": "SAME_AS_SERVER",
+            "timezoneOffset": "+01:00",
+            "status": "under-maintenance"
+          }
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.343Z",
+      "key": "all",
+      "args": [
+        {
+          "1": {
+            "id": 1,
+            "title": "Dev maintenance (single)",
+            "description": "Seeded by kuma-seed; covers 'Under maintenance HTTP' so status-3 heartbeats exist.",
+            "strategy": "single",
+            "intervalDay": 1,
+            "active": true,
+            "dateRange": [
+              "2026-10-28 23:20:47",
+              "2026-10-29 02:25:47"
+            ],
+            "timeRange": [
+              {
+                "hours": 0,
+                "minutes": 0
+              },
+              {
+                "hours": 0,
+                "minutes": 0
+              }
+            ],
+            "weekdays": [],
+            "daysOfMonth": [],
+            "timeslotList": [
+              {
+                "startDate": "2026-10-28 23:20:47",
+                "endDate": "2026-10-29 02:25:47"
+              }
+            ],
+            "cron": "",
+            "durationMinutes": null,
+            "timezone": "Europe/Berlin",
+            "timezoneOption": "SAME_AS_SERVER",
+            "timezoneOffset": "+01:00",
+            "status": "under-maintenance"
+          }
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.949Z",
+      "key": "all",
+      "args": [
+        {
+          "1": {
+            "id": 1,
+            "title": "Dev maintenance (single)",
+            "description": "Seeded by kuma-seed; covers 'Under maintenance HTTP' so status-3 heartbeats exist.",
+            "strategy": "single",
+            "intervalDay": 1,
+            "active": true,
+            "dateRange": [
+              "2026-10-28 23:20:47",
+              "2026-10-29 02:25:47"
+            ],
+            "timeRange": [
+              {
+                "hours": 0,
+                "minutes": 0
+              },
+              {
+                "hours": 0,
+                "minutes": 0
+              }
+            ],
+            "weekdays": [],
+            "daysOfMonth": [],
+            "timeslotList": [
+              {
+                "startDate": "2026-10-28 23:20:47",
+                "endDate": "2026-10-29 02:25:47"
+              }
+            ],
+            "cron": "",
+            "durationMinutes": null,
+            "timezone": "Europe/Berlin",
+            "timezoneOption": "SAME_AS_SERVER",
+            "timezoneOffset": "+01:00",
+            "status": "under-maintenance"
+          }
+        }
+      ]
+    }
+  ]
+}

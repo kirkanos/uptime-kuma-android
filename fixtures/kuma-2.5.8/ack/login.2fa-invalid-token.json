@@ -1,0 +1,30 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:42:11.773Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "login.2fa-invalid-token",
+  "event": "login",
+  "request": [
+    {
+      "username": "admin",
+      "password": "REDACTED(len=15)",
+      "token": "REDACTED(len=6)"
+    }
+  ],
+  "response": {
+    "ok": false,
+    "msg": "authInvalidToken",
+    "msgi18n": true
+  },
+  "callbackArgs": 1,
+  "durationMs": 60
+}

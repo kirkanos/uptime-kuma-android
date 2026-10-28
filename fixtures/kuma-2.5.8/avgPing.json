@@ -1,0 +1,371 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "avgPing",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"avgPing\" emit, in order.",
+  "totalReceived": 148,
+  "sampleKeys": [
+    "monitor=1",
+    "monitor=2",
+    "monitor=3",
+    "monitor=4",
+    "monitor=5",
+    "monitor=6",
+    "monitor=7",
+    "monitor=8",
+    "monitor=9",
+    "monitor=10",
+    "monitor=11",
+    "monitor=12",
+    "monitor=13",
+    "monitor=18"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=1",
+      "args": [
+        "1",
+        205.84
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=2",
+      "args": [
+        "2",
+        227.26
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=3",
+      "args": [
+        "3",
+        6.07
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=4",
+      "args": [
+        "4",
+        11.02
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=5",
+      "args": [
+        "5",
+        18.05
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=6",
+      "args": [
+        "6",
+        22.28
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=7",
+      "args": [
+        "7",
+        42
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=8",
+      "args": [
+        "8",
+        142.67
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=9",
+      "args": [
+        "9",
+        null
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=10",
+      "args": [
+        "10",
+        106
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=11",
+      "args": [
+        "11",
+        10.9
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "monitor=12",
+      "args": [
+        "12",
+        298.81
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.762Z",
+      "key": "monitor=13",
+      "args": [
+        "13",
+        4.77
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.752Z",
+      "key": "monitor=3",
+      "args": [
+        3,
+        6.2
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.763Z",
+      "key": "monitor=4",
+      "args": [
+        4,
+        11.07
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.769Z",
+      "key": "monitor=10",
+      "args": [
+        10,
+        106
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.771Z",
+      "key": "monitor=9",
+      "args": [
+        9,
+        null
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.777Z",
+      "key": "monitor=6",
+      "args": [
+        6,
+        22.27
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.783Z",
+      "key": "monitor=11",
+      "args": [
+        11,
+        10.65
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.825Z",
+      "key": "monitor=1",
+      "args": [
+        1,
+        203.18
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.825Z",
+      "key": "monitor=7",
+      "args": [
+        7,
+        42
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.831Z",
+      "key": "monitor=2",
+      "args": [
+        2,
+        224.05
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.843Z",
+      "key": "monitor=8",
+      "args": [
+        8,
+        141.45
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:08.026Z",
+      "key": "monitor=12",
+      "args": [
+        12,
+        293.93
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:08.026Z",
+      "key": "monitor=13",
+      "args": [
+        13,
+        4.8
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.345Z",
+      "key": "monitor=1",
+      "args": [
+        "1",
+        203.18
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.345Z",
+      "key": "monitor=2",
+      "args": [
+        "2",
+        224.05
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.345Z",
+      "key": "monitor=3",
+      "args": [
+        "3",
+        6.2
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.345Z",
+      "key": "monitor=4",
+      "args": [
+        "4",
+        11.07
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.345Z",
+      "key": "monitor=5",
+      "args": [
+        "5",
+        18.05
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.345Z",
+      "key": "monitor=6",
+      "args": [
+        "6",
+        22.27
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.346Z",
+      "key": "monitor=7",
+      "args": [
+        "7",
+        42
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.346Z",
+      "key": "monitor=8",
+      "args": [
+        "8",
+        141.45
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.346Z",
+      "key": "monitor=9",
+      "args": [
+        "9",
+        null
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.346Z",
+      "key": "monitor=10",
+      "args": [
+        "10",
+        106
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.346Z",
+      "key": "monitor=11",
+      "args": [
+        "11",
+        10.65
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.346Z",
+      "key": "monitor=12",
+      "args": [
+        "12",
+        293.93
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.346Z",
+      "key": "monitor=13",
+      "args": [
+        "13",
+        4.8
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.791Z",
+      "key": "monitor=5",
+      "args": [
+        5,
+        18.01
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:10.050Z",
+      "key": "monitor=18",
+      "args": [
+        18,
+        75
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:10.585Z",
+      "key": "monitor=18",
+      "args": [
+        18,
+        82
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:10.902Z",
+      "key": "monitor=18",
+      "args": [
+        18,
+        82
+      ]
+    }
+  ]
+}

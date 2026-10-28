@@ -1,0 +1,677 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "heartbeat",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"heartbeat\" emit, in order.",
+  "totalReceived": 109,
+  "sampleKeys": [
+    "status=1:monitor=3",
+    "status=1:monitor=4",
+    "status=3:monitor=10",
+    "status=0:monitor=9",
+    "status=1:monitor=6",
+    "status=1:monitor=11",
+    "status=1:monitor=1",
+    "status=0:monitor=7",
+    "status=1:monitor=2",
+    "status=1:monitor=8",
+    "status=1:monitor=12",
+    "status=1:monitor=13",
+    "status=1:monitor=5",
+    "status=1:monitor=18",
+    "status=1:monitor=7"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:40:07.752Z",
+      "key": "status=1:monitor=3",
+      "args": [
+        {
+          "monitorID": 3,
+          "status": 1,
+          "time": "2026-10-28 22:40:07.716",
+          "msg": "JSON query passes (comparing entryPage == entryPage)",
+          "ping": 12,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.763Z",
+      "key": "status=1:monitor=4",
+      "args": [
+        {
+          "monitorID": 4,
+          "status": 1,
+          "time": "2026-10-28 22:40:07.717",
+          "msg": "13 ms",
+          "ping": 13,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.769Z",
+      "key": "status=3:monitor=10",
+      "args": [
+        {
+          "monitorID": 10,
+          "status": 3,
+          "time": "2026-10-28 22:40:07.751",
+          "msg": "Monitor under maintenance",
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.771Z",
+      "key": "status=0:monitor=9",
+      "args": [
+        {
+          "monitorID": 9,
+          "status": 0,
+          "time": "2026-10-28 22:40:07.751",
+          "msg": "connect ECONNREFUSED 127.0.0.1:9",
+          "important": false,
+          "retries": 44
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.777Z",
+      "key": "status=1:monitor=6",
+      "args": [
+        {
+          "monitorID": 6,
+          "status": 1,
+          "time": "2026-10-28 22:40:07.743",
+          "msg": "Records: 104.20.23.154 | 172.66.147.243",
+          "ping": 22,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.783Z",
+      "key": "status=1:monitor=11",
+      "args": [
+        {
+          "monitorID": 11,
+          "status": 1,
+          "time": "2026-10-28 22:40:07.779",
+          "msg": "All children up and running",
+          "ping": 0,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.825Z",
+      "key": "status=1:monitor=1",
+      "args": [
+        {
+          "monitorID": 1,
+          "status": 1,
+          "time": "2026-10-28 22:40:07.717",
+          "msg": "200 - OK",
+          "ping": 89,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.825Z",
+      "key": "status=0:monitor=7",
+      "args": [
+        {
+          "monitorID": 7,
+          "status": 0,
+          "time": "2026-10-28 22:40:07.816",
+          "msg": "No heartbeat in the time window",
+          "important": false,
+          "duration": 20,
+          "retries": 14
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.831Z",
+      "key": "status=1:monitor=2",
+      "args": [
+        {
+          "monitorID": 2,
+          "status": 1,
+          "time": "2026-10-28 22:40:07.718",
+          "msg": "200 - OK, keyword is found",
+          "ping": 86,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:07.843Z",
+      "key": "status=1:monitor=8",
+      "args": [
+        {
+          "monitorID": 8,
+          "status": 1,
+          "time": "2026-10-28 22:40:07.748",
+          "msg": "200 - OK",
+          "ping": 89,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:08.026Z",
+      "key": "status=1:monitor=12",
+      "args": [
+        {
+          "monitorID": 12,
+          "status": 1,
+          "time": "2026-10-28 22:40:07.928",
+          "msg": "200 - OK",
+          "ping": 84,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:08.026Z",
+      "key": "status=1:monitor=13",
+      "args": [
+        {
+          "monitorID": 13,
+          "status": 1,
+          "time": "2026-10-28 22:40:08.007",
+          "msg": "6 ms",
+          "ping": 6,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.791Z",
+      "key": "status=1:monitor=5",
+      "args": [
+        {
+          "monitorID": 5,
+          "status": 1,
+          "time": "2026-10-28 22:40:07.734",
+          "msg": "",
+          "ping": 16.3,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:10.049Z",
+      "key": "status=1:monitor=18",
+      "args": [
+        {
+          "monitorID": 18,
+          "status": 1,
+          "time": "2026-10-28 22:40:09.965",
+          "msg": "200 - OK",
+          "ping": 75,
+          "important": true,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:10.585Z",
+      "key": "status=1:monitor=18",
+      "args": [
+        {
+          "monitorID": 18,
+          "status": 1,
+          "time": "2026-10-28 22:40:10.481",
+          "msg": "200 - OK",
+          "ping": 89,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:10.902Z",
+      "key": "status=1:monitor=18",
+      "args": [
+        {
+          "monitorID": 18,
+          "status": 1,
+          "time": "2026-10-28 22:40:10.808",
+          "msg": "200 - OK",
+          "ping": 82,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:11.302Z",
+      "key": "status=1:monitor=7",
+      "args": [
+        {
+          "monitorID": 7,
+          "status": 1,
+          "time": "2026-10-28 22:40:11.290",
+          "msg": "OK",
+          "ping": 42,
+          "important": true,
+          "duration": 3,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:11.317Z",
+      "key": "status=0:monitor=7",
+      "args": [
+        {
+          "monitorID": 7,
+          "status": 0,
+          "time": "2026-10-28 22:40:11.305",
+          "msg": "recorder says down",
+          "ping": null,
+          "important": true,
+          "duration": 0,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:27.762Z",
+      "key": "status=1:monitor=3",
+      "args": [
+        {
+          "monitorID": 3,
+          "status": 1,
+          "time": "2026-10-28 22:40:27.718",
+          "msg": "JSON query passes (comparing entryPage == entryPage)",
+          "ping": 16,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:27.767Z",
+      "key": "status=1:monitor=4",
+      "args": [
+        {
+          "monitorID": 4,
+          "status": 1,
+          "time": "2026-10-28 22:40:27.721",
+          "msg": "10 ms",
+          "ping": 10,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:27.767Z",
+      "key": "status=3:monitor=10",
+      "args": [
+        {
+          "monitorID": 10,
+          "status": 3,
+          "time": "2026-10-28 22:40:27.750",
+          "msg": "Monitor under maintenance",
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:27.774Z",
+      "key": "status=0:monitor=9",
+      "args": [
+        {
+          "monitorID": 9,
+          "status": 0,
+          "time": "2026-10-28 22:40:27.750",
+          "msg": "connect ECONNREFUSED 127.0.0.1:9",
+          "important": false,
+          "retries": 45
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:27.781Z",
+      "key": "status=1:monitor=6",
+      "args": [
+        {
+          "monitorID": 6,
+          "status": 1,
+          "time": "2026-10-28 22:40:27.743",
+          "msg": "Records: 172.66.147.243 | 104.20.23.154",
+          "ping": 23,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:27.785Z",
+      "key": "status=1:monitor=11",
+      "args": [
+        {
+          "monitorID": 11,
+          "status": 1,
+          "time": "2026-10-28 22:40:27.778",
+          "msg": "All children up and running",
+          "ping": 3,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:27.827Z",
+      "key": "status=0:monitor=7",
+      "args": [
+        {
+          "monitorID": 7,
+          "status": 0,
+          "time": "2026-10-28 22:40:27.820",
+          "msg": "No heartbeat in the time window",
+          "important": false,
+          "duration": 17,
+          "retries": 1
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:27.831Z",
+      "key": "status=1:monitor=1",
+      "args": [
+        {
+          "monitorID": 1,
+          "status": 1,
+          "time": "2026-10-28 22:40:27.721",
+          "msg": "200 - OK",
+          "ping": 84,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:27.848Z",
+      "key": "status=1:monitor=8",
+      "args": [
+        {
+          "monitorID": 8,
+          "status": 1,
+          "time": "2026-10-28 22:40:27.750",
+          "msg": "200 - OK",
+          "ping": 88,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:28.028Z",
+      "key": "status=1:monitor=13",
+      "args": [
+        {
+          "monitorID": 13,
+          "status": 1,
+          "time": "2026-10-28 22:40:28.010",
+          "msg": "5 ms",
+          "ping": 5,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:28.031Z",
+      "key": "status=1:monitor=12",
+      "args": [
+        {
+          "monitorID": 12,
+          "status": 1,
+          "time": "2026-10-28 22:40:27.931",
+          "msg": "200 - OK",
+          "ping": 87,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:28.839Z",
+      "key": "status=1:monitor=2",
+      "args": [
+        {
+          "monitorID": 2,
+          "status": 1,
+          "time": "2026-10-28 22:40:27.721",
+          "msg": "200 - OK, keyword is found",
+          "ping": 1089,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:29.789Z",
+      "key": "status=1:monitor=5",
+      "args": [
+        {
+          "monitorID": 5,
+          "status": 1,
+          "time": "2026-10-28 22:40:27.736",
+          "msg": "",
+          "ping": 18.4,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:47.766Z",
+      "key": "status=1:monitor=3",
+      "args": [
+        {
+          "monitorID": 3,
+          "status": 1,
+          "time": "2026-10-28 22:40:47.721",
+          "msg": "JSON query passes (comparing entryPage == entryPage)",
+          "ping": 11,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:47.770Z",
+      "key": "status=3:monitor=10",
+      "args": [
+        {
+          "monitorID": 10,
+          "status": 3,
+          "time": "2026-10-28 22:40:47.751",
+          "msg": "Monitor under maintenance",
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:47.771Z",
+      "key": "status=1:monitor=4",
+      "args": [
+        {
+          "monitorID": 4,
+          "status": 1,
+          "time": "2026-10-28 22:40:47.722",
+          "msg": "8 ms",
+          "ping": 8,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:47.774Z",
+      "key": "status=0:monitor=9",
+      "args": [
+        {
+          "monitorID": 9,
+          "status": 0,
+          "time": "2026-10-28 22:40:47.751",
+          "msg": "connect ECONNREFUSED 127.0.0.1:9",
+          "important": false,
+          "retries": 46
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:47.781Z",
+      "key": "status=1:monitor=6",
+      "args": [
+        {
+          "monitorID": 6,
+          "status": 1,
+          "time": "2026-10-28 22:40:47.744",
+          "msg": "Records: 104.20.23.154 | 172.66.147.243",
+          "ping": 22,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:47.785Z",
+      "key": "status=1:monitor=11",
+      "args": [
+        {
+          "monitorID": 11,
+          "status": 1,
+          "time": "2026-10-28 22:40:47.779",
+          "msg": "All children up and running",
+          "ping": 3,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:47.833Z",
+      "key": "status=1:monitor=1",
+      "args": [
+        {
+          "monitorID": 1,
+          "status": 1,
+          "time": "2026-10-28 22:40:47.722",
+          "msg": "200 - OK",
+          "ping": 86,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:47.838Z",
+      "key": "status=1:monitor=2",
+      "args": [
+        {
+          "monitorID": 2,
+          "status": 1,
+          "time": "2026-10-28 22:40:47.723",
+          "msg": "200 - OK, keyword is found",
+          "ping": 93,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:47.849Z",
+      "key": "status=1:monitor=8",
+      "args": [
+        {
+          "monitorID": 8,
+          "status": 1,
+          "time": "2026-10-28 22:40:47.751",
+          "msg": "200 - OK",
+          "ping": 86,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:48.027Z",
+      "key": "status=1:monitor=12",
+      "args": [
+        {
+          "monitorID": 12,
+          "status": 1,
+          "time": "2026-10-28 22:40:47.934",
+          "msg": "200 - OK",
+          "ping": 84,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:48.033Z",
+      "key": "status=1:monitor=13",
+      "args": [
+        {
+          "monitorID": 13,
+          "status": 1,
+          "time": "2026-10-28 22:40:48.016",
+          "msg": "5 ms",
+          "ping": 5,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:49.789Z",
+      "key": "status=1:monitor=5",
+      "args": [
+        {
+          "monitorID": 5,
+          "status": 1,
+          "time": "2026-10-28 22:40:47.738",
+          "msg": "",
+          "ping": 19.3,
+          "important": false,
+          "retries": 0
+        }
+      ]
+    }
+  ]
+}

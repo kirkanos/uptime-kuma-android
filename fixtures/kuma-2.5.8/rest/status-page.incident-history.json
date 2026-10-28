@@ -1,0 +1,27 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:11.210Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "HTTP request + response",
+  "name": "status-page.incident-history",
+  "method": "GET",
+  "url": "/api/status-page/dev/incident-history",
+  "requestHeaders": [],
+  "status": 200,
+  "contentType": "application/json; charset=utf-8",
+  "body": {
+    "ok": true,
+    "incidents": [],
+    "total": 0,
+    "nextCursor": null,
+    "hasMore": false
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "dockerHostList",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"dockerHostList\" emit, in order.",
+  "totalReceived": 3,
+  "sampleKeys": [
+    "all"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:39:57.760Z",
+      "key": "all",
+      "args": [
+        []
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.344Z",
+      "key": "all",
+      "args": [
+        []
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:42:30.611Z",
+      "key": "all",
+      "args": [
+        []
+      ]
+    }
+  ]
+}

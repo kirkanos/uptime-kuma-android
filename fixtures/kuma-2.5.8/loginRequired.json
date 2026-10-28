@@ -1,0 +1,27 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "loginRequired",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"loginRequired\" emit, in order.",
+  "totalReceived": 1,
+  "sampleKeys": [
+    "all"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:39:57.601Z",
+      "key": "all",
+      "args": []
+    }
+  ]
+}

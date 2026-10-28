@@ -1,0 +1,21 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:11.283Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "HTTP request + response",
+  "name": "metrics.unauthorized",
+  "method": "GET",
+  "url": "/metrics",
+  "requestHeaders": [],
+  "status": 401,
+  "contentType": "text/html; charset=utf-8",
+  "body": ""
+}

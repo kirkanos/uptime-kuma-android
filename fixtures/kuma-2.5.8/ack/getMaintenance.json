@@ -1,0 +1,61 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:09.951Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "getMaintenance",
+  "event": "getMaintenance",
+  "request": [
+    1
+  ],
+  "response": {
+    "ok": true,
+    "maintenance": {
+      "id": 1,
+      "title": "Dev maintenance (single)",
+      "description": "Seeded by kuma-seed; covers 'Under maintenance HTTP' so status-3 heartbeats exist.",
+      "strategy": "single",
+      "intervalDay": 1,
+      "active": true,
+      "dateRange": [
+        "2026-10-28 23:20:47",
+        "2026-10-29 02:25:47"
+      ],
+      "timeRange": [
+        {
+          "hours": 0,
+          "minutes": 0
+        },
+        {
+          "hours": 0,
+          "minutes": 0
+        }
+      ],
+      "weekdays": [],
+      "daysOfMonth": [],
+      "timeslotList": [
+        {
+          "startDate": "2026-10-28 23:20:47",
+          "endDate": "2026-10-29 02:25:47"
+        }
+      ],
+      "cron": null,
+      "duration": null,
+      "durationMinutes": 0,
+      "timezone": "Europe/Berlin",
+      "timezoneOption": "SAME_AS_SERVER",
+      "timezoneOffset": "+01:00",
+      "status": "under-maintenance"
+    }
+  },
+  "callbackArgs": 1,
+  "durationMs": 2
+}

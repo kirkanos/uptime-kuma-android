@@ -1,0 +1,32 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:11.206Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "HTTP request + response",
+  "name": "status-page.manifest",
+  "method": "GET",
+  "url": "/api/status-page/dev/manifest.json",
+  "requestHeaders": [],
+  "status": 200,
+  "contentType": "application/json; charset=utf-8",
+  "body": {
+    "name": "Dev Status",
+    "start_url": "/status/dev",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "/icon.svg",
+        "sizes": "128x128",
+        "type": "image/png"
+      }
+    ]
+  }
+}

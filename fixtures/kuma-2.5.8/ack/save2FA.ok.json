@@ -1,0 +1,26 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:42:11.646Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "save2FA.ok",
+  "event": "save2FA",
+  "request": [
+    "REDACTED(len=15)"
+  ],
+  "response": {
+    "ok": true,
+    "msg": "2faEnabled",
+    "msgi18n": true
+  },
+  "callbackArgs": 1,
+  "durationMs": 61
+}

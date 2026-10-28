@@ -1,0 +1,1222 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "monitorTypeList",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"monitorTypeList\" emit, in order.",
+  "totalReceived": 3,
+  "sampleKeys": [
+    "all"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:39:57.760Z",
+      "key": "all",
+      "args": [
+        {
+          "real-browser": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "tailscale-ping": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "websocket-upgrade": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "dns": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "record",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "postgres": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "mqtt": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "topic",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              },
+              {
+                "id": "message",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              },
+              {
+                "id": "json_value",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  },
+                  {
+                    "id": "num_equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "num_not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "lt",
+                    "caption": "less than"
+                  },
+                  {
+                    "id": "gt",
+                    "caption": "greater than"
+                  },
+                  {
+                    "id": "lte",
+                    "caption": "less than or equal to"
+                  },
+                  {
+                    "id": "gte",
+                    "caption": "greater than or equal to"
+                  }
+                ]
+              }
+            ]
+          },
+          "smtp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "group": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "snmp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "grpc-keyword": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "mongodb": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "rabbitmq": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "sip-options": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "gamedig": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "steam": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "port": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "manual": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "globalping": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "redis": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "pm2": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "system-service": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "sqlserver": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "result",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "mysql": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "result",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "sftp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "oracledb": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "result",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "ntp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          }
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.343Z",
+      "key": "all",
+      "args": [
+        {
+          "real-browser": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "tailscale-ping": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "websocket-upgrade": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "dns": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "record",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "postgres": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "mqtt": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "topic",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              },
+              {
+                "id": "message",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              },
+              {
+                "id": "json_value",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  },
+                  {
+                    "id": "num_equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "num_not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "lt",
+                    "caption": "less than"
+                  },
+                  {
+                    "id": "gt",
+                    "caption": "greater than"
+                  },
+                  {
+                    "id": "lte",
+                    "caption": "less than or equal to"
+                  },
+                  {
+                    "id": "gte",
+                    "caption": "greater than or equal to"
+                  }
+                ]
+              }
+            ]
+          },
+          "smtp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "group": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "snmp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "grpc-keyword": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "mongodb": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "rabbitmq": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "sip-options": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "gamedig": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "steam": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "port": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "manual": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "globalping": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "redis": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "pm2": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "system-service": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "sqlserver": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "result",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "mysql": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "result",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "sftp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "oracledb": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "result",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "ntp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          }
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:42:30.610Z",
+      "key": "all",
+      "args": [
+        {
+          "real-browser": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "tailscale-ping": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "websocket-upgrade": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "dns": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "record",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "postgres": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "mqtt": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "topic",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              },
+              {
+                "id": "message",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              },
+              {
+                "id": "json_value",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  },
+                  {
+                    "id": "num_equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "num_not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "lt",
+                    "caption": "less than"
+                  },
+                  {
+                    "id": "gt",
+                    "caption": "greater than"
+                  },
+                  {
+                    "id": "lte",
+                    "caption": "less than or equal to"
+                  },
+                  {
+                    "id": "gte",
+                    "caption": "greater than or equal to"
+                  }
+                ]
+              }
+            ]
+          },
+          "smtp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "group": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "snmp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "grpc-keyword": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "mongodb": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "rabbitmq": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "sip-options": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "gamedig": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "steam": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "port": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "manual": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "globalping": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "redis": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "pm2": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "system-service": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "sqlserver": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "result",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "mysql": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "result",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "sftp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          },
+          "oracledb": {
+            "supportsConditions": true,
+            "conditionVariables": [
+              {
+                "id": "result",
+                "operators": [
+                  {
+                    "id": "equals",
+                    "caption": "equals"
+                  },
+                  {
+                    "id": "not_equals",
+                    "caption": "not equals"
+                  },
+                  {
+                    "id": "contains",
+                    "caption": "contains"
+                  },
+                  {
+                    "id": "not_contains",
+                    "caption": "not contains"
+                  },
+                  {
+                    "id": "starts_with",
+                    "caption": "starts with"
+                  },
+                  {
+                    "id": "not_starts_with",
+                    "caption": "not starts with"
+                  },
+                  {
+                    "id": "ends_with",
+                    "caption": "ends with"
+                  },
+                  {
+                    "id": "not_ends_with",
+                    "caption": "not ends with"
+                  }
+                ]
+              }
+            ]
+          },
+          "ntp": {
+            "supportsConditions": false,
+            "conditionVariables": []
+          }
+        }
+      ]
+    }
+  ]
+}

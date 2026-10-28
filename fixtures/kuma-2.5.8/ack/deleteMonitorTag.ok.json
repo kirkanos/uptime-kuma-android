@@ -1,0 +1,28 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:11.150Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "deleteMonitorTag.ok",
+  "event": "deleteMonitorTag",
+  "request": [
+    1,
+    18,
+    "recorder"
+  ],
+  "response": {
+    "ok": true,
+    "msg": "successDeleted",
+    "msgi18n": true
+  },
+  "callbackArgs": 1,
+  "durationMs": 10
+}

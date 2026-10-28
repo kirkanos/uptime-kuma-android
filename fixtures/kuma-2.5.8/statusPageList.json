@@ -1,0 +1,109 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "statusPageList",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"statusPageList\" emit, in order.",
+  "totalReceived": 3,
+  "sampleKeys": [
+    "all"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:39:57.760Z",
+      "key": "all",
+      "args": [
+        {
+          "1": {
+            "id": 1,
+            "slug": "dev",
+            "title": "Dev Status",
+            "description": "Local dev status page used for Android client fixtures.",
+            "icon": "/icon.svg",
+            "theme": "auto",
+            "autoRefreshInterval": 300,
+            "published": true,
+            "showTags": true,
+            "domainNameList": [],
+            "customCSS": null,
+            "footerText": "kuma-seed fixtures",
+            "showPoweredBy": true,
+            "analyticsId": null,
+            "analyticsScriptUrl": null,
+            "analyticsType": null,
+            "showCertificateExpiry": true,
+            "showOnlyLastHeartbeat": false,
+            "rssTitle": null
+          }
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:40:09.344Z",
+      "key": "all",
+      "args": [
+        {
+          "1": {
+            "id": 1,
+            "slug": "dev",
+            "title": "Dev Status",
+            "description": "Local dev status page used for Android client fixtures.",
+            "icon": "/icon.svg",
+            "theme": "auto",
+            "autoRefreshInterval": 300,
+            "published": true,
+            "showTags": true,
+            "domainNameList": [],
+            "customCSS": null,
+            "footerText": "kuma-seed fixtures",
+            "showPoweredBy": true,
+            "analyticsId": null,
+            "analyticsScriptUrl": null,
+            "analyticsType": null,
+            "showCertificateExpiry": true,
+            "showOnlyLastHeartbeat": false,
+            "rssTitle": null
+          }
+        }
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:42:30.611Z",
+      "key": "all",
+      "args": [
+        {
+          "1": {
+            "id": 1,
+            "slug": "dev",
+            "title": "Dev Status",
+            "description": "Local dev status page used for Android client fixtures.",
+            "icon": "/icon.svg",
+            "theme": "auto",
+            "autoRefreshInterval": 300,
+            "published": true,
+            "showTags": true,
+            "domainNameList": [],
+            "customCSS": null,
+            "footerText": "kuma-seed fixtures",
+            "showPoweredBy": true,
+            "analyticsId": null,
+            "analyticsScriptUrl": null,
+            "analyticsType": null,
+            "showCertificateExpiry": true,
+            "showOnlyLastHeartbeat": false,
+            "rssTitle": null
+          }
+        }
+      ]
+    }
+  ]
+}

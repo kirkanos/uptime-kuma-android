@@ -1,0 +1,105 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:39:57.587Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "event": "uptime",
+  "direction": "server->client",
+  "argsDescription": "Positional Socket.IO args of each \"uptime\" emit, in order.",
+  "totalReceived": 444,
+  "sampleKeys": [
+    "period=24",
+    "period=720",
+    "period=1y"
+  ],
+  "samples": [
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "period=24",
+      "args": [
+        "1",
+        24,
+        1
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "period=24",
+      "args": [
+        "2",
+        24,
+        1
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.761Z",
+      "key": "period=24",
+      "args": [
+        "3",
+        24,
+        1
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.762Z",
+      "key": "period=720",
+      "args": [
+        "1",
+        720,
+        1
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.762Z",
+      "key": "period=720",
+      "args": [
+        "2",
+        720,
+        1
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.762Z",
+      "key": "period=720",
+      "args": [
+        "3",
+        720,
+        1
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.762Z",
+      "key": "period=1y",
+      "args": [
+        "1",
+        "1y",
+        1
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.762Z",
+      "key": "period=1y",
+      "args": [
+        "2",
+        "1y",
+        1
+      ]
+    },
+    {
+      "receivedAt": "2026-10-28T22:39:57.762Z",
+      "key": "period=1y",
+      "args": [
+        "3",
+        "1y",
+        1
+      ]
+    }
+  ]
+}

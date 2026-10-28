@@ -1,0 +1,35 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:09.923Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "getMonitorChartData.1y",
+  "event": "getMonitorChartData",
+  "request": [
+    1,
+    8760
+  ],
+  "response": {
+    "ok": true,
+    "data": [
+      {
+        "up": 44,
+        "down": 0,
+        "avgPing": 203.1818181818182,
+        "minPing": 76,
+        "maxPing": 2096,
+        "timestamp": 1793145600
+      }
+    ]
+  },
+  "callbackArgs": 1,
+  "durationMs": 1
+}

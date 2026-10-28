@@ -1,0 +1,23 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:42:30.691Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "twoFAStatus.disabled",
+  "event": "twoFAStatus",
+  "request": [],
+  "response": {
+    "ok": true,
+    "status": false
+  },
+  "callbackArgs": 1,
+  "durationMs": 1
+}

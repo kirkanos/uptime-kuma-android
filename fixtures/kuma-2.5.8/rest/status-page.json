@@ -1,0 +1,107 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:11.194Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "HTTP request + response",
+  "name": "status-page",
+  "method": "GET",
+  "url": "/api/status-page/dev",
+  "requestHeaders": [],
+  "status": 200,
+  "contentType": "application/json; charset=utf-8",
+  "body": {
+    "config": {
+      "slug": "dev",
+      "title": "Dev Status",
+      "description": "Local dev status page used for Android client fixtures.",
+      "icon": "/icon.svg",
+      "autoRefreshInterval": 300,
+      "theme": "auto",
+      "published": true,
+      "showTags": true,
+      "customCSS": null,
+      "footerText": "kuma-seed fixtures",
+      "showPoweredBy": true,
+      "analyticsId": null,
+      "analyticsScriptUrl": null,
+      "analyticsType": null,
+      "showCertificateExpiry": true,
+      "showOnlyLastHeartbeat": false,
+      "rssTitle": null
+    },
+    "incidents": [],
+    "publicGroupList": [
+      {
+        "id": 1,
+        "name": "Core",
+        "weight": 1,
+        "monitorList": [
+          {
+            "id": 1,
+            "name": "HTTP example.com",
+            "sendUrl": 0,
+            "type": "http",
+            "tags": [],
+            "certExpiryDaysRemaining": 58,
+            "validCert": true
+          },
+          {
+            "id": 4,
+            "name": "TCP example.com:443",
+            "sendUrl": 0,
+            "type": "port",
+            "tags": [],
+            "certExpiryDaysRemaining": "",
+            "validCert": false
+          }
+        ]
+      }
+    ],
+    "maintenanceList": [
+      {
+        "id": 1,
+        "title": "Dev maintenance (single)",
+        "description": "Seeded by kuma-seed; covers 'Under maintenance HTTP' so status-3 heartbeats exist.",
+        "strategy": "single",
+        "intervalDay": 1,
+        "active": true,
+        "dateRange": [
+          "2026-10-28 23:20:47",
+          "2026-10-29 02:25:47"
+        ],
+        "timeRange": [
+          {
+            "hours": 0,
+            "minutes": 0
+          },
+          {
+            "hours": 0,
+            "minutes": 0
+          }
+        ],
+        "weekdays": [],
+        "daysOfMonth": [],
+        "timeslotList": [
+          {
+            "startDate": "2026-10-28 23:20:47",
+            "endDate": "2026-10-29 02:25:47"
+          }
+        ],
+        "cron": "",
+        "durationMinutes": null,
+        "timezone": "Europe/Berlin",
+        "timezoneOption": "SAME_AS_SERVER",
+        "timezoneOffset": "+01:00",
+        "status": "under-maintenance"
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "kumaVersion": "2.5.8",
+  "recordedAt": "2026-10-28T22:40:09.941Z",
+  "recorder": "infra/kuma-seed/record.mjs",
+  "recorderArgs": [
+    "--duration",
+    "120",
+    "--twofa",
+    "--per-key",
+    "3"
+  ],
+  "kumaUrl": "http://localhost:3001",
+  "direction": "client->server emit + ack callback",
+  "name": "getTags",
+  "event": "getTags",
+  "request": [],
+  "response": {
+    "ok": true,
+    "tags": [
+      {
+        "id": 1,
+        "name": "env",
+        "color": "#059669"
+      },
+      {
+        "id": 2,
+        "name": "team",
+        "color": "#7C3AED"
+      }
+    ]
+  },
+  "callbackArgs": 1,
+  "durationMs": 0
+}
