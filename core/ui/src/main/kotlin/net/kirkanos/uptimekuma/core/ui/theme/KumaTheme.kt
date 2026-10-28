@@ -7,6 +7,8 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
@@ -40,7 +42,8 @@ private val DarkColorScheme =
  * Material 3 theme for Uptime Kuma for Android.
  *
  * The app's minSdk is 31 (Android 12), so Material You dynamic color is always available;
- * [dynamicColor] exists so the user can opt out of it in settings.
+ * [dynamicColor] exists so the user can opt out of it in settings. Status colors
+ * ([MaterialTheme.statusColors]) are harmonized with the (dynamic) primary color.
  */
 @Composable
 fun KumaTheme(
@@ -63,10 +66,16 @@ fun KumaTheme(
                 LightColorScheme
             }
         }
+    val statusColors =
+        remember(darkTheme, colorScheme.primary) {
+            (if (darkTheme) DarkStatusColors else LightStatusColors).harmonizedWith(colorScheme.primary)
+        }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = KumaTypography,
-        content = content,
-    )
+    CompositionLocalProvider(LocalStatusColors provides statusColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = KumaTypography,
+            content = content,
+        )
+    }
 }

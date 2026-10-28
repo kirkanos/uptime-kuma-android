@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dashboard -->
+    <string name="monitors_title">Monitore</string>
+    <string name="monitors_settings">Einstellungen</string>
+    <string name="monitors_search_hint">Monitore durchsuchen</string>
+    <string name="monitors_search_clear">Suche löschen</string>
+    <string name="monitors_problems_first">Probleme zuerst</string>
+    <string name="monitors_status_count">%1$d %2$s</string>
+    <string name="monitors_clear_filters">Filter zurücksetzen</string>
+    <string name="monitors_empty_filtered_title">Keine passenden Monitore</string>
+    <string name="monitors_empty_filtered_message">Versuche eine andere Suche oder entferne einige Filter.</string>
+    <string name="monitors_empty_title">Noch keine Monitore</string>
+    <string name="monitors_empty_message">Monitore, die du in der Uptime-Kuma-Weboberfläche anlegst, erscheinen hier.</string>
+    <string name="monitors_open_details">Details anzeigen</string>
+    <string name="monitors_group_name">%1$s (%2$d)</string>
+    <string name="monitors_expand_group">Gruppe %1$s aufklappen</string>
+    <string name="monitors_collapse_group">Gruppe %1$s zuklappen</string>
+    <string name="monitors_type_group">Gruppe</string>
+
+    <string name="monitors_summary_all_up">Alle Systeme betriebsbereit</string>
+    <plurals name="monitors_summary_down">
+        <item quantity="one">%d Monitor offline</item>
+        <item quantity="other">%d Monitore offline</item>
+    </plurals>
+    <plurals name="monitors_summary_pending">
+        <item quantity="one">%d Monitor ausstehend</item>
+        <item quantity="other">%d Monitore ausstehend</item>
+    </plurals>
+    <plurals name="monitors_summary_maintenance">
+        <item quantity="one">%d Monitor in Wartung</item>
+        <item quantity="other">%d Monitore in Wartung</item>
+    </plurals>
+    <plurals name="monitors_summary_total">
+        <item quantity="one">%d Monitor insgesamt</item>
+        <item quantity="other">%d Monitore insgesamt</item>
+    </plurals>
+
+    <!-- Connection banner -->
+    <string name="monitors_connecting">Verbindung zum Server wird hergestellt…</string>
+    <string name="monitors_connection_failed">Keine Live-Verbindung. %1$s</string>
+    <string name="monitors_login_required">Deine Sitzung ist abgelaufen. Melde dich erneut an, um Live-Updates zu erhalten.</string>
+    <string name="monitors_log_in">Anmelden</string>
+    <string name="monitors_retry">Erneut versuchen</string>
+
+    <!-- Detail -->
+    <string name="monitors_back">Zurück</string>
+    <string name="monitors_not_found">Dieser Monitor existiert nicht mehr.</string>
+    <string name="monitors_more_actions">Weitere Aktionen</string>
+    <string name="monitors_pause">Pausieren</string>
+    <string name="monitors_resume">Fortsetzen</string>
+    <string name="monitors_delete">Löschen</string>
+    <string name="monitors_cancel">Abbrechen</string>
+    <string name="monitors_open_web_ui">In der Weboberfläche öffnen</string>
+    <string name="monitors_pause_title">%1$s pausieren?</string>
+    <string name="monitors_pause_message">Der Monitor prüft nicht mehr und sendet keine Benachrichtigungen, bis du ihn fortsetzt.</string>
+    <string name="monitors_delete_title">%1$s löschen?</string>
+    <string name="monitors_delete_message">Der Monitor wird samt aller Heartbeats und Ereignisse auf dem Server gelöscht. Das kann nicht rückgängig gemacht werden.</string>
+    <string name="monitors_last_check">Letzte Prüfung %1$s</string>
+    <plurals name="monitors_interval_seconds">
+        <item quantity="one">jede Sekunde</item>
+        <item quantity="other">alle %d Sekunden</item>
+    </plurals>
+    <plurals name="monitors_interval_minutes">
+        <item quantity="one">jede Minute</item>
+        <item quantity="other">alle %d Minuten</item>
+    </plurals>
+    <plurals name="monitors_interval_hours">
+        <item quantity="one">jede Stunde</item>
+        <item quantity="other">alle %d Stunden</item>
+    </plurals>
+    <string name="monitors_recent_checks">Letzte Prüfungen</string>
+    <string name="monitors_value_none">–</string>
+    <string name="monitors_uptime_24h">Verfügbarkeit 24 Std.</string>
+    <string name="monitors_uptime_30d">Verfügbarkeit 30 Tage</string>
+    <string name="monitors_uptime_1y">Verfügbarkeit 1 Jahr</string>
+    <string name="monitors_avg_ping">Ø Antwortzeit</string>
+    <string name="monitors_response_time">Antwortzeit</string>
+    <string name="monitors_chart_empty">Keine Antwortzeiten in diesem Zeitraum.</string>
+    <string name="monitors_period_3h">3 Std.</string>
+    <string name="monitors_period_6h">6 Std.</string>
+    <string name="monitors_period_24h">24 Std.</string>
+    <string name="monitors_period_1w">1 Woche</string>
+    <string name="monitors_certificate">TLS-Zertifikat</string>
+    <plurals name="monitors_cert_days">
+        <item quantity="one">Läuft in %d Tag ab</item>
+        <item quantity="other">Läuft in %d Tagen ab</item>
+    </plurals>
+    <string name="monitors_cert_valid">Gültig</string>
+    <string name="monitors_cert_invalid">Ungültig oder abgelaufen</string>
+    <string name="monitors_cert_issuer">Ausgestellt von %1$s</string>
+    <string name="monitors_cert_valid_to">Gültig bis %1$s</string>
+    <string name="monitors_events_title">Wichtige Ereignisse</string>
+    <string name="monitors_events_empty">Noch keine wichtigen Ereignisse.</string>
+</resources>

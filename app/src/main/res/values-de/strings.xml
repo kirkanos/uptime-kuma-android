@@ -2,4 +2,21 @@
 <resources>
     <string name="app_name">Uptime Kuma</string>
     <string name="app_title">Uptime Kuma für Android</string>
+
+    <!-- Settings (placeholder until :feature:settings) -->
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_back">Zurück</string>
+    <string name="settings_server">Server</string>
+    <string name="settings_logged_in_as">Angemeldet als %1$s</string>
+    <string name="settings_push">Push-Benachrichtigungen</string>
+    <string name="settings_push_summary">Über Ausfälle per UnifiedPush benachrichtigt werden</string>
+    <string name="settings_logout">Abmelden</string>
+    <string name="settings_logout_title">Abmelden?</string>
+    <string name="settings_logout_message">Die App vergisst diesen Server, die zwischengespeicherten Daten und die Push-Registrierung auf diesem Gerät.</string>
+    <string name="settings_cancel">Abbrechen</string>
+
+    <!-- Push setup placeholder (replaced by :push) -->
+    <string name="push_placeholder_title">Push-Benachrichtigungen</string>
+    <string name="push_placeholder_message">Die Einrichtung von Push-Benachrichtigungen ist hier bald verfügbar.</string>
+    <string name="push_placeholder_continue">Weiter</string>
 </resources>

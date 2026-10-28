@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Status labels -->
+    <string name="core_ui_status_up">Online</string>
+    <string name="core_ui_status_down">Offline</string>
+    <string name="core_ui_status_pending">Ausstehend</string>
+    <string name="core_ui_status_maintenance">Wartung</string>
+    <string name="core_ui_status_paused">Pausiert</string>
+    <string name="core_ui_status_unknown">Unbekannt</string>
+
+    <!-- Relative time -->
+    <string name="core_ui_time_just_now">gerade eben</string>
+    <plurals name="core_ui_time_minutes_ago">
+        <item quantity="one">vor %d Min.</item>
+        <item quantity="other">vor %d Min.</item>
+    </plurals>
+    <plurals name="core_ui_time_hours_ago">
+        <item quantity="one">vor %d Std.</item>
+        <item quantity="other">vor %d Std.</item>
+    </plurals>
+    <plurals name="core_ui_time_days_ago">
+        <item quantity="one">vor %d Tag</item>
+        <item quantity="other">vor %d Tagen</item>
+    </plurals>
+
+    <!-- Values -->
+    <string name="core_ui_ping_ms">%d ms</string>
+    <string name="core_ui_ping_ms_axis">%d ms</string>
+    <string name="core_ui_uptime_description">Verfügbarkeit %s</string>
+    <string name="core_ui_uptime_unknown">Verfügbarkeit unbekannt</string>
+
+    <!-- Heartbeat bar / chart accessibility -->
+    <string name="core_ui_heartbeats_none">Noch keine Heartbeats</string>
+    <plurals name="core_ui_heartbeats_summary">
+        <item quantity="one">Letzte Prüfung: %2$d online, %3$d offline</item>
+        <item quantity="other">Letzte %1$d Prüfungen: %2$d online, %3$d offline</item>
+    </plurals>
+    <string name="core_ui_chart_no_data">Antwortzeit-Diagramm, keine Daten</string>
+    <string name="core_ui_chart_description">Antwortzeit-Diagramm: Minimum %1$d ms, Durchschnitt %2$d ms, Maximum %3$d ms</string>
+
+    <!-- States -->
+    <string name="core_ui_loading">Wird geladen</string>
+    <string name="core_ui_retry">Erneut versuchen</string>
+    <string name="core_ui_error_title">Etwas ist schiefgelaufen</string>
+
+    <!-- Errors -->
+    <string name="core_ui_error_network">Der Server ist nicht erreichbar. Prüfe die Adresse und deine Verbindung.</string>
+    <string name="core_ui_error_invalid_credentials">Falscher Benutzername, falsches Passwort oder falscher 2FA-Code.</string>
+    <string name="core_ui_error_rate_limited">Zu viele Versuche. Bitte warte eine Minute und versuche es erneut.</string>
+    <string name="core_ui_error_unsupported_server">Dieser Server ist kein Uptime Kuma oder seine Version wird nicht unterstützt.</string>
+    <string name="core_ui_error_setup_required">Dieser Uptime-Kuma-Server ist noch nicht eingerichtet. Schließe die Einrichtung zuerst in der Weboberfläche ab.</string>
+    <string name="core_ui_error_server_rejected">Der Server hat die Anfrage abgelehnt.</string>
+    <string name="core_ui_error_timeout">Der Server hat nicht rechtzeitig geantwortet.</string>
+    <string name="core_ui_error_unauthorized">Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.</string>
+    <string name="core_ui_error_unknown">Ein unerwarteter Fehler ist aufgetreten.</string>
+    <string name="core_ui_error_with_detail">%1$s (%2$s)</string>
+</resources>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dashboard -->
+    <string name="monitors_title">Monitors</string>
+    <string name="monitors_settings">Settings</string>
+    <string name="monitors_search_hint">Search monitors</string>
+    <string name="monitors_search_clear">Clear search</string>
+    <string name="monitors_problems_first">Problems first</string>
+    <string name="monitors_status_count">%1$d %2$s</string>
+    <string name="monitors_clear_filters">Clear filters</string>
+    <string name="monitors_empty_filtered_title">No matching monitors</string>
+    <string name="monitors_empty_filtered_message">Try a different search or remove some filters.</string>
+    <string name="monitors_empty_title">No monitors yet</string>
+    <string name="monitors_empty_message">Monitors you create in the Uptime Kuma web interface appear here.</string>
+    <string name="monitors_open_details">Show details</string>
+    <string name="monitors_group_name">%1$s (%2$d)</string>
+    <string name="monitors_expand_group">Expand group %1$s</string>
+    <string name="monitors_collapse_group">Collapse group %1$s</string>
+    <string name="monitors_type_group">Group</string>
+
+    <string name="monitors_summary_all_up">All systems operational</string>
+    <plurals name="monitors_summary_down">
+        <item quantity="one">%d monitor down</item>
+        <item quantity="other">%d monitors down</item>
+    </plurals>
+    <plurals name="monitors_summary_pending">
+        <item quantity="one">%d monitor pending</item>
+        <item quantity="other">%d monitors pending</item>
+    </plurals>
+    <plurals name="monitors_summary_maintenance">
+        <item quantity="one">%d monitor in maintenance</item>
+        <item quantity="other">%d monitors in maintenance</item>
+    </plurals>
+    <plurals name="monitors_summary_total">
+        <item quantity="one">%d monitor in total</item>
+        <item quantity="other">%d monitors in total</item>
+    </plurals>
+
+    <!-- Connection banner -->
+    <string name="monitors_connecting">Connecting to server…</string>
+    <string name="monitors_connection_failed">No live connection. %1$s</string>
+    <string name="monitors_login_required">Your session has expired. Log in again to get live updates.</string>
+    <string name="monitors_log_in">Log in</string>
+    <string name="monitors_retry">Retry</string>
+
+    <!-- Detail -->
+    <string name="monitors_back">Back</string>
+    <string name="monitors_not_found">This monitor no longer exists.</string>
+    <string name="monitors_more_actions">More actions</string>
+    <string name="monitors_pause">Pause</string>
+    <string name="monitors_resume">Resume</string>
+    <string name="monitors_delete">Delete</string>
+    <string name="monitors_cancel">Cancel</string>
+    <string name="monitors_open_web_ui">Open in web interface</string>
+    <string name="monitors_pause_title">Pause %1$s?</string>
+    <string name="monitors_pause_message">The monitor stops checking and sends no notifications until you resume it.</string>
+    <string name="monitors_delete_title">Delete %1$s?</string>
+    <string name="monitors_delete_message">The monitor and all of its heartbeats and events are deleted on the server. This cannot be undone.</string>
+    <string name="monitors_last_check">Last check %1$s</string>
+    <plurals name="monitors_interval_seconds">
+        <item quantity="one">every %d second</item>
+        <item quantity="other">every %d seconds</item>
+    </plurals>
+    <plurals name="monitors_interval_minutes">
+        <item quantity="one">every minute</item>
+        <item quantity="other">every %d minutes</item>
+    </plurals>
+    <plurals name="monitors_interval_hours">
+        <item quantity="one">every hour</item>
+        <item quantity="other">every %d hours</item>
+    </plurals>
+    <string name="monitors_recent_checks">Recent checks</string>
+    <string name="monitors_value_none">–</string>
+    <string name="monitors_uptime_24h">Uptime 24 h</string>
+    <string name="monitors_uptime_30d">Uptime 30 days</string>
+    <string name="monitors_uptime_1y">Uptime 1 year</string>
+    <string name="monitors_avg_ping">Avg. response</string>
+    <string name="monitors_response_time">Response time</string>
+    <string name="monitors_chart_empty">No response times in this period.</string>
+    <string name="monitors_period_3h">3 h</string>
+    <string name="monitors_period_6h">6 h</string>
+    <string name="monitors_period_24h">24 h</string>
+    <string name="monitors_period_1w">1 week</string>
+    <string name="monitors_certificate">TLS certificate</string>
+    <plurals name="monitors_cert_days">
+        <item quantity="one">Expires in %d day</item>
+        <item quantity="other">Expires in %d days</item>
+    </plurals>
+    <string name="monitors_cert_valid">Valid</string>
+    <string name="monitors_cert_invalid">Invalid or expired</string>
+    <string name="monitors_cert_issuer">Issued by %1$s</string>
+    <string name="monitors_cert_valid_to">Valid until %1$s</string>
+    <string name="monitors_events_title">Important events</string>
+    <string name="monitors_events_empty">No important events yet.</string>
+</resources>
