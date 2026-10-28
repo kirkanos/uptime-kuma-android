@@ -80,6 +80,7 @@ internal class KumaEventSync(
             KumaEvent.LoginRequired,
             KumaEvent.AutoLogin,
             KumaEvent.Refresh,
+            is KumaEvent.Raw,
             -> {}
         }
     }

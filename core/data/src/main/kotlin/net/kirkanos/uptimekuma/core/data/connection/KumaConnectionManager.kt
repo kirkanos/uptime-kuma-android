@@ -21,6 +21,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.serialization.json.JsonElement
 import net.kirkanos.uptimekuma.core.data.LogoutHook
 import net.kirkanos.uptimekuma.core.data.cache.KumaCache
 import net.kirkanos.uptimekuma.core.data.cache.KumaEventSync
@@ -32,6 +33,7 @@ import net.kirkanos.uptimekuma.core.kumaclient.KumaApi
 import net.kirkanos.uptimekuma.core.kumaclient.KumaClientState
 import net.kirkanos.uptimekuma.core.kumaclient.KumaEndpoint
 import net.kirkanos.uptimekuma.core.kumaclient.KumaEvent
+import net.kirkanos.uptimekuma.core.kumaclient.KumaEventParser
 import net.kirkanos.uptimekuma.core.kumaclient.KumaUrls
 import net.kirkanos.uptimekuma.core.kumaclient.LoginResponse
 import net.kirkanos.uptimekuma.core.kumaclient.dto.InfoDto
@@ -87,6 +89,18 @@ internal class KumaConnectionManager
         val serverInfo: StateFlow<ServerInfo?> = mutableServerInfo.asStateFlow()
 
         val serverConfig get() = configStore.config
+
+        private val snapshots = java.util.concurrent.ConcurrentHashMap<String, MutableStateFlow<List<JsonElement>?>>()
+
+        /**
+         * Latest raw arguments of a list event from [KumaEventParser.SNAPSHOT_EVENTS] (e.g.
+         * `statusPageList`, `proxyList`), `null` until received after login. Survives reconnects,
+         * cleared on logout. Feature repositories decode these themselves.
+         */
+        fun snapshot(event: String): StateFlow<List<JsonElement>?> {
+            require(event in KumaEventParser.SNAPSHOT_EVENTS) { "$event is not a snapshot event" }
+            return snapshots.getOrPut(event) { MutableStateFlow(null) }.asStateFlow()
+        }
 
         init {
             scope.launch {
@@ -262,6 +276,7 @@ internal class KumaConnectionManager
                 }
                 secretStore.remove(TOKEN_KEY)
                 cache.clear()
+                snapshots.values.forEach { it.value = null }
                 configStore.clear()
                 mutableServerInfo.value = null
                 mutableState.value = ConnectionState.NotConfigured
@@ -527,7 +542,7 @@ internal class KumaConnectionManager
                     requestClose(s, ConnectionState.LoginRequired)
                 }
 
-                sync.isDataEvent(event) -> {
+                event is KumaEvent.Raw || sync.isDataEvent(event) -> {
                     s.pending.trySend(event)
                 }
             }
@@ -556,6 +571,10 @@ internal class KumaConnectionManager
             event: KumaEvent,
         ) {
             s.authenticated.first { it }
+            if (event is KumaEvent.Raw) {
+                snapshots.getOrPut(event.name) { MutableStateFlow(null) }.value = event.args
+                return
+            }
             try {
                 sync.apply(event, s.api)
             } catch (e: CancellationException) {

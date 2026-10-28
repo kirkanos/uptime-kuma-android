@@ -158,10 +158,10 @@ class KumaClient(
      * Emits [event] with [args] (JsonElement, String, numbers, Boolean, null, Map/List) once the
      * server is ready and returns the raw acknowledgement arguments (may be empty).
      */
-    suspend fun requestRaw(
+    override suspend fun requestRaw(
         event: String,
         args: List<Any?>,
-        timeoutMillis: Long = defaultTimeoutMillis,
+        timeoutMillis: Long,
     ): List<JsonElement> {
         awaitReady(timeoutMillis)
         val current =
@@ -376,9 +376,11 @@ class KumaClient(
         args: Array<Any?>,
     ) {
         if (!isCurrent(source)) return
+        val jsonArgs = args.map { fromSocketArg(it) }
+        if (name in KumaEventParser.SNAPSHOT_EVENTS) incoming.trySend(KumaEvent.Raw(name, jsonArgs))
         val event =
             try {
-                KumaEventParser.parse(name, args.map { fromSocketArg(it) })
+                KumaEventParser.parse(name, jsonArgs)
             } catch (e: IllegalArgumentException) {
                 // SerializationException is an IllegalArgumentException.
                 logger.log("Cannot parse '$name'", e)

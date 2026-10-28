@@ -3,6 +3,7 @@ package net.kirkanos.uptimekuma.core.kumaclient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import net.kirkanos.uptimekuma.core.model.ChartPoint
 import net.kirkanos.uptimekuma.core.model.Heartbeat
@@ -35,6 +36,17 @@ interface KumaApi {
 
     /** Suspends until the server sent `loginRequired`/`autoLogin` on the current connection. */
     suspend fun awaitReady(timeoutMillis: Long = DEFAULT_TIMEOUT_MILLIS): KumaClientState.Ready
+
+    /**
+     * Generic escape hatch for events without a typed wrapper: emits [event] with [args]
+     * (JsonElement, String, numbers, Boolean, null, Map/List) once the server is ready and returns the
+     * raw acknowledgement arguments. Prefer [callOk] which also checks `ok`.
+     */
+    suspend fun requestRaw(
+        event: String,
+        args: List<Any?>,
+        timeoutMillis: Long = DEFAULT_TIMEOUT_MILLIS,
+    ): List<JsonElement> = throw UnsupportedOperationException("requestRaw not supported by ${this::class.simpleName}")
 
     /** `needSetup`: true when the server has no user yet. */
     suspend fun needSetup(): Boolean
@@ -103,6 +115,13 @@ interface KumaApi {
 
 /** Typed view on [KumaApi.events]. */
 inline fun <reified T : KumaEvent> KumaApi.on(): Flow<T> = events.filterIsInstance<T>()
+
+/** Emits [event] via [KumaApi.requestRaw] and returns the ack object, throwing for `ok:false`. */
+suspend fun KumaApi.callOk(
+    event: String,
+    vararg args: Any?,
+    timeoutMillis: Long = KumaApi.DEFAULT_TIMEOUT_MILLIS,
+): JsonObject = KumaAcks.requireOk(event, requestRaw(event, args.toList(), timeoutMillis).firstOrNull())
 
 /** Result of a successful `login` ack. Failures are thrown as KumaException. */
 sealed interface LoginResponse {

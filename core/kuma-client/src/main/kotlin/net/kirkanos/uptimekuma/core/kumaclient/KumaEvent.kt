@@ -82,6 +82,16 @@ sealed interface KumaEvent {
     data class NotificationList(
         val notifications: List<NotificationDto>,
     ) : KumaEvent
+
+    /**
+     * Unparsed copy of a list-style event from [KumaEventParser.SNAPSHOT_EVENTS]. Feature code reads
+     * these as snapshots (latest value per event name) and decodes them itself, so new screens do
+     * not need parser changes.
+     */
+    data class Raw(
+        val name: String,
+        val args: List<kotlinx.serialization.json.JsonElement>,
+    ) : KumaEvent
 }
 
 /** Period key of the `uptime` event: numbers `24`/`720` and the string `"1y"`. */

@@ -37,6 +37,21 @@ object KumaEventParser {
             "certInfo",
             "maintenanceList",
             "notificationList",
+        ) + listOf("statusPageList", "proxyList", "dockerHostList", "remoteBrowserList", "apiKeyList")
+
+    /**
+     * List events that are additionally delivered unparsed as [KumaEvent.Raw] (full payload,
+     * latest value wins). Everything a management screen needs that is pushed by the server.
+     */
+    val SNAPSHOT_EVENTS: Set<String> =
+        setOf(
+            "maintenanceList",
+            "notificationList",
+            "statusPageList",
+            "proxyList",
+            "dockerHostList",
+            "remoteBrowserList",
+            "apiKeyList",
         )
 
     /**
