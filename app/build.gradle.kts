@@ -110,17 +110,6 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.kotlinx.serialization.json)
 
-    // TODO(merge): remove together with TemporaryBindingsModule once :core:data/:push bind the repositories.
-    // The fakes only need model/domain/coroutines; keep test frameworks out of the APK.
-    implementation(projects.core.testing) {
-        exclude(group = "io.mockk")
-        exclude(group = "org.junit.jupiter")
-        exclude(group = "org.junit.platform")
-        exclude(group = "app.cash.turbine")
-        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test")
-        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test-jvm")
-    }
-
     testImplementation(projects.core.testing)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
