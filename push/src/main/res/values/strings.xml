@@ -90,4 +90,7 @@
     <string name="push_error_server_rejected">Uptime Kuma rejected the request: %1$s</string>
     <string name="push_error_unknown">Something went wrong: %1$s</string>
     <string name="push_error_unknown_plain">Something went wrong.</string>
+    <string name="push_open_distributor_title">Open ntfy once</string>
+    <string name="push_open_distributor_text">Android only lets ntfy start its connection while it is in the foreground. Open it once now, otherwise alerts may not arrive until the next time you open ntfy.</string>
+    <string name="push_open_distributor_button">Open ntfy</string>
 </resources>

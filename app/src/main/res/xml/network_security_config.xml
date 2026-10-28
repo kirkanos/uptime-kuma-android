@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Uptime Kuma is self-hosted: many instances run on a LAN over plain http or behind a private CA.
+  - Cleartext is allowed because the server address is user supplied; the login screen warns about http.
+  - User-installed CA certificates are trusted so a home/corporate CA works without code changes.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

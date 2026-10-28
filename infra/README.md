@@ -109,3 +109,25 @@ PENDING -> DOWN and a few beats exist for `getMonitorBeats`.
 
 3001 (Kuma) and 2586 (ntfy) were chosen to coexist with other local stacks; 2587 is used by another
 local project and is intentionally avoided.
+
+## Running the app against the dev stack (emulator)
+
+The Android emulator's app network (virtual Wi-Fi) cannot reach the host via `10.0.2.2`, only the
+shell can. Forward the ports instead and use `http://localhost:3001` as server address in the app:
+
+```bash
+adb -s emulator-5554 reverse tcp:3001 tcp:3001
+adb -s emulator-5554 reverse tcp:2586 tcp:2586
+```
+
+For the push chain the ntfy URL must be reachable from the Kuma container and the phone alike; use
+the Mac's LAN IP (e.g. `http://192.168.x.y:2586`) as default server in the ntfy app. Create the dev
+users once:
+
+```bash
+docker exec -e NTFY_PASSWORD=kumapass123 kuma-dev-ntfy ntfy user add kuma
+docker exec -e NTFY_PASSWORD=apppass123 kuma-dev-ntfy ntfy user add app
+docker exec kuma-dev-ntfy ntfy access kuma 'up*' write-only
+docker exec kuma-dev-ntfy ntfy access app 'up*' read-only
+docker exec kuma-dev-ntfy ntfy token add --label=dev kuma
+```

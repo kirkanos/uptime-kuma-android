@@ -30,7 +30,11 @@ fun formatUptimePercent(
 /** Current locale of the composition (follows per-app language settings). */
 @Composable
 @ReadOnlyComposable
-fun currentLocale(): Locale = LocalConfiguration.current.locales[0] ?: Locale.getDefault()
+fun currentLocale(): Locale {
+    // The configuration's locale list is observable and never empty in practice; ROOT is only a safe fallback.
+    val locales = LocalConfiguration.current.locales
+    return if (locales.isEmpty) Locale.ROOT else locales[0]
+}
 
 /** Response time in milliseconds, e.g. `123 ms`. */
 @Composable

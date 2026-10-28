@@ -90,4 +90,7 @@
     <string name="push_error_server_rejected">Uptime Kuma hat die Anfrage abgelehnt: %1$s</string>
     <string name="push_error_unknown">Etwas ist schiefgelaufen: %1$s</string>
     <string name="push_error_unknown_plain">Etwas ist schiefgelaufen.</string>
+    <string name="push_open_distributor_title">ntfy einmal öffnen</string>
+    <string name="push_open_distributor_text">Android erlaubt ntfy den Verbindungsaufbau nur im Vordergrund. Öffne ntfy jetzt einmal, sonst kommen Alarme womöglich erst an, wenn du ntfy das nächste Mal öffnest.</string>
+    <string name="push_open_distributor_button">ntfy öffnen</string>
 </resources>

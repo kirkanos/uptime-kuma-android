@@ -33,7 +33,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: ktlint, detekt, build debug APK, unit tests
-        run: ./gradlew ktlintCheck detekt assembleDebug testDebugUnitTest --stacktrace
+        run: ./gradlew ktlintCheck detekt lintDebug assembleDebug testDebugUnitTest --stacktrace
 
       - name: Upload debug APK
         if: success()

@@ -115,6 +115,7 @@ fun PushSetupRoute(
                     }
                 },
                 onOpenUrl = { url -> context.openUrl(url) },
+                onOpenDistributor = { pkg -> context.openApp(pkg) },
                 onDone = onDone,
             ),
         modifier = modifier,
@@ -133,6 +134,8 @@ data class PushSetupActions(
     val onRecheck: () -> Unit = {},
     val onRequestNotificationPermission: () -> Unit = {},
     val onOpenUrl: (String) -> Unit = {},
+    /** Opens the distributor app (package name); it must run once to start its connection service. */
+    val onOpenDistributor: (String) -> Unit = {},
     val onDone: () -> Unit = {},
 )
 
@@ -318,6 +321,20 @@ private fun ActiveSection(
             }
         }
     }
+    val distributor = state.selectedDistributor ?: state.distributors.firstOrNull()?.packageName
+    if (distributor != null) {
+        // A distributor registered from the background cannot start its foreground service
+        // (Android 12+), so nothing is delivered until the user has opened it once.
+        InfoCard(
+            icon = Icons.Outlined.CheckCircle,
+            title = stringResource(R.string.push_open_distributor_title),
+            text = stringResource(R.string.push_open_distributor_text),
+        ) {
+            OutlinedButton(onClick = { actions.onOpenDistributor(distributor) }) {
+                Text(stringResource(R.string.push_open_distributor_button))
+            }
+        }
+    }
     Button(onClick = actions.onDone, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.push_done)) }
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         TextButton(onClick = actions.onReconfigure) { Text(stringResource(R.string.push_reconfigure)) }
@@ -393,6 +410,16 @@ private fun Context.openNotificationSettings() {
         startActivity(intent)
     } catch (_: ActivityNotFoundException) {
         // Nothing sensible left to open.
+    }
+}
+
+private fun Context.openApp(packageName: String) {
+    val intent =
+        packageManager.getLaunchIntentForPackage(packageName)?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) ?: return
+    try {
+        startActivity(intent)
+    } catch (_: ActivityNotFoundException) {
+        // Distributor uninstalled in the meantime; the screen re-checks on resume.
     }
 }
 

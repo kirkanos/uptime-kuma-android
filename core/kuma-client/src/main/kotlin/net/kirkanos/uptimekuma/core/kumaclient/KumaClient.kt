@@ -346,11 +346,20 @@ class KumaClient(
         source: Socket,
         args: Array<Any?>,
     ) {
-        val message = args.firstOrNull()?.let { (it as? Throwable)?.message ?: it.toString() }
+        val error = args.firstOrNull() as? Throwable
+        // Engine.IO wraps the transport failure ("websocket error"); the root cause is what matters.
+        val rootCause = generateSequence(error) { it.cause }.lastOrNull()
+        val message =
+            args.firstOrNull()?.let { arg ->
+                listOfNotNull(
+                    (arg as? Throwable)?.message ?: arg.toString(),
+                    rootCause?.takeIf { it !== error }?.toString(),
+                ).joinToString(": ")
+            }
         synchronized(lock) {
             if (socket !== source) return
             if (!everConnected && !pollingFallback) {
-                logger.log("WebSocket connect failed ($message), falling back to polling", null)
+                logger.log("WebSocket connect failed ($message), falling back to polling", error)
                 pollingFallback = true
                 source.off()
                 source.close()

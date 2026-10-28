@@ -378,3 +378,28 @@ Silent truncation to `message-size-limit`. **E6 — same body without `?up=1`**:
 **Health**: `GET /v1/health` -> `{"healthy":true,"role":"active"}`; inside the container `wget -q --tries=1 -O- http://localhost:80/v1/health` -> same output, exit 0; `wget --bogus-option` -> `wget: unrecognized option` exit 1 (so `--tries` is genuinely accepted).
 
 **Not tested** (no device in the spike): the Android-side hop ntfy app -> connector. It is documented from source (`NotificationDispatcher.kt`, `Distributor.kt`, connector 3.3.5 `MessagingReceiverImpl`/`PushService`) rather than observed.
+
+## End-to-end test on the emulator (2026-10-29)
+
+Verified chain: Kuma 2.5.8 (dev stack) -> webhook -> ntfy v2.34.0 (deny-all, `kuma` write-only /
+`app` read-only on `up*`) -> ntfy Android app 1.25 (F-Droid build, versionCode 63) as UnifiedPush
+distributor -> this app, with the app in the background.
+
+| Step | Result |
+|---|---|
+| Push setup in the app (token of user `kuma`, apply to all monitors) | Kuma notification `"<device> (UnifiedPush)"` created with the custom body, endpoint `http://<ntfy>/up…?up=1` |
+| Kuma test notification | Delivered, shown on channel `test` |
+| Push monitor UP | "Push demo is back up" on `monitor_up` |
+| Push monitor DOWN (no heartbeat) | "Push demo is down" on `monitor_down` (importance high, replaces the UP slot of the same monitor), `SyncWorker` ran and succeeded |
+
+Findings:
+
+- **The distributor must be opened once after registering.** When our app registers while ntfy is
+  in the background, ntfy cannot start its foreground subscriber service on Android 12+
+  (`startForegroundService() not allowed`), so nothing is delivered until ntfy is opened. The setup
+  success screen therefore shows an "Open ntfy once" card.
+- The connector logs `Could not decrypt message, trying with plain text` for every message: Kuma
+  posts plain JSON (no WebPush encryption), the connector falls back to plain text as intended.
+- The ntfy server URL entered in the ntfy app becomes the webhook URL in Kuma, so it must be
+  reachable from the Kuma server *and* the phone (use the public `https://ntfy…` host in
+  production).
