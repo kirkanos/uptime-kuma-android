@@ -1,0 +1,430 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "b5fdb4df1c63dbd605eaee393e0e2a85",
+    "entities": [
+      {
+        "tableName": "monitors",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `description` TEXT, `url` TEXT, `hostname` TEXT, `port` INTEGER, `active` INTEGER NOT NULL, `forceInactive` INTEGER NOT NULL, `parentId` INTEGER, `childrenIds` TEXT NOT NULL, `pathName` TEXT NOT NULL, `intervalSeconds` INTEGER NOT NULL, `notificationIds` TEXT NOT NULL, `expiryNotification` INTEGER NOT NULL, `weight` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "hostname",
+            "columnName": "hostname",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "port",
+            "columnName": "port",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forceInactive",
+            "columnName": "forceInactive",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentId",
+            "columnName": "parentId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "childrenIds",
+            "columnName": "childrenIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pathName",
+            "columnName": "pathName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "intervalSeconds",
+            "columnName": "intervalSeconds",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notificationIds",
+            "columnName": "notificationIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expiryNotification",
+            "columnName": "expiryNotification",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "monitor_tags",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`monitorId` INTEGER NOT NULL, `tagId` INTEGER NOT NULL, `value` TEXT NOT NULL, `name` TEXT NOT NULL, `color` TEXT NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`monitorId`, `tagId`, `value`))",
+        "fields": [
+          {
+            "fieldPath": "monitorId",
+            "columnName": "monitorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagId",
+            "columnName": "tagId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "value",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "monitorId",
+            "tagId",
+            "value"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_monitor_tags_monitorId",
+            "unique": false,
+            "columnNames": [
+              "monitorId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_monitor_tags_monitorId` ON `${TABLE_NAME}` (`monitorId`)"
+          }
+        ]
+      },
+      {
+        "tableName": "tags",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `color` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "heartbeats",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`monitorId` INTEGER NOT NULL, `timeMillis` INTEGER NOT NULL, `status` INTEGER NOT NULL, `message` TEXT NOT NULL, `pingMs` REAL, `important` INTEGER NOT NULL, `durationSeconds` INTEGER, `retries` INTEGER NOT NULL, PRIMARY KEY(`monitorId`, `timeMillis`))",
+        "fields": [
+          {
+            "fieldPath": "monitorId",
+            "columnName": "monitorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeMillis",
+            "columnName": "timeMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pingMs",
+            "columnName": "pingMs",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "important",
+            "columnName": "important",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "durationSeconds",
+            "columnName": "durationSeconds",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "retries",
+            "columnName": "retries",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "monitorId",
+            "timeMillis"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_heartbeats_monitorId_important_timeMillis",
+            "unique": false,
+            "columnNames": [
+              "monitorId",
+              "important",
+              "timeMillis"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_heartbeats_monitorId_important_timeMillis` ON `${TABLE_NAME}` (`monitorId`, `important`, `timeMillis`)"
+          }
+        ]
+      },
+      {
+        "tableName": "uptime",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`monitorId` INTEGER NOT NULL, `uptime24h` REAL, `uptime30d` REAL, `uptime1y` REAL, `avgPingMs` REAL, PRIMARY KEY(`monitorId`))",
+        "fields": [
+          {
+            "fieldPath": "monitorId",
+            "columnName": "monitorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uptime24h",
+            "columnName": "uptime24h",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "uptime30d",
+            "columnName": "uptime30d",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "uptime1y",
+            "columnName": "uptime1y",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "avgPingMs",
+            "columnName": "avgPingMs",
+            "affinity": "REAL"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "monitorId"
+          ]
+        }
+      },
+      {
+        "tableName": "cert_info",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`monitorId` INTEGER NOT NULL, `valid` INTEGER NOT NULL, `subject` TEXT, `issuer` TEXT, `validFromMillis` INTEGER, `validToMillis` INTEGER, `daysRemaining` INTEGER, `fingerprint256` TEXT, PRIMARY KEY(`monitorId`))",
+        "fields": [
+          {
+            "fieldPath": "monitorId",
+            "columnName": "monitorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valid",
+            "columnName": "valid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject",
+            "columnName": "subject",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "issuer",
+            "columnName": "issuer",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "validFromMillis",
+            "columnName": "validFromMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "validToMillis",
+            "columnName": "validToMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "daysRemaining",
+            "columnName": "daysRemaining",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "fingerprint256",
+            "columnName": "fingerprint256",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "monitorId"
+          ]
+        }
+      },
+      {
+        "tableName": "notifications",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `active` INTEGER NOT NULL, `isDefault` INTEGER NOT NULL, `config` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDefault",
+            "columnName": "isDefault",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "config",
+            "columnName": "config",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "maintenance_monitors",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`monitorId` INTEGER NOT NULL, PRIMARY KEY(`monitorId`))",
+        "fields": [
+          {
+            "fieldPath": "monitorId",
+            "columnName": "monitorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "monitorId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b5fdb4df1c63dbd605eaee393e0e2a85')"
+    ]
+  }
+}
