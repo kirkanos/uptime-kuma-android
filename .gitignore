@@ -19,3 +19,6 @@ keystore.properties
 # Test output
 *.log
 infra/.data/
+
+# Claude Code worktrees
+.claude/
