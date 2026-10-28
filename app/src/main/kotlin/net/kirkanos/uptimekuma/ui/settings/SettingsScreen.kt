@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.kirkanos.uptimekuma.R
+import net.kirkanos.uptimekuma.core.domain.PushRepository
 import net.kirkanos.uptimekuma.core.domain.SessionRepository
 import net.kirkanos.uptimekuma.core.model.ServerConfig
 import net.kirkanos.uptimekuma.core.ui.theme.KumaTheme
@@ -54,6 +55,7 @@ class SettingsViewModel
     @Inject
     constructor(
         private val sessionRepository: SessionRepository,
+        private val pushRepository: PushRepository,
     ) : ViewModel() {
         val serverConfig: StateFlow<ServerConfig?> =
             sessionRepository
@@ -61,7 +63,11 @@ class SettingsViewModel
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), null)
 
         fun logout() {
-            viewModelScope.launch { sessionRepository.logout() }
+            viewModelScope.launch {
+                // Remove this device's webhook notification from Kuma while the session is still valid.
+                runCatching { pushRepository.tearDown() }
+                sessionRepository.logout()
+            }
         }
 
         private companion object {

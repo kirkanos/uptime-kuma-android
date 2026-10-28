@@ -16,7 +16,4 @@
     <string name="settings_cancel">Abbrechen</string>
 
     <!-- Push setup placeholder (replaced by :push) -->
-    <string name="push_placeholder_title">Push-Benachrichtigungen</string>
-    <string name="push_placeholder_message">Die Einrichtung von Push-Benachrichtigungen ist hier bald verfügbar.</string>
-    <string name="push_placeholder_continue">Weiter</string>
 </resources>

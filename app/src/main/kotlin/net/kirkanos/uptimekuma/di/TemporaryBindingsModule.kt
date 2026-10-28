@@ -6,14 +6,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import net.kirkanos.uptimekuma.core.domain.KumaNotificationRepository
 import net.kirkanos.uptimekuma.core.domain.MonitorRepository
-import net.kirkanos.uptimekuma.core.domain.PushRepository
 import net.kirkanos.uptimekuma.core.domain.SessionRepository
 import net.kirkanos.uptimekuma.core.model.ConnectionState
 import net.kirkanos.uptimekuma.core.model.KumaError
 import net.kirkanos.uptimekuma.core.model.LoginResult
 import net.kirkanos.uptimekuma.core.testing.FakeKumaNotificationRepository
 import net.kirkanos.uptimekuma.core.testing.FakeMonitorRepository
-import net.kirkanos.uptimekuma.core.testing.FakePushRepository
 import net.kirkanos.uptimekuma.core.testing.FakeSessionRepository
 import net.kirkanos.uptimekuma.core.testing.SampleData
 import javax.inject.Singleton
@@ -59,8 +57,4 @@ object TemporaryBindingsModule {
     @Provides
     @Singleton
     fun provideKumaNotificationRepository(): KumaNotificationRepository = FakeKumaNotificationRepository()
-
-    @Provides
-    @Singleton
-    fun providePushRepository(): PushRepository = FakePushRepository()
 }

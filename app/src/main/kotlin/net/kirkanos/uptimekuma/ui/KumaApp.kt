@@ -19,6 +19,7 @@ import net.kirkanos.uptimekuma.feature.monitors.dashboardScreen
 import net.kirkanos.uptimekuma.feature.monitors.monitorDetailScreen
 import net.kirkanos.uptimekuma.feature.onboarding.OnboardingRoute
 import net.kirkanos.uptimekuma.feature.onboarding.onboardingScreen
+import net.kirkanos.uptimekuma.push.ui.PushSetupRoute
 import net.kirkanos.uptimekuma.ui.settings.SettingsScreen
 
 /** Push notification setup. [fromOnboarding] = continue to the dashboard when done instead of going back. */
@@ -66,9 +67,7 @@ fun KumaApp(
 
         composable<PushSetupDestination> { entry ->
             val route = entry.toRoute<PushSetupDestination>()
-            // TODO(merge): replace the placeholder with the real screen from :push:
-            //   net.kirkanos.uptimekuma.push.ui.PushSetupRoute(onDone = onDone)
-            PushSetupPlaceholder(
+            PushSetupRoute(
                 onDone = {
                     if (route.fromOnboarding) navController.goToDashboard() else navController.popBackStack()
                 },
