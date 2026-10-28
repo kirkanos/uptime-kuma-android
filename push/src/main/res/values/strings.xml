@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification channels -->
+    <string name="push_channel_down_name">Monitor down</string>
+    <string name="push_channel_down_description">Alerts when a monitor goes down. Loud and high priority.</string>
+    <string name="push_channel_up_name">Monitor back up</string>
+    <string name="push_channel_up_description">A monitor recovered or changed its state.</string>
+    <string name="push_channel_cert_name">Certificate expiry</string>
+    <string name="push_channel_cert_description">TLS certificates that are about to expire.</string>
+    <string name="push_channel_maintenance_name">Maintenance</string>
+    <string name="push_channel_maintenance_description">Monitors entering maintenance.</string>
+    <string name="push_channel_test_name">Test and other messages</string>
+    <string name="push_channel_test_description">Test notifications sent from Uptime Kuma and messages not tied to a monitor.</string>
+    <string name="push_channel_sync_name">Background sync</string>
+    <string name="push_channel_sync_description">Shown briefly while monitors are refreshed after an alert.</string>
+
+    <!-- Alerts -->
+    <string name="push_alert_down_title">%1$s is down</string>
+    <string name="push_alert_up_title">%1$s is back up</string>
+    <string name="push_alert_up_title_duration">%1$s is back up after %2$s</string>
+    <string name="push_alert_pending_title">%1$s is pending</string>
+    <string name="push_alert_maintenance_title">%1$s is under maintenance</string>
+    <string name="push_monitor_fallback_name">Monitor #%1$d</string>
+    <string name="push_generic_title">Uptime Kuma</string>
+    <string name="push_generic_text">New message from Uptime Kuma</string>
+    <plurals name="push_summary_text">
+        <item quantity="one">%d monitor alert</item>
+        <item quantity="other">%d monitor alerts</item>
+    </plurals>
+    <string name="push_duration_days_hours">%1$d d %2$d h</string>
+    <string name="push_duration_hours_minutes">%1$d h %2$d min</string>
+    <string name="push_duration_minutes">%1$d min</string>
+    <string name="push_duration_seconds">%1$d s</string>
+    <string name="push_sync_notification_title">Updating monitors…</string>
+
+    <!-- Setup screen -->
+    <string name="push_setup_title">Push notifications</string>
+    <string name="push_setup_intro">Get alerts instantly, even when the app is closed. Uptime Kuma sends them through your own ntfy server to the ntfy app, which passes them to this app via UnifiedPush. No Google services involved.</string>
+    <string name="push_install_title">Install ntfy</string>
+    <string name="push_install_text">Push delivery needs the ntfy app as UnifiedPush distributor.</string>
+    <string name="push_install_steps">After installing:\n1. In the ntfy app, add your ntfy server and set it as default server.\n2. Log in with the read-only user (Settings → Manage users).\n3. Come back here.</string>
+    <string name="push_install_fdroid">F-Droid</string>
+    <string name="push_install_play">Google Play</string>
+    <string name="push_install_recheck">Check again</string>
+    <string name="push_distributor_title">Distributor</string>
+    <string name="push_distributor_text">Several UnifiedPush apps are installed. Choose the one connected to your ntfy server.</string>
+    <string name="push_token_title">ntfy access token</string>
+    <string name="push_token_label">Access token of the publishing user</string>
+    <string name="push_token_help">Token of the ntfy user that may publish to up* topics (see the server README). The admin creates it on the server with:</string>
+    <string name="push_token_show">Show token</string>
+    <string name="push_token_hide">Hide token</string>
+    <string name="push_apply_all">Alert for all existing monitors</string>
+    <string name="push_apply_all_help">Attaches this device to every monitor. Enable it for new monitors in Uptime Kuma.</string>
+    <string name="push_setup_button">Set up</string>
+    <string name="push_setup_working">Registering with ntfy and Uptime Kuma…</string>
+    <string name="push_success_title">Push notifications are active</string>
+    <string name="push_success_text">Uptime Kuma now sends alerts to this device.</string>
+    <string name="push_send_test">Send test notification</string>
+    <string name="push_test_sending">Sending…</string>
+    <string name="push_test_sent">Test sent. It should arrive within a few seconds.</string>
+    <string name="push_done">Done</string>
+    <string name="push_reconfigure">Set up again</string>
+    <string name="push_disable">Disable push</string>
+    <string name="push_battery_title">Reliable delivery</string>
+    <string name="push_battery_text">Alerts are delivered by the ntfy app. In ntfy, keep instant delivery enabled and exempt ntfy from battery optimization. Some manufacturers need extra steps.</string>
+    <string name="push_battery_link">Open dontkillmyapp.com</string>
+    <string name="push_permission_title">Notifications are blocked</string>
+    <string name="push_permission_text">Allow notifications so that alerts can be shown.</string>
+    <string name="push_permission_button">Allow</string>
+
+    <!-- Status card -->
+    <string name="push_status_title">Push notifications</string>
+    <string name="push_status_active">Active</string>
+    <string name="push_status_not_configured">Not set up</string>
+    <string name="push_status_no_distributor">ntfy is not installed</string>
+    <string name="push_status_registering">Setting up…</string>
+    <string name="push_status_manage">Manage</string>
+    <string name="push_status_setup">Set up</string>
+
+    <!-- Errors -->
+    <string name="push_error_no_distributor">No UnifiedPush distributor is installed. Install ntfy first.</string>
+    <string name="push_error_missing_token">Enter the ntfy access token.</string>
+    <string name="push_error_endpoint_timeout">ntfy did not respond. Open the ntfy app, check that your server is the default server and that you are logged in, then try again.</string>
+    <string name="push_error_action_required">ntfy needs your attention: open the ntfy app and make sure UnifiedPush is enabled (Settings → Advanced).</string>
+    <string name="push_error_registration_failed">ntfy rejected the registration. Check the server and user in the ntfy app.</string>
+    <string name="push_error_not_configured">Push notifications are not set up.</string>
+    <string name="push_error_network">Uptime Kuma is not reachable. Check your connection and try again.</string>
+    <string name="push_error_not_logged_in">You are not logged in to Uptime Kuma. Log in again.</string>
+    <string name="push_error_rate_limited">Too many requests. Wait a minute and try again.</string>
+    <string name="push_error_server_rejected">Uptime Kuma rejected the request: %1$s</string>
+    <string name="push_error_unknown">Something went wrong: %1$s</string>
+    <string name="push_error_unknown_plain">Something went wrong.</string>
+</resources>
