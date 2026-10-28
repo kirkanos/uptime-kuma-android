@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_welcome_title">Mit Uptime Kuma verbinden</string>
+    <string name="onboarding_server_subtitle">Gib die Adresse deines Uptime-Kuma-Servers ein.</string>
+    <string name="onboarding_server_url_label">Serveradresse</string>
+    <string name="onboarding_server_url_hint">z. B. https://uptime.example.org</string>
+    <string name="onboarding_url_error_empty">Bitte gib die Serveradresse ein.</string>
+    <string name="onboarding_url_error_invalid">Das ist keine gültige Webadresse.</string>
+    <string name="onboarding_url_error_scheme">Nur http://- und https://-Adressen werden unterstützt.</string>
+    <string name="onboarding_continue">Weiter</string>
+    <string name="onboarding_back">Zurück</string>
+
+    <string name="onboarding_credentials_title">Anmelden</string>
+    <string name="onboarding_credentials_subtitle">Melde dich mit deinem Uptime-Kuma-Konto an.</string>
+    <string name="onboarding_relogin_subtitle">Deine Sitzung ist abgelaufen. Melde dich erneut an, um fortzufahren.</string>
+    <string name="onboarding_change_server">Ändern</string>
+    <string name="onboarding_username">Benutzername</string>
+    <string name="onboarding_password">Passwort</string>
+    <string name="onboarding_show_pw">Passwort anzeigen</string>
+    <string name="onboarding_hide_password">Passwort verbergen</string>
+    <string name="onboarding_login">Anmelden</string>
+    <string name="onboarding_logging_in">Anmeldung läuft…</string>
+    <string name="onboarding_insecure_warning">Diese Verbindung ist unverschlüsselt (http). Dein Passwort wird im Klartext übertragen.</string>
+
+    <string name="onboarding_two_factor_title">Zwei-Faktor-Authentifizierung</string>
+    <string name="onboarding_two_factor_subtitle">Gib den 6-stelligen Code aus deiner Authenticator-App ein.</string>
+    <string name="onboarding_two_factor_label">Bestätigungscode</string>
+    <string name="onboarding_verify">Bestätigen</string>
+
+    <string name="onboarding_done_title">Verbunden</string>
+    <string name="onboarding_done_subtitle">Du bist bei %1$s angemeldet.</string>
+    <string name="onboarding_done_next">Richte als Nächstes Push-Benachrichtigungen ein, um auch bei geschlossener App über Ausfälle informiert zu werden.</string>
+
+    <string name="onboarding_setup_required_title">Server-Einrichtung erforderlich</string>
+    <string name="onboarding_open_web_ui">Weboberfläche öffnen</string>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_welcome_title">Connect to Uptime Kuma</string>
+    <string name="onboarding_server_subtitle">Enter the address of your Uptime Kuma server.</string>
+    <string name="onboarding_server_url_label">Server address</string>
+    <string name="onboarding_server_url_hint">e.g. https://uptime.example.org</string>
+    <string name="onboarding_url_error_empty">Please enter the server address.</string>
+    <string name="onboarding_url_error_invalid">This is not a valid web address.</string>
+    <string name="onboarding_url_error_scheme">Only http:// and https:// addresses are supported.</string>
+    <string name="onboarding_continue">Continue</string>
+    <string name="onboarding_back">Back</string>
+
+    <string name="onboarding_credentials_title">Log in</string>
+    <string name="onboarding_credentials_subtitle">Log in with your Uptime Kuma account.</string>
+    <string name="onboarding_relogin_subtitle">Your session has expired. Log in again to continue.</string>
+    <string name="onboarding_change_server">Change</string>
+    <string name="onboarding_username">Username</string>
+    <string name="onboarding_password">Password</string>
+    <string name="onboarding_show_pw">Show password</string>
+    <string name="onboarding_hide_password">Hide password</string>
+    <string name="onboarding_login">Log in</string>
+    <string name="onboarding_logging_in">Logging in…</string>
+    <string name="onboarding_insecure_warning">This connection is not encrypted (http). Your password is sent in plain text.</string>
+
+    <string name="onboarding_two_factor_title">Two-factor authentication</string>
+    <string name="onboarding_two_factor_subtitle">Enter the 6-digit code from your authenticator app.</string>
+    <string name="onboarding_two_factor_label">Authentication code</string>
+    <string name="onboarding_verify">Verify</string>
+
+    <string name="onboarding_done_title">Connected</string>
+    <string name="onboarding_done_subtitle">You are logged in to %1$s.</string>
+    <string name="onboarding_done_next">Next, set up push notifications to hear about outages even when the app is closed.</string>
+
+    <string name="onboarding_setup_required_title">Server setup required</string>
+    <string name="onboarding_open_web_ui">Open web interface</string>
+</resources>
