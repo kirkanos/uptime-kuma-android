@@ -1,0 +1,5220 @@
+{
+  "$schema_note": "Generated from Uptime Kuma 2.5.8 sources: src/components/notifications/*.vue (fields), src/components/notifications/index.js (type ids), src/components/NotificationDialog.vue (labels, categories), server/notification-providers/*.js (server-side reads). See docs/kuma-api/notification-providers.md.",
+  "version": "2.5.8",
+  "kuma_commit": "0bd417b981d7dd4e7a0ecaa5afcd90c274d74eca",
+  "provider_count": 108,
+  "common_fields": [
+    {
+      "name": "name",
+      "type": "text",
+      "required": true,
+      "notes": "Friendly name; also stored in notification.name column. Default 'My <Label> Alert (N)' (en.json defaultNotificationName)."
+    },
+    {
+      "name": "type",
+      "type": "select",
+      "required": true,
+      "notes": "One of the keys of `types`. UI default 'telegram' for a new notification (NotificationDialog.vue:447-451)."
+    },
+    {
+      "name": "isDefault",
+      "type": "checkbox",
+      "required": false,
+      "default": false,
+      "notes": "Stored as is_default column AND inside config JSON; new monitors pre-select default notifications."
+    },
+    {
+      "name": "applyExisting",
+      "type": "checkbox",
+      "required": false,
+      "default": false,
+      "notes": "One-shot: when true on save, the notification is attached to all existing monitors of the user; server resets it to false before persisting config (server/notification.js:286-288)."
+    },
+    {
+      "name": "active",
+      "type": "boolean",
+      "required": false,
+      "default": true,
+      "notes": "DB column only (notification.active); not editable in the UI; returned in notificationList."
+    }
+  ],
+  "storage": {
+    "table": "notification",
+    "columns": [
+      "id",
+      "name",
+      "active",
+      "user_id",
+      "is_default",
+      "config (JSON text of the whole notification object)"
+    ],
+    "source": "db/knex_init_db.js:296-303; server/notification.js:273-301"
+  },
+  "socket_events": {
+    "addNotification": "(notification, notificationID|null, ack) -> {ok, msg:'Saved.', msgi18n:true, id}",
+    "deleteNotification": "(notificationID, ack)",
+    "testNotification": "(notification, ack) -> {ok, msg}; sends `<name> Testing` with monitorJSON=null, heartbeatJSON=null",
+    "checkApprise": "(ack) -> boolean",
+    "notificationList": "S->C [{id, name, active:boolean, user_id, is_default:0|1, config:'<json>', isDefault:boolean}]"
+  },
+  "field_type_legend": {
+    "text": "<input type=text>",
+    "password": "<HiddenInput> (text, masked)",
+    "number": "<input type=number>",
+    "url": "<input type=url>",
+    "email": "<input type=email>",
+    "checkbox": "<input type=checkbox> boolean",
+    "radio": "<input type=radio>",
+    "select": "<select> with options",
+    "textarea": "<textarea>",
+    "text(liquid-template)": "<TemplatedInput> single-line Liquid template",
+    "textarea(liquid-template)": "<TemplatedTextarea> multi-line Liquid template",
+    "multiselect / select(multiselect)": "<VueMultiselect>",
+    "component:X": "custom component X (see vue file)"
+  },
+  "template_context": {
+    "engine": "liquidjs (server/notification-providers/notification-provider.js:75-113)",
+    "variables": {
+      "msg": "the default message, e.g. '[Name] [🔴 Down] <heartbeat msg>'",
+      "name": "monitor name",
+      "status": "'🔴 Down' | '✅ Up' | '⚠️ Test'",
+      "hostnameOrURL": "extractAddress(monitorJSON) (notification-provider.js:32-65)",
+      "monitorJSON": "Monitor.toJSON(preload, includeSensitiveData=false) or null",
+      "heartbeatJSON": "Heartbeat.toJSONAsync({decodeResponse:true}) + timezone, timezoneOffset, localDateTime, lastDownTime (UP only), msg defaults 'N/A'; or null",
+      "NAME / STATUS / HOSTNAME_OR_URL": "v1 compatibility aliases"
+    }
+  },
+  "types": {
+    "alerta": {
+      "label": "Alerta",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/Alerta.vue",
+      "server_provider": "server/notification-providers/alerta.js",
+      "fields": [
+        {
+          "name": "alertaApiEndpoint",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "alertaEnvironment",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "alertaApiKey",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "alertaAlertState",
+          "type": "text",
+          "required": true,
+          "placeholder": "critical"
+        },
+        {
+          "name": "alertaRecoverState",
+          "type": "text",
+          "required": true,
+          "placeholder": "cleared"
+        }
+      ],
+      "server_fields_read": [
+        "alertaAlertState",
+        "alertaApiEndpoint",
+        "alertaApiKey",
+        "alertaEnvironment",
+        "alertaRecoverState"
+      ]
+    },
+    "AlertNow": {
+      "label": "AlertNow",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/AlertNow.vue",
+      "server_provider": "server/notification-providers/alertnow.js",
+      "fields": [
+        {
+          "name": "alertNowWebhookURL",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "alertNowWebhookURL"
+      ]
+    },
+    "AliyunSMS": {
+      "label": "AliyunSMS (阿里云短信服务)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/AliyunSms.vue",
+      "server_provider": "server/notification-providers/aliyun-sms.js",
+      "fields": [
+        {
+          "name": "accessKeyId",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "secretAccessKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "phonenumber",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "templateCode",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "signName",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "optionalParameters",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "accessKeyId",
+        "optionalParameters",
+        "phonenumber",
+        "secretAccessKey",
+        "signName",
+        "templateCode"
+      ]
+    },
+    "amootsms": {
+      "label": "Amoot SMS",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/AmootSMS.vue",
+      "server_provider": "server/notification-providers/amootsms.js",
+      "fields": [
+        {
+          "name": "amootApiToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "amootMobiles",
+          "type": "text",
+          "required": true,
+          "placeholder": "9123456789,09987654321"
+        },
+        {
+          "name": "amootUsePattern",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "amootPatternCodeId",
+          "type": "number",
+          "required": true,
+          "placeholder": "1234",
+          "min": "1",
+          "visible_if": "amootUsePattern"
+        },
+        {
+          "name": "amootUseOwnLine",
+          "type": "checkbox",
+          "required": false,
+          "visible_if": "amootUsePattern"
+        },
+        {
+          "name": "amootLineNumber",
+          "type": "text",
+          "required": true,
+          "visible_if": "!amootUsePattern || amootUseOwnLine",
+          "default": "public"
+        }
+      ],
+      "server_fields_read": [
+        "amootApiToken",
+        "amootLineNumber",
+        "amootMobiles",
+        "amootPatternCodeId",
+        "amootUseOwnLine",
+        "amootUsePattern"
+      ]
+    },
+    "apprise": {
+      "label": "Apprise (Support 50+ Notification services)",
+      "categories": [
+        "universal"
+      ],
+      "vue_component": "src/components/notifications/Apprise.vue",
+      "server_provider": "server/notification-providers/apprise.js",
+      "fields": [
+        {
+          "name": "appriseURL",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "appriseURL",
+        "title"
+      ]
+    },
+    "bale": {
+      "label": "Bale",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Bale.vue",
+      "server_provider": "server/notification-providers/bale.js",
+      "fields": [
+        {
+          "name": "baleBotToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "baleChatID",
+          "type": "text",
+          "required": true,
+          "default": [
+            {
+              "js": "update.channel_post.chat.id"
+            },
+            {
+              "js": "update.message.chat.id"
+            }
+          ]
+        }
+      ],
+      "server_fields_read": [
+        "baleBotToken",
+        "baleChatID"
+      ]
+    },
+    "Bark": {
+      "label": "Bark",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Bark.vue",
+      "server_provider": "server/notification-providers/bark.js",
+      "fields": [
+        {
+          "name": "apiVersion",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "v1",
+              "label": "v1"
+            },
+            {
+              "value": "v2",
+              "label": "v2"
+            }
+          ]
+        },
+        {
+          "name": "barkEndpoint",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "barkGroup",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "barkSound",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "alarm",
+              "label": "alarm"
+            },
+            {
+              "value": "anticipate",
+              "label": "anticipate"
+            },
+            {
+              "value": "bell",
+              "label": "bell"
+            },
+            {
+              "value": "birdsong",
+              "label": "birdsong"
+            },
+            {
+              "value": "bloom",
+              "label": "bloom"
+            },
+            {
+              "value": "calypso",
+              "label": "calypso"
+            },
+            {
+              "value": "chime",
+              "label": "chime"
+            },
+            {
+              "value": "choo",
+              "label": "choo"
+            },
+            {
+              "value": "descent",
+              "label": "descent"
+            },
+            {
+              "value": "electronic",
+              "label": "electronic"
+            },
+            {
+              "value": "fanfare",
+              "label": "fanfare"
+            },
+            {
+              "value": "glass",
+              "label": "glass"
+            },
+            {
+              "value": "gotosleep",
+              "label": "gotosleep"
+            },
+            {
+              "value": "healthnotification",
+              "label": "healthnotification"
+            },
+            {
+              "value": "horn",
+              "label": "horn"
+            },
+            {
+              "value": "ladder",
+              "label": "ladder"
+            },
+            {
+              "value": "mailsent",
+              "label": "mailsent"
+            },
+            {
+              "value": "minuet",
+              "label": "minuet"
+            },
+            {
+              "value": "multiwayinvitation",
+              "label": "multiwayinvitation"
+            },
+            {
+              "value": "newmail",
+              "label": "newmail"
+            },
+            {
+              "value": "newsflash",
+              "label": "newsflash"
+            },
+            {
+              "value": "noir",
+              "label": "noir"
+            },
+            {
+              "value": "paymentsuccess",
+              "label": "paymentsuccess"
+            },
+            {
+              "value": "shake",
+              "label": "shake"
+            },
+            {
+              "value": "sherwoodforest",
+              "label": "sherwoodforest"
+            },
+            {
+              "value": "silence",
+              "label": "silence"
+            },
+            {
+              "value": "spell",
+              "label": "spell"
+            },
+            {
+              "value": "suspense",
+              "label": "suspense"
+            },
+            {
+              "value": "telegraph",
+              "label": "telegraph"
+            },
+            {
+              "value": "tiptoes",
+              "label": "tiptoes"
+            },
+            {
+              "value": "typewriters",
+              "label": "typewriters"
+            },
+            {
+              "value": "update",
+              "label": "update"
+            }
+          ]
+        }
+      ],
+      "server_fields_read": [
+        "apiVersion",
+        "barkEndpoint",
+        "barkGroup",
+        "barkSound"
+      ]
+    },
+    "bearsms": {
+      "label": "BearSMS (Israel)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/BearSMS.vue",
+      "server_provider": "server/notification-providers/bearsms.js",
+      "fields": [
+        {
+          "name": "bearsmsUsername",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "bearsmsHashKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "bearsmsSenderId",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "bearsmsPhoneNumber",
+          "type": "text",
+          "required": true,
+          "placeholder": "9725XXXXXXXX"
+        }
+      ],
+      "server_fields_read": [
+        "bearsmsHashKey",
+        "bearsmsPhoneNumber",
+        "bearsmsSenderId",
+        "bearsmsUsername"
+      ]
+    },
+    "Bitrix24": {
+      "label": "Bitrix24",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Bitrix24.vue",
+      "server_provider": "server/notification-providers/bitrix24.js",
+      "fields": [
+        {
+          "name": "bitrix24WebhookURL",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "bitrix24UserID",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "bitrix24UserID",
+        "bitrix24WebhookURL"
+      ]
+    },
+    "Brevo": {
+      "label": "Brevo",
+      "categories": [
+        "email"
+      ],
+      "vue_component": "src/components/notifications/Brevo.vue",
+      "server_provider": "server/notification-providers/brevo.js",
+      "fields": [
+        {
+          "name": "brevoApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "brevoFromEmail",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "brevoFromName",
+          "type": "text",
+          "required": false,
+          "default": "Uptime Kuma"
+        },
+        {
+          "name": "brevoToEmail",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "brevoCcEmail",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "brevoBccEmail",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "brevoSubject",
+          "type": "text",
+          "required": false,
+          "default": "Notification from Your Uptime Kuma"
+        }
+      ],
+      "server_fields_read": [
+        "brevoApiKey",
+        "brevoBccEmail",
+        "brevoCcEmail",
+        "brevoFromEmail",
+        "brevoFromName",
+        "brevoSubject",
+        "brevoToEmail"
+      ]
+    },
+    "CallMeBot": {
+      "label": "CallMeBot (WhatsApp, Telegram Call, Facebook Messenger)",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/CallMeBot.vue",
+      "server_provider": "server/notification-providers/call-me-bot.js",
+      "fields": [
+        {
+          "name": "callMeBotEndpoint",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "callMeBotEndpoint"
+      ]
+    },
+    "Cellsynt": {
+      "label": "Cellsynt",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/Cellsynt.vue",
+      "server_provider": "server/notification-providers/cellsynt.js",
+      "fields": [
+        {
+          "name": "cellsyntLogin",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "cellsyntPassword",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "cellsyntOriginatortype",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "alpha",
+              "label": "Alphanumeric (recommended)"
+            },
+            {
+              "value": "numeric",
+              "label": "Telephone number"
+            }
+          ]
+        },
+        {
+          "name": "cellsyntOriginator",
+          "type": "text",
+          "required": true,
+          "pattern": "[a-zA-Z0-9\\s]+",
+          "visible_if_any": [
+            "cellsyntOriginatortype === 'alpha'",
+            "else"
+          ],
+          "alt_types": [
+            "number"
+          ]
+        },
+        {
+          "name": "cellsyntDestination",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "cellsyntAllowLongSMS",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "cellsyntAllowLongSMS",
+        "cellsyntDestination",
+        "cellsyntLogin",
+        "cellsyntOriginator",
+        "cellsyntOriginatortype",
+        "cellsyntPassword"
+      ]
+    },
+    "clicksendsms": {
+      "label": "ClickSend SMS",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/ClickSendSMS.vue",
+      "server_provider": "server/notification-providers/clicksendsms.js",
+      "fields": [
+        {
+          "name": "clicksendsmsLogin",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "clicksendsmsPassword",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "clicksendsmsToNumber",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "clicksendsmsSenderName",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "clicksendsmsLogin",
+        "clicksendsmsPassword",
+        "clicksendsmsSenderName",
+        "clicksendsmsToNumber"
+      ]
+    },
+    "ClickUp": {
+      "label": "ClickUp",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/ClickUp.vue",
+      "server_provider": "server/notification-providers/clickup.js",
+      "fields": [
+        {
+          "name": "clickupToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "clickupWorkspaceId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "clickupChannelId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "clickupDisableUrl",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "clickupChannelId",
+        "clickupDisableUrl",
+        "clickupToken",
+        "clickupWorkspaceId"
+      ]
+    },
+    "DingDing": {
+      "label": "DingDing (钉钉自定义机器人)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/DingDing.vue",
+      "server_provider": "server/notification-providers/dingding.js",
+      "fields": [
+        {
+          "name": "webHookUrl",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "secretKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "mentioning",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "nobody",
+              "label": "Don't mention people"
+            },
+            {
+              "value": "everyone",
+              "label": "{{ $t(\"Mention group\", { group: \"@everyone\" }) }}"
+            },
+            {
+              "value": "specify-mobiles",
+              "label": "Mention mobile list"
+            },
+            {
+              "value": "specify-users",
+              "label": "Mention user id list"
+            }
+          ]
+        },
+        {
+          "name": "mobileList",
+          "type": "multiselect",
+          "required": false,
+          "placeholder": "$t('Enter a list of mobile')",
+          "visible_if": "mentioning === 'specify-mobiles'"
+        },
+        {
+          "name": "userList",
+          "type": "multiselect",
+          "required": false,
+          "placeholder": "$t('Enter a list of userId')",
+          "visible_if": "mentioning === 'specify-users'"
+        }
+      ],
+      "server_fields_read": [
+        "mentioning",
+        "mobileList",
+        "secretKey",
+        "userList",
+        "webHookUrl"
+      ]
+    },
+    "discord": {
+      "label": "Discord",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Discord.vue",
+      "server_provider": "server/notification-providers/discord.js",
+      "fields": [
+        {
+          "name": "discordWebhookUrl",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "discordUsername",
+          "type": "text",
+          "required": false,
+          "placeholder": "$root.appName"
+        },
+        {
+          "name": "discordPrefixMessage",
+          "type": "text",
+          "required": false,
+          "placeholder": "$t('Hello @everyone is...')"
+        },
+        {
+          "name": "discordMessageFormat",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal (rich embeds)"
+            },
+            {
+              "value": "minimalist",
+              "label": "Minimalist (short status)"
+            },
+            {
+              "value": "custom",
+              "label": "Custom template"
+            }
+          ],
+          "default": {
+            "js": "hadCustom ? \"custom\" : \"normal\""
+          }
+        },
+        {
+          "name": "discordMessageTemplate",
+          "type": "textarea(liquid-template)",
+          "required": false,
+          "visible_if": "discordMessageFormat === 'custom'"
+        },
+        {
+          "name": "discordChannelType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "channel",
+              "label": "Send to channel"
+            },
+            {
+              "value": "createNewForumPost",
+              "label": "Create new forum post"
+            },
+            {
+              "value": "postToThread",
+              "label": "Post to existing thread / forum post"
+            }
+          ],
+          "default": "channel"
+        },
+        {
+          "name": "postName",
+          "type": "text",
+          "required": false,
+          "visible_if": "discordChannelType === 'createNewForumPost'"
+        },
+        {
+          "name": "threadId",
+          "type": "text",
+          "required": false,
+          "placeholder": "$t('e.g. {discordThreadID}', { discordThreadID: 1177566663751782411 })",
+          "visible_if": "discordChannelType === 'postToThread'"
+        },
+        {
+          "name": "disableUrl",
+          "type": "checkbox",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "discordSuppressNotifications",
+          "type": "checkbox",
+          "required": false,
+          "default": false
+        }
+      ],
+      "server_fields_read": [
+        "disableUrl",
+        "discordChannelType",
+        "discordMessageFormat",
+        "discordMessageTemplate",
+        "discordPrefixMessage",
+        "discordSuppressNotifications",
+        "discordUseMessageTemplate",
+        "discordUsername",
+        "discordWebhookUrl",
+        "postName",
+        "threadId"
+      ],
+      "other_fields_referenced": [
+        "discordUseMessageTemplate"
+      ]
+    },
+    "egosms": {
+      "label": "EgoSMS (Uganda)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/EgoSMS.vue",
+      "server_provider": "server/notification-providers/egosms.js",
+      "fields": [
+        {
+          "name": "egosmsUsername",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "egosmsPassword",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "egosmsSender",
+          "type": "text",
+          "required": false,
+          "placeholder": "EGOSMS"
+        },
+        {
+          "name": "egosmsPhoneNumber",
+          "type": "text",
+          "required": true,
+          "placeholder": "2567XXXXXXXX"
+        }
+      ],
+      "server_fields_read": [
+        "egosmsPassword",
+        "egosmsPhoneNumber",
+        "egosmsSender",
+        "egosmsUsername"
+      ]
+    },
+    "Elks": {
+      "label": "46elks",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/46elks.vue",
+      "server_provider": "server/notification-providers/46elks.js",
+      "fields": [
+        {
+          "name": "elksUsername",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "elksAuthToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "elksFromNumber",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "elksToNumber",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "elksAuthToken",
+        "elksFromNumber",
+        "elksToNumber",
+        "elksUsername"
+      ]
+    },
+    "evolution": {
+      "label": "WhatsApp (Evolution)",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Evolution.vue",
+      "server_provider": "server/notification-providers/evolution.js",
+      "fields": [
+        {
+          "name": "evolutionInstanceName",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "evolutionApiUrl",
+          "type": "text",
+          "required": false,
+          "placeholder": "https://evoapicloud.com/"
+        },
+        {
+          "name": "evolutionAuthToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "evolutionRecipient",
+          "type": "text",
+          "required": true,
+          "pattern": "^[\\d-]{10,31}(@[\\w\\.]{1,})?$"
+        },
+        {
+          "name": "evolutionUseCustomMessage",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "evolutionCustomMessage",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "placeholder": "customMessagePlaceholder",
+          "visible_if": "evolutionUseCustomMessage"
+        }
+      ],
+      "server_fields_read": [
+        "evolutionApiUrl",
+        "evolutionAuthToken",
+        "evolutionCustomMessage",
+        "evolutionInstanceName",
+        "evolutionRecipient",
+        "evolutionUseCustomMessage"
+      ]
+    },
+    "Feishu": {
+      "label": "Feishu (飞书)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/Feishu.vue",
+      "server_provider": "server/notification-providers/feishu.js",
+      "fields": [
+        {
+          "name": "feishuWebHookUrl",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "feishuWebHookUrl"
+      ]
+    },
+    "FlashDuty": {
+      "label": "FlashDuty (快猫星云)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/FlashDuty.vue",
+      "server_provider": "server/notification-providers/flashduty.js",
+      "fields": [
+        {
+          "name": "flashdutyIntegrationKey",
+          "type": "password",
+          "required": false,
+          "placeholder": "$t('FlashDuty Push URL Placeholder')"
+        },
+        {
+          "name": "flashdutySeverity",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "Info",
+              "label": "Info"
+            },
+            {
+              "value": "Warning",
+              "label": "Warning"
+            },
+            {
+              "value": "Critical",
+              "label": "Critical"
+            }
+          ]
+        }
+      ],
+      "server_fields_read": [
+        "flashdutyIntegrationKey",
+        "flashdutySeverity"
+      ]
+    },
+    "Flowtriq": {
+      "label": "Flowtriq",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/Flowtriq.vue",
+      "server_provider": "server/notification-providers/flowtriq.js",
+      "fields": [
+        {
+          "name": "flowtriqWebhookUrl",
+          "type": "url",
+          "required": true,
+          "placeholder": "https://app.flowtriq.com/api/webhooks/..."
+        },
+        {
+          "name": "flowtriqApiKey",
+          "type": "password",
+          "required": false,
+          "placeholder": "$t('Optional')"
+        }
+      ],
+      "server_fields_read": [
+        "flowtriqApiKey",
+        "flowtriqWebhookUrl"
+      ]
+    },
+    "fluxer": {
+      "label": "Fluxer",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Fluxer.vue",
+      "server_provider": "server/notification-providers/fluxer.js",
+      "fields": [
+        {
+          "name": "fluxerWebhookUrl",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "fluxerUsername",
+          "type": "text",
+          "required": false,
+          "placeholder": "$root.appName"
+        },
+        {
+          "name": "fluxerPrefixMessage",
+          "type": "text",
+          "required": false,
+          "placeholder": "$t('Hello @everyone is...')"
+        },
+        {
+          "name": "fluxerMessageFormat",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal (rich embeds)"
+            },
+            {
+              "value": "minimalist",
+              "label": "Minimalist (short status)"
+            },
+            {
+              "value": "custom",
+              "label": "Custom template"
+            }
+          ],
+          "default": {
+            "js": "hadCustom ? \"custom\" : \"normal\""
+          }
+        },
+        {
+          "name": "fluxerMessageTemplate",
+          "type": "textarea(liquid-template)",
+          "required": false,
+          "visible_if": "fluxerMessageFormat === 'custom'"
+        }
+      ],
+      "server_fields_read": [
+        "disableUrl",
+        "fluxerMessageFormat",
+        "fluxerMessageTemplate",
+        "fluxerPrefixMessage",
+        "fluxerUseMessageTemplate",
+        "fluxerUsername",
+        "fluxerWebhookUrl"
+      ],
+      "other_fields_referenced": [
+        "disableUrl",
+        "fluxerChannelType",
+        "fluxerUseMessageTemplate"
+      ]
+    },
+    "FreeMobile": {
+      "label": "FreeMobile (mobile.free.fr)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/FreeMobile.vue",
+      "server_provider": "server/notification-providers/freemobile.js",
+      "fields": [
+        {
+          "name": "freemobileUser",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "freemobilePass",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "freemobilePass",
+        "freemobileUser"
+      ]
+    },
+    "GoAlert": {
+      "label": "GoAlert",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/GoAlert.vue",
+      "server_provider": "server/notification-providers/goalert.js",
+      "fields": [
+        {
+          "name": "goAlertBaseURL",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "goAlertToken",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "goAlertBaseURL",
+        "goAlertToken"
+      ]
+    },
+    "GoogleChat": {
+      "label": "Google Chat (Google Workspace)",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/GoogleChat.vue",
+      "server_provider": "server/notification-providers/google-chat.js",
+      "fields": [
+        {
+          "name": "googleChatWebhookURL",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "googleChatMaxRetries",
+          "type": "number",
+          "required": true,
+          "min": "1",
+          "max": "10",
+          "step": "1"
+        },
+        {
+          "name": "googleChatUseTemplate",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "googleChatTemplate",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "placeholder": "googleChatTemplatePlaceholder",
+          "visible_if": "googleChatUseTemplate"
+        }
+      ],
+      "server_fields_read": [
+        "googleChatMaxRetries",
+        "googleChatTemplate",
+        "googleChatUseTemplate",
+        "googleChatWebhookURL"
+      ]
+    },
+    "GoogleSheets": {
+      "label": "Google Sheets",
+      "categories": [
+        "other"
+      ],
+      "vue_component": "src/components/notifications/GoogleSheets.vue",
+      "server_provider": "server/notification-providers/google-sheets.js",
+      "fields": [
+        {
+          "name": "googleSheetsWebhookUrl",
+          "type": "password",
+          "required": true,
+          "placeholder": "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+        }
+      ],
+      "server_fields_read": [
+        "googleSheetsWebhookUrl"
+      ]
+    },
+    "gorush": {
+      "label": "Gorush",
+      "categories": [
+        "chatPlatforms",
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Gorush.vue",
+      "server_provider": "server/notification-providers/gorush.js",
+      "fields": [
+        {
+          "name": "gorushDeviceToken",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "gorushServerURL",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "gorushPlatform",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "ios",
+              "label": "iOS"
+            },
+            {
+              "value": "android",
+              "label": "Android"
+            },
+            {
+              "value": "huawei",
+              "label": "Huawei"
+            }
+          ]
+        },
+        {
+          "name": "gorushTitle",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "gorushPriority",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "normal",
+              "label": "Normal"
+            },
+            {
+              "value": "high",
+              "label": "High"
+            }
+          ]
+        },
+        {
+          "name": "gorushRetry",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "gorushTopic",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "gorushDeviceToken",
+        "gorushPlatform",
+        "gorushPriority",
+        "gorushRetry",
+        "gorushServerURL",
+        "gorushTitle",
+        "gorushTopic"
+      ]
+    },
+    "gotify": {
+      "label": "Gotify",
+      "categories": [
+        "chatPlatforms",
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Gotify.vue",
+      "server_provider": "server/notification-providers/gotify.js",
+      "fields": [
+        {
+          "name": "gotifyapplicationToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "gotifyserverurl",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "gotifyPriority",
+          "type": "number",
+          "required": true,
+          "min": "0",
+          "max": "10",
+          "step": "1",
+          "default": 8
+        }
+      ],
+      "server_fields_read": [
+        "gotifyPriority",
+        "gotifyapplicationToken",
+        "gotifyserverurl"
+      ]
+    },
+    "GrafanaOncall": {
+      "label": "Grafana Oncall",
+      "categories": [
+        "chatPlatforms",
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/GrafanaOncall.vue",
+      "server_provider": "server/notification-providers/grafana-oncall.js",
+      "fields": [
+        {
+          "name": "GrafanaOncallURL",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "GrafanaOncallURL"
+      ]
+    },
+    "gtxmessaging": {
+      "label": "GtxMessaging",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/GtxMessaging.vue",
+      "server_provider": "server/notification-providers/gtx-messaging.js",
+      "fields": [
+        {
+          "name": "gtxMessagingApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "gtxMessagingFrom",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "gtxMessagingTo",
+          "type": "text",
+          "required": true,
+          "pattern": "^\\+\\d+$"
+        }
+      ],
+      "server_fields_read": [
+        "gtxMessagingApiKey",
+        "gtxMessagingFrom",
+        "gtxMessagingTo"
+      ]
+    },
+    "HaloPSA": {
+      "label": "Halo PSA",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/HaloPSA.vue",
+      "server_provider": "server/notification-providers/HaloPSA.js",
+      "fields": [
+        {
+          "name": "halowebhookurl",
+          "type": "password",
+          "required": true,
+          "placeholder": "https://your-instance.halopsa.com/api/v1/webhook"
+        },
+        {
+          "name": "haloUsername",
+          "type": "text",
+          "required": false,
+          "placeholder": "$t('Username')"
+        },
+        {
+          "name": "haloPassword",
+          "type": "text",
+          "required": false,
+          "placeholder": "$t('Password')"
+        }
+      ],
+      "server_fields_read": [
+        "haloPassword",
+        "haloUsername",
+        "halowebhookurl"
+      ]
+    },
+    "HeiiOnCall": {
+      "label": "Heii On-Call",
+      "categories": [
+        "chatPlatforms",
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/HeiiOnCall.vue",
+      "server_provider": "server/notification-providers/heii-oncall.js",
+      "fields": [
+        {
+          "name": "heiiOnCallApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "heiiOnCallTriggerId",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "heiiOnCallApiKey",
+        "heiiOnCallTriggerId"
+      ]
+    },
+    "HomeAssistant": {
+      "label": "Home Assistant",
+      "categories": [
+        "chatPlatforms",
+        "homeAutomation"
+      ],
+      "vue_component": "src/components/notifications/HomeAssistant.vue",
+      "server_provider": "server/notification-providers/home-assistant.js",
+      "fields": [
+        {
+          "name": "homeAssistantUrl",
+          "type": "url",
+          "required": true
+        },
+        {
+          "name": "longLivedAccessToken",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "notificationService",
+          "type": "text",
+          "required": false,
+          "placeholder": "$t('default: notify all devices')"
+        }
+      ],
+      "server_fields_read": [
+        "homeAssistantUrl",
+        "longLivedAccessToken"
+      ]
+    },
+    "JiraServiceManagement": {
+      "label": "Jira Service Management",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/JiraServiceManagement.vue",
+      "server_provider": "server/notification-providers/jira-service-management.js",
+      "fields": [
+        {
+          "name": "jsmCloudId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "jsmEmail",
+          "type": "email",
+          "required": true
+        },
+        {
+          "name": "jsmApiToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "jsmPriority",
+          "type": "number",
+          "required": false,
+          "min": "1",
+          "max": "5",
+          "step": "1"
+        }
+      ],
+      "server_fields_read": [
+        "jsmApiToken",
+        "jsmCloudId",
+        "jsmEmail",
+        "jsmPriority"
+      ]
+    },
+    "Keep": {
+      "label": "Keep",
+      "categories": [
+        "chatPlatforms",
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/Keep.vue",
+      "server_provider": "server/notification-providers/keep.js",
+      "fields": [
+        {
+          "name": "webhookURL",
+          "type": "url",
+          "required": true,
+          "pattern": "https?://.+"
+        },
+        {
+          "name": "webhookAPIKey",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "webhookAPIKey",
+        "webhookURL"
+      ]
+    },
+    "Kook": {
+      "label": "Kook",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Kook.vue",
+      "server_provider": "server/notification-providers/kook.js",
+      "fields": [
+        {
+          "name": "kookBotToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "kookGuildID",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "kookBotToken",
+        "kookGuildID"
+      ]
+    },
+    "line": {
+      "label": "LINE Messenger",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Line.vue",
+      "server_provider": "server/notification-providers/line.js",
+      "fields": [
+        {
+          "name": "lineChannelAccessToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "lineUserID",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "lineChannelAccessToken",
+        "lineUserID"
+      ]
+    },
+    "lunasea": {
+      "label": "LunaSea",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/LunaSea.vue",
+      "server_provider": "server/notification-providers/lunasea.js",
+      "fields": [
+        {
+          "name": "lunaseaTarget",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "device",
+              "label": "Device ID"
+            },
+            {
+              "value": "user",
+              "label": "User ID"
+            }
+          ]
+        },
+        {
+          "name": "lunaseaDevice",
+          "type": "text",
+          "required": false,
+          "visible_if": "lunaseaTarget === 'device'"
+        },
+        {
+          "name": "lunaseaUserID",
+          "type": "text",
+          "required": false,
+          "visible_if": "lunaseaTarget === 'user'"
+        }
+      ],
+      "server_fields_read": [
+        "lunaseaDevice",
+        "lunaseaTarget",
+        "lunaseaUserID"
+      ]
+    },
+    "matrix": {
+      "label": "Matrix",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Matrix.vue",
+      "server_provider": "server/notification-providers/matrix.js",
+      "fields": [
+        {
+          "name": "homeserverUrl",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "internalRoomId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "accessToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "matrixUseTemplate",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "matrixTemplate",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "placeholder": "matrixTemplatedTextareaPlaceholder",
+          "visible_if": "matrixUseTemplate"
+        }
+      ],
+      "server_fields_read": [
+        "accessToken",
+        "homeserverUrl",
+        "internalRoomId",
+        "matrixTemplate",
+        "matrixUseTemplate"
+      ]
+    },
+    "mattermost": {
+      "label": "Mattermost",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Mattermost.vue",
+      "server_provider": "server/notification-providers/mattermost.js",
+      "fields": [
+        {
+          "name": "mattermostWebhookUrl",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "mattermostusername",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "mattermosticonurl",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "mattermosticonemo",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "mattermostchannel",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "mattermostWebhookUrl",
+        "mattermostchannel",
+        "mattermosticonemo",
+        "mattermosticonurl",
+        "mattermostusername"
+      ]
+    },
+    "max": {
+      "label": "MAX messenger",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Max.vue",
+      "server_provider": "server/notification-providers/max.js",
+      "fields": [
+        {
+          "name": "maxBotToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "maxApiUrl",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "maxChatID",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "maxUseTemplate",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "maxTemplateFormat",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "plain",
+              "label": "Plain Text"
+            },
+            {
+              "value": "markdown",
+              "label": "Markdown"
+            },
+            {
+              "value": "html",
+              "label": "HTML"
+            }
+          ],
+          "visible_if": "maxUseTemplate"
+        },
+        {
+          "name": "maxTemplate",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "visible_if": "maxUseTemplate"
+        }
+      ],
+      "server_fields_read": [
+        "maxApiUrl",
+        "maxBotToken",
+        "maxChatID",
+        "maxTemplate",
+        "maxTemplateFormat",
+        "maxUseTemplate"
+      ]
+    },
+    "Milky": {
+      "label": "Milky(QQ)",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Milky.vue",
+      "server_provider": "server/notification-providers/milky.js",
+      "fields": [
+        {
+          "name": "httpAddr",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "accessToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "msgType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "group",
+              "label": "Group"
+            },
+            {
+              "value": "private",
+              "label": "Private"
+            }
+          ]
+        },
+        {
+          "name": "recieverId",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "accessToken",
+        "httpAddr",
+        "msgType",
+        "recieverId"
+      ]
+    },
+    "nextcloudtalk": {
+      "label": "Nextcloud Talk",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/NextcloudTalk.vue",
+      "server_provider": "server/notification-providers/nextcloudtalk.js",
+      "fields": [
+        {
+          "name": "host",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "conversationToken",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "botSecret",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "sendSilentUp",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "sendSilentDown",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "botSecret",
+        "conversationToken",
+        "host",
+        "sendSilentDown",
+        "sendSilentUp"
+      ]
+    },
+    "nostr": {
+      "label": "Nostr",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Nostr.vue",
+      "server_provider": "server/notification-providers/nostr.js",
+      "fields": [
+        {
+          "name": "relays",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "wss://127.0.0.1:7777/"
+        },
+        {
+          "name": "sender",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "recipients",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "npub123...&#10;npub789..."
+        }
+      ],
+      "server_fields_read": [
+        "recipients",
+        "relays",
+        "sender"
+      ]
+    },
+    "notifery": {
+      "label": "Notifery",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Notifery.vue",
+      "server_provider": "server/notification-providers/notifery.js",
+      "fields": [
+        {
+          "name": "notiferyApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "notiferyTitle",
+          "type": "text",
+          "required": false,
+          "placeholder": "Uptime Kuma Alert"
+        },
+        {
+          "name": "notiferyGroup",
+          "type": "text",
+          "required": false,
+          "placeholder": "$t('Optional')"
+        }
+      ],
+      "server_fields_read": [
+        "notiferyApiKey",
+        "notiferyGroup",
+        "notiferyTitle"
+      ]
+    },
+    "notifyapp": {
+      "label": "Notify!",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/NotifyApp.vue",
+      "server_provider": "server/notification-providers/notifyapp.js",
+      "fields": [
+        {
+          "name": "notifyAppDeviceId",
+          "type": "text",
+          "required": true,
+          "placeholder": "ABC12345"
+        },
+        {
+          "name": "notifyAppToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "notifyAppIconUrl",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "notifyAppDeviceId",
+        "notifyAppIconUrl",
+        "notifyAppToken"
+      ]
+    },
+    "ntfy": {
+      "label": "Ntfy",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Ntfy.vue",
+      "server_provider": "server/notification-providers/ntfy.js",
+      "fields": [
+        {
+          "name": "ntfytopic",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "ntfyserverurl",
+          "type": "text",
+          "required": true,
+          "default": "https://ntfy.sh"
+        },
+        {
+          "name": "ntfyPriority",
+          "type": "number",
+          "required": true,
+          "min": "1",
+          "max": "5",
+          "step": "1",
+          "default": 5
+        },
+        {
+          "name": "ntfyPriorityDown",
+          "type": "number",
+          "required": true,
+          "min": "1",
+          "max": "5",
+          "step": "1",
+          "default": 5
+        },
+        {
+          "name": "ntfyAuthenticationMethod",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "usernamePassword",
+              "label": "Username and Password"
+            },
+            {
+              "value": "accessToken",
+              "label": "Access Token"
+            }
+          ],
+          "default": [
+            "none",
+            "usernamePassword"
+          ]
+        },
+        {
+          "name": "ntfyusername",
+          "type": "text",
+          "required": false,
+          "visible_if": "ntfyAuthenticationMethod === 'usernamePassword'"
+        },
+        {
+          "name": "ntfypassword",
+          "type": "password",
+          "required": false,
+          "visible_if": "ntfyAuthenticationMethod === 'usernamePassword'"
+        },
+        {
+          "name": "ntfyaccesstoken",
+          "type": "password",
+          "required": false,
+          "visible_if": "ntfyAuthenticationMethod === 'accessToken'"
+        },
+        {
+          "name": "ntfyIcon",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "ntfyCall",
+          "type": "text",
+          "required": false,
+          "placeholder": "yes or +12223334444"
+        },
+        {
+          "name": "ntfyUseTemplate",
+          "type": "checkbox",
+          "required": false,
+          "default": {
+            "js": "hasTitle || hasMessage"
+          }
+        },
+        {
+          "name": "ntfyCustomTitle",
+          "type": "text(liquid-template)",
+          "required": false,
+          "visible_if": "ntfyUseTemplate"
+        },
+        {
+          "name": "ntfyCustomMessage",
+          "type": "textarea(liquid-template)",
+          "required": false,
+          "visible_if": "ntfyUseTemplate"
+        }
+      ],
+      "server_fields_read": [
+        "ntfyAuthenticationMethod",
+        "ntfyCall",
+        "ntfyCustomMessage",
+        "ntfyCustomTitle",
+        "ntfyIcon",
+        "ntfyPriority",
+        "ntfyPriorityDown",
+        "ntfyUseTemplate",
+        "ntfyaccesstoken",
+        "ntfypassword",
+        "ntfyserverurl",
+        "ntfytopic",
+        "ntfyusername"
+      ]
+    },
+    "octopush": {
+      "label": "Octopush",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/Octopush.vue",
+      "server_provider": "server/notification-providers/octopush.js",
+      "fields": [
+        {
+          "name": "octopushVersion",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "2",
+              "label": "{{ $t(\"octopushEndpoint\", { url: \"api.octopush.com\" }) }}"
+            },
+            {
+              "value": "1",
+              "label": "{{ $t(\"legacyOctopushEndpoint\", { url: \"www.octopush-dm.com\" }) }}"
+            }
+          ]
+        },
+        {
+          "name": "octopushAPIKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "octopushLogin",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "octopushSMSType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "sms_premium",
+              "label": "Premium (Fast - recommended for alerting)"
+            },
+            {
+              "value": "sms_low_cost",
+              "label": "Low Cost (Slow - sometimes blocked by operator)"
+            }
+          ]
+        },
+        {
+          "name": "octopushPhoneNumber",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "octopushSenderName",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "octopushAPIKey",
+        "octopushDMAPIKey",
+        "octopushDMLogin",
+        "octopushDMPhoneNumber",
+        "octopushDMSMSType",
+        "octopushDMSenderName",
+        "octopushLogin",
+        "octopushPhoneNumber",
+        "octopushSMSType",
+        "octopushSenderName",
+        "octopushVersion"
+      ]
+    },
+    "OneBot": {
+      "label": "OneBot",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/OneBot.vue",
+      "server_provider": "server/notification-providers/onebot.js",
+      "fields": [
+        {
+          "name": "httpAddr",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "accessToken",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "msgType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "group",
+              "label": "Group"
+            },
+            {
+              "value": "private",
+              "label": "Private"
+            }
+          ]
+        },
+        {
+          "name": "recieverId",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "accessToken",
+        "httpAddr",
+        "msgType",
+        "recieverId"
+      ]
+    },
+    "OneChat": {
+      "label": "OneChat",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/OneChat.vue",
+      "server_provider": "server/notification-providers/onechat.js",
+      "fields": [
+        {
+          "name": "accessToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "recieverId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "botId",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "accessToken",
+        "botId",
+        "recieverId"
+      ]
+    },
+    "Onesender": {
+      "label": "Onesender",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/Onesender.vue",
+      "server_provider": "server/notification-providers/onesender.js",
+      "fields": [
+        {
+          "name": "onesenderURL",
+          "type": "url",
+          "required": true,
+          "placeholder": "https://xxxxxxxxxxx.com/api/v1/messages",
+          "pattern": "https?://.+"
+        },
+        {
+          "name": "onesenderToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "onesenderTypeReceiver",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "private",
+              "label": "Private Number"
+            },
+            {
+              "value": "group",
+              "label": "Group ID"
+            }
+          ]
+        },
+        {
+          "name": "onesenderReceiver",
+          "type": "text",
+          "required": true,
+          "placeholder": "628123456789 or 628123456789-34534"
+        }
+      ],
+      "server_fields_read": [
+        "onesenderReceiver",
+        "onesenderToken",
+        "onesenderTypeReceiver",
+        "onesenderURL"
+      ]
+    },
+    "Ooredoo": {
+      "label": "Ooredoo (Maldives)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/Ooredoo.vue",
+      "server_provider": "server/notification-providers/ooredoo.js",
+      "fields": [
+        {
+          "name": "ooredooUsername",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "ooredooAccessKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "ooredooBearerToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "ooredooToNumber",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "ooredooServerUrl",
+          "type": "text",
+          "required": false,
+          "placeholder": "https://o-papi1-lb01.ooredoo.mv/bulk_sms/v2"
+        }
+      ],
+      "server_fields_read": [
+        "ooredooAccessKey",
+        "ooredooBearerToken",
+        "ooredooServerUrl",
+        "ooredooToNumber",
+        "ooredooUsername"
+      ]
+    },
+    "openwa": {
+      "label": "WhatsApp (OpenWA)",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/OpenWa.vue",
+      "server_provider": "server/notification-providers/openwa.js",
+      "fields": [
+        {
+          "name": "openwaApiUrl",
+          "type": "url",
+          "required": true,
+          "placeholder": "http://localhost:2785/"
+        },
+        {
+          "name": "openwaApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "openwaSession",
+          "type": "text",
+          "required": true,
+          "placeholder": "default"
+        },
+        {
+          "name": "openwaChatId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "openwaUseCustomMessage",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "openwaCustomMessage",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "placeholder": "customMessagePlaceholder",
+          "visible_if": "openwaUseCustomMessage"
+        }
+      ],
+      "server_fields_read": [
+        "openwaApiKey",
+        "openwaApiUrl",
+        "openwaChatId",
+        "openwaCustomMessage",
+        "openwaSession",
+        "openwaUseCustomMessage"
+      ]
+    },
+    "Opsgenie": {
+      "label": "Opsgenie",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/Opsgenie.vue",
+      "server_provider": "server/notification-providers/opsgenie.js",
+      "fields": [
+        {
+          "name": "opsgenieRegion",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "us",
+              "label": "US (Default)"
+            },
+            {
+              "value": "eu",
+              "label": "EU"
+            }
+          ]
+        },
+        {
+          "name": "opsgenieApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "opsgeniePriority",
+          "type": "number",
+          "required": false,
+          "min": "1",
+          "max": "5",
+          "step": "1"
+        }
+      ],
+      "server_fields_read": [
+        "opsgenieApiKey",
+        "opsgeniePriority",
+        "opsgenieRegion"
+      ]
+    },
+    "PagerDuty": {
+      "label": "PagerDuty",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/PagerDuty.vue",
+      "server_provider": "server/notification-providers/pagerduty.js",
+      "fields": [
+        {
+          "name": "pagerdutyIntegrationKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "pagerdutyIntegrationUrl",
+          "type": "text",
+          "required": false,
+          "default": "https://events.pagerduty.com/v2/enqueue"
+        },
+        {
+          "name": "pagerdutyPriority",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "info",
+              "label": "info"
+            },
+            {
+              "value": "warning",
+              "label": "warning"
+            },
+            {
+              "value": "error",
+              "label": "error"
+            },
+            {
+              "value": "critical",
+              "label": "critical"
+            }
+          ]
+        },
+        {
+          "name": "pagerdutyAutoResolve",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "0",
+              "label": "do nothing"
+            },
+            {
+              "value": "acknowledge",
+              "label": "auto acknowledged"
+            },
+            {
+              "value": "resolve",
+              "label": "auto resolve"
+            }
+          ]
+        }
+      ],
+      "server_fields_read": [
+        "pagerdutyAutoResolve",
+        "pagerdutyIntegrationKey",
+        "pagerdutyIntegrationUrl",
+        "pagerdutyPriority"
+      ]
+    },
+    "PagerTree": {
+      "label": "PagerTree",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/PagerTree.vue",
+      "server_provider": "server/notification-providers/pagertree.js",
+      "fields": [
+        {
+          "name": "pagertreeIntegrationUrl",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "pagertreeUrgency",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "silent",
+              "label": "Silent"
+            },
+            {
+              "value": "low",
+              "label": "Low"
+            },
+            {
+              "value": "medium",
+              "label": "Medium"
+            },
+            {
+              "value": "high",
+              "label": "High"
+            },
+            {
+              "value": "critical",
+              "label": "Critical"
+            }
+          ]
+        },
+        {
+          "name": "pagertreeAutoResolve",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "resolve",
+              "label": "Auto Resolve"
+            },
+            {
+              "value": "0",
+              "label": "Do Nothing"
+            }
+          ]
+        }
+      ],
+      "server_fields_read": [
+        "pagertreeAutoResolve",
+        "pagertreeIntegrationUrl",
+        "pagertreeUrgency"
+      ]
+    },
+    "pinglet": {
+      "label": "Pinglet",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Pinglet.vue",
+      "server_provider": "server/notification-providers/pinglet.js",
+      "fields": [
+        {
+          "name": "pingletPublishUrl",
+          "type": "url",
+          "required": true,
+          "placeholder": "https://app.pinglet.co.uk/your-namespace/alerts"
+        },
+        {
+          "name": "pingletApiKey",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "pingletApiKey",
+        "pingletPublishUrl"
+      ]
+    },
+    "plivo": {
+      "label": "Plivo",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/Plivo.vue",
+      "server_provider": "server/notification-providers/plivo.js",
+      "fields": [
+        {
+          "name": "plivoAuthID",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "plivoAuthToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "plivoFromNumber",
+          "type": "text",
+          "required": true,
+          "placeholder": "+15551234567"
+        },
+        {
+          "name": "plivoToNumber",
+          "type": "text",
+          "required": true,
+          "placeholder": "+15559876543"
+        },
+        {
+          "name": "plivoMessageType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "sms",
+              "label": "SMS"
+            },
+            {
+              "value": "call",
+              "label": "Voice Call"
+            }
+          ],
+          "default": "sms"
+        },
+        {
+          "name": "plivoAnswerUrl",
+          "type": "url",
+          "required": true,
+          "placeholder": "https://example.com/answer.xml",
+          "visible_if": "plivoMessageType === 'call'"
+        }
+      ],
+      "server_fields_read": [
+        "plivoAnswerUrl",
+        "plivoAuthID",
+        "plivoAuthToken",
+        "plivoFromNumber",
+        "plivoMessageType",
+        "plivoToNumber"
+      ]
+    },
+    "promosms": {
+      "label": "PromoSMS",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/PromoSMS.vue",
+      "server_provider": "server/notification-providers/promosms.js",
+      "fields": [
+        {
+          "name": "promosmsLogin",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "promosmsPassword",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "promosmsSMSType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "0",
+              "label": "SMS FLASH - Message will automatically show on recipient device. Limited only to Polish recipients."
+            },
+            {
+              "value": "1",
+              "label": "SMS ECO - cheap but slow and often overloaded. Limited only to Polish recipients."
+            },
+            {
+              "value": "3",
+              "label": "SMS FULL - Premium tier of SMS, You can use your Sender Name (You need to register name first). Reliable for alerts."
+            },
+            {
+              "value": "4",
+              "label": "SMS SPEED - Highest priority in system. Very quick and reliable but costly (about twice of SMS FULL price)."
+            }
+          ]
+        },
+        {
+          "name": "promosmsPhoneNumber",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "promosmsSenderName",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "promosmsAllowLongSMS",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "promosmsAllowLongSMS",
+        "promosmsLogin",
+        "promosmsPassword",
+        "promosmsPhoneNumber",
+        "promosmsSMSType",
+        "promosmsSenderName"
+      ]
+    },
+    "pumble": {
+      "label": "Pumble",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Pumble.vue",
+      "server_provider": "server/notification-providers/pumble.js",
+      "fields": [
+        {
+          "name": "webhookURL",
+          "type": "url",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "webhookURL"
+      ]
+    },
+    "pushbullet": {
+      "label": "Pushbullet",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Pushbullet.vue",
+      "server_provider": "server/notification-providers/pushbullet.js",
+      "fields": [
+        {
+          "name": "pushbulletAccessToken",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "pushbulletAccessToken"
+      ]
+    },
+    "PushByTechulus": {
+      "label": "Push by Techulus",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/TechulusPush.vue",
+      "server_provider": "server/notification-providers/techulus-push.js",
+      "fields": [
+        {
+          "name": "pushAPIKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "pushTitle",
+          "type": "text",
+          "required": false,
+          "default": "Uptime-Kuma"
+        },
+        {
+          "name": "pushChannel",
+          "type": "text",
+          "required": false,
+          "pattern": "[A-Za-z0-9-]+",
+          "default": "uptime-kuma"
+        },
+        {
+          "name": "pushSound",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "default",
+              "label": "Default"
+            },
+            {
+              "value": "arcade",
+              "label": "Arcade"
+            },
+            {
+              "value": "correct",
+              "label": "Correct"
+            },
+            {
+              "value": "fail",
+              "label": "Fail"
+            },
+            {
+              "value": "harp",
+              "label": "Harp"
+            },
+            {
+              "value": "reveal",
+              "label": "Reveal"
+            },
+            {
+              "value": "bubble",
+              "label": "Bubble"
+            },
+            {
+              "value": "doorbell",
+              "label": "Doorbell"
+            },
+            {
+              "value": "flute",
+              "label": "Flute"
+            },
+            {
+              "value": "money",
+              "label": "Money"
+            },
+            {
+              "value": "scifi",
+              "label": "Scifi"
+            },
+            {
+              "value": "clear",
+              "label": "Clear"
+            },
+            {
+              "value": "elevator",
+              "label": "Elevator"
+            },
+            {
+              "value": "guitar",
+              "label": "Guitar"
+            },
+            {
+              "value": "pop",
+              "label": "Pop"
+            }
+          ],
+          "default": "default"
+        },
+        {
+          "name": "pushTimeSensitive",
+          "type": "checkbox",
+          "required": false,
+          "default": true
+        }
+      ],
+      "server_fields_read": [
+        "pushAPIKey",
+        "pushChannel",
+        "pushSound",
+        "pushTimeSensitive",
+        "pushTitle"
+      ]
+    },
+    "PushDeer": {
+      "label": "PushDeer",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/PushDeer.vue",
+      "server_provider": "server/notification-providers/pushdeer.js",
+      "fields": [
+        {
+          "name": "pushdeerServer",
+          "type": "text",
+          "required": false,
+          "placeholder": "https://api2.pushdeer.com"
+        },
+        {
+          "name": "pushdeerKey",
+          "type": "password",
+          "required": true,
+          "placeholder": "PDUxxxx"
+        }
+      ],
+      "server_fields_read": [
+        "pushdeerKey",
+        "pushdeerServer"
+      ]
+    },
+    "pushover": {
+      "label": "Pushover",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Pushover.vue",
+      "server_provider": "server/notification-providers/pushover.js",
+      "fields": [
+        {
+          "name": "pushoveruserkey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "pushoverapptoken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "pushoverdevice",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "pushovertitle",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "pushoverpriority",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "-2",
+              "label": "-2"
+            },
+            {
+              "value": "-1",
+              "label": "-1"
+            },
+            {
+              "value": "0",
+              "label": "0"
+            },
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            }
+          ]
+        },
+        {
+          "name": "pushoversounds",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "pushover",
+              "label": "pushover"
+            },
+            {
+              "value": "bike",
+              "label": "bike"
+            },
+            {
+              "value": "bugle",
+              "label": "bugle"
+            },
+            {
+              "value": "cashregister",
+              "label": "cashregister"
+            },
+            {
+              "value": "classical",
+              "label": "classical"
+            },
+            {
+              "value": "cosmic",
+              "label": "cosmic"
+            },
+            {
+              "value": "falling",
+              "label": "falling"
+            },
+            {
+              "value": "gamelan",
+              "label": "gamelan"
+            },
+            {
+              "value": "incoming",
+              "label": "incoming"
+            },
+            {
+              "value": "intermission",
+              "label": "intermission"
+            },
+            {
+              "value": "magic",
+              "label": "magic"
+            },
+            {
+              "value": "mechanical",
+              "label": "mechanical"
+            },
+            {
+              "value": "pianobar",
+              "label": "pianobar"
+            },
+            {
+              "value": "siren",
+              "label": "siren"
+            },
+            {
+              "value": "spacealarm",
+              "label": "spacealarm"
+            },
+            {
+              "value": "tugboat",
+              "label": "tugboat"
+            },
+            {
+              "value": "alien",
+              "label": "alien"
+            },
+            {
+              "value": "climb",
+              "label": "climb"
+            },
+            {
+              "value": "persistent",
+              "label": "persistent"
+            },
+            {
+              "value": "echo",
+              "label": "echo"
+            },
+            {
+              "value": "updown",
+              "label": "updown"
+            },
+            {
+              "value": "vibrate",
+              "label": "vibrate"
+            },
+            {
+              "value": "none",
+              "label": "none"
+            }
+          ]
+        },
+        {
+          "name": "pushoversounds_up",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "pushover",
+              "label": "pushover"
+            },
+            {
+              "value": "bike",
+              "label": "bike"
+            },
+            {
+              "value": "bugle",
+              "label": "bugle"
+            },
+            {
+              "value": "cashregister",
+              "label": "cashregister"
+            },
+            {
+              "value": "classical",
+              "label": "classical"
+            },
+            {
+              "value": "cosmic",
+              "label": "cosmic"
+            },
+            {
+              "value": "falling",
+              "label": "falling"
+            },
+            {
+              "value": "gamelan",
+              "label": "gamelan"
+            },
+            {
+              "value": "incoming",
+              "label": "incoming"
+            },
+            {
+              "value": "intermission",
+              "label": "intermission"
+            },
+            {
+              "value": "magic",
+              "label": "magic"
+            },
+            {
+              "value": "mechanical",
+              "label": "mechanical"
+            },
+            {
+              "value": "pianobar",
+              "label": "pianobar"
+            },
+            {
+              "value": "siren",
+              "label": "siren"
+            },
+            {
+              "value": "spacealarm",
+              "label": "spacealarm"
+            },
+            {
+              "value": "tugboat",
+              "label": "tugboat"
+            },
+            {
+              "value": "alien",
+              "label": "alien"
+            },
+            {
+              "value": "climb",
+              "label": "climb"
+            },
+            {
+              "value": "persistent",
+              "label": "persistent"
+            },
+            {
+              "value": "echo",
+              "label": "echo"
+            },
+            {
+              "value": "updown",
+              "label": "updown"
+            },
+            {
+              "value": "vibrate",
+              "label": "vibrate"
+            },
+            {
+              "value": "none",
+              "label": "none"
+            }
+          ]
+        },
+        {
+          "name": "pushoverttl",
+          "type": "number",
+          "required": false,
+          "min": "0",
+          "step": "1"
+        }
+      ],
+      "server_fields_read": [
+        "pushoverapptoken",
+        "pushoverdevice",
+        "pushoverpriority",
+        "pushoversounds",
+        "pushoversounds_up",
+        "pushovertitle",
+        "pushoverttl",
+        "pushoveruserkey"
+      ]
+    },
+    "PushPlus": {
+      "label": "PushPlus (推送加)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/PushPlus.vue",
+      "server_provider": "server/notification-providers/pushplus.js",
+      "fields": [
+        {
+          "name": "pushPlusSendKey",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "pushPlusSendKey"
+      ]
+    },
+    "pushy": {
+      "label": "Pushy",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Pushy.vue",
+      "server_provider": "server/notification-providers/pushy.js",
+      "fields": [
+        {
+          "name": "pushyAPIKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "pushyToken",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "pushyAPIKey",
+        "pushyToken"
+      ]
+    },
+    "Resend": {
+      "label": "Resend",
+      "categories": [
+        "email"
+      ],
+      "vue_component": "src/components/notifications/Resend.vue",
+      "server_provider": "server/notification-providers/resend.js",
+      "fields": [
+        {
+          "name": "resendApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "resendFromEmail",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "resendFromName",
+          "type": "text",
+          "required": false,
+          "default": "Uptime Kuma"
+        },
+        {
+          "name": "resendToEmail",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "resendSubject",
+          "type": "text",
+          "required": false,
+          "default": "Notification from Your Uptime Kuma"
+        }
+      ],
+      "server_fields_read": [
+        "resendApiKey",
+        "resendFromEmail",
+        "resendFromName",
+        "resendSubject",
+        "resendToEmail"
+      ]
+    },
+    "rocket.chat": {
+      "label": "Rocket.Chat",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/RocketChat.vue",
+      "server_provider": "server/notification-providers/rocket-chat.js",
+      "fields": [
+        {
+          "name": "rocketwebhookURL",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "rocketusername",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "rocketiconemo",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "rocketchannel",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "rocketbutton",
+        "rocketchannel",
+        "rocketiconemo",
+        "rocketusername",
+        "rocketwebhookURL"
+      ]
+    },
+    "SendGrid": {
+      "label": "SendGrid",
+      "categories": [
+        "email"
+      ],
+      "vue_component": "src/components/notifications/SendGrid.vue",
+      "server_provider": "server/notification-providers/send-grid.js",
+      "fields": [
+        {
+          "name": "sendgridApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "sendgridFromEmail",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "sendgridToEmail",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "sendgridCcEmail",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "sendgridBccEmail",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "sendgridSubject",
+          "type": "text",
+          "required": false,
+          "default": "Notification from Your Uptime Kuma"
+        }
+      ],
+      "server_fields_read": [
+        "sendgridApiKey",
+        "sendgridBccEmail",
+        "sendgridCcEmail",
+        "sendgridFromEmail",
+        "sendgridSubject",
+        "sendgridToEmail"
+      ]
+    },
+    "ServerChan": {
+      "label": "ServerChan (Server酱)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/ServerChan.vue",
+      "server_provider": "server/notification-providers/serverchan.js",
+      "fields": [
+        {
+          "name": "serverChanSendKey",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "serverChanSendKey"
+      ]
+    },
+    "serwersms": {
+      "label": "SerwerSMS.pl",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/SerwerSMS.vue",
+      "server_provider": "server/notification-providers/serwersms.js",
+      "fields": [
+        {
+          "name": "serwersmsUsername",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "serwersmsPassword",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "serwersmsRecipientType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "phone",
+              "label": "Phone number"
+            },
+            {
+              "value": "group",
+              "label": "Group"
+            }
+          ]
+        },
+        {
+          "name": "serwersmsPhoneNumber",
+          "type": "text",
+          "required": true,
+          "visible_if": "serwersmsRecipientType !== 'group'"
+        },
+        {
+          "name": "serwersmsGroupId",
+          "type": "text",
+          "required": true,
+          "visible_if": "serwersmsRecipientType === 'group'"
+        },
+        {
+          "name": "serwersmsSenderName",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "serwersmsGroupId",
+        "serwersmsPassword",
+        "serwersmsPhoneNumber",
+        "serwersmsRecipientType",
+        "serwersmsSenderName",
+        "serwersmsUsername"
+      ]
+    },
+    "SevenIO": {
+      "label": "SevenIO",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/SevenIO.vue",
+      "server_provider": "server/notification-providers/sevenio.js",
+      "fields": [
+        {
+          "name": "sevenioApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "sevenioSender",
+          "type": "text",
+          "required": false,
+          "placeholder": "Uptime Kuma"
+        },
+        {
+          "name": "sevenioReceiver",
+          "type": "number",
+          "required": true,
+          "placeholder": "0123456789"
+        }
+      ],
+      "server_fields_read": [
+        "sevenioApiKey",
+        "sevenioReceiver",
+        "sevenioSender"
+      ]
+    },
+    "signal": {
+      "label": "Signal",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Signal.vue",
+      "server_provider": "server/notification-providers/signal.js",
+      "fields": [
+        {
+          "name": "signalURL",
+          "type": "url",
+          "required": true,
+          "pattern": "https?://.+"
+        },
+        {
+          "name": "signalNumber",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "signalRecipients",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "signalUseTemplate",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "signalTemplate",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "placeholder": "signalTemplatedTextareaPlaceholder",
+          "visible_if": "signalUseTemplate"
+        }
+      ],
+      "server_fields_read": [
+        "signalNumber",
+        "signalRecipients",
+        "signalTemplate",
+        "signalURL",
+        "signalUseTemplate"
+      ]
+    },
+    "signalgrid": {
+      "label": "Signalgrid",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Signalgrid.vue",
+      "server_provider": "server/notification-providers/signalgrid.js",
+      "fields": [
+        {
+          "name": "signalgridClientKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "signalgridChannel",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "signalgridChannel",
+        "signalgridClientKey"
+      ]
+    },
+    "SIGNL4": {
+      "label": "SIGNL4",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/SIGNL4.vue",
+      "server_provider": "server/notification-providers/signl4.js",
+      "fields": [
+        {
+          "name": "webhookURL",
+          "type": "url",
+          "required": true,
+          "pattern": "https?://.+"
+        }
+      ],
+      "server_fields_read": [
+        "webhookURL"
+      ]
+    },
+    "slack": {
+      "label": "Slack",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Slack.vue",
+      "server_provider": "server/notification-providers/slack.js",
+      "fields": [
+        {
+          "name": "slackwebhookURL",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "slackusername",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "slackiconemo",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "slackchannel",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "slackrichmessage",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "slackIncludeGroupName",
+          "type": "checkbox",
+          "required": false,
+          "default": true
+        },
+        {
+          "name": "slackUseTemplate",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "slackTemplate",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "placeholder": "slackTemplatedTextareaPlaceholder",
+          "visible_if": "slackUseTemplate"
+        },
+        {
+          "name": "slackchannelnotify",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "slackIncludeGroupName",
+        "slackTemplate",
+        "slackUseTemplate",
+        "slackbutton",
+        "slackchannel",
+        "slackchannelnotify",
+        "slackiconemo",
+        "slackrichmessage",
+        "slackusername",
+        "slackwebhookURL"
+      ]
+    },
+    "smsc": {
+      "label": "SMSC",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/SMSC.vue",
+      "server_provider": "server/notification-providers/smsc.js",
+      "fields": [
+        {
+          "name": "smscLogin",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "smscPassword",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "smscToNumber",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "smscSenderName",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "smscTranslit",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "0",
+              "label": "Default"
+            },
+            {
+              "value": "1",
+              "label": "Translit"
+            },
+            {
+              "value": "2",
+              "label": "MpaHc/Ium"
+            }
+          ]
+        }
+      ],
+      "server_fields_read": [
+        "smscLogin",
+        "smscPassword",
+        "smscSenderName",
+        "smscToNumber",
+        "smscTranslit"
+      ]
+    },
+    "SMSEagle": {
+      "label": "SMSEagle",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/SMSEagle.vue",
+      "server_provider": "server/notification-providers/smseagle.js",
+      "fields": [
+        {
+          "name": "smseagleUrl",
+          "type": "text",
+          "required": true,
+          "placeholder": "http://127.0.0.1"
+        },
+        {
+          "name": "smseagleToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "smseagleApiType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "smseagle-apiv1",
+              "label": "APIv1 (for existing projects and backward compatibility)"
+            },
+            {
+              "value": "smseagle-apiv2",
+              "label": "APIv2 (recommended for new integrations)"
+            }
+          ],
+          "default": "smseagle-apiv1"
+        },
+        {
+          "name": "smseagleRecipientType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "smseagle-to",
+              "label": "Phone number(s)"
+            },
+            {
+              "value": "smseagle-group",
+              "label": "Phonebook group name(s)"
+            },
+            {
+              "value": "smseagle-contact",
+              "label": "Phonebook contact name(s)"
+            }
+          ],
+          "visible_if": "smseagleApiType === 'smseagle-apiv1'",
+          "default": "smseagle-to"
+        },
+        {
+          "name": "smseagleRecipient",
+          "type": "text",
+          "required": true,
+          "visible_if": "smseagleApiType === 'smseagle-apiv1'"
+        },
+        {
+          "name": "smseaglePriority",
+          "type": "number",
+          "required": true,
+          "placeholder": "0",
+          "min": "0",
+          "max": "9",
+          "step": "1",
+          "visible_if_any": [
+            "smseagleApiType === 'smseagle-apiv1' && smseagleMsgType === 'smseagle-sms' || smseagleRecipientType !== 'smseagle-to'",
+            "smseagleApiType === 'smseagle-apiv2'"
+          ]
+        },
+        {
+          "name": "smseagleEncoding",
+          "type": "checkbox",
+          "required": false,
+          "visible_if_any": [
+            "smseagleApiType === 'smseagle-apiv1' && smseagleMsgType === 'smseagle-sms' || smseagleRecipientType !== 'smseagle-to'",
+            "smseagleApiType === 'smseagle-apiv2'"
+          ]
+        },
+        {
+          "name": "smseagleMsgType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "smseagle-sms",
+              "label": "Sms message (default)"
+            },
+            {
+              "value": "smseagle-ring",
+              "label": "Ring call"
+            },
+            {
+              "value": "smseagle-tts",
+              "label": "Text-to-speech call"
+            },
+            {
+              "value": "smseagle-tts-advanced",
+              "label": "Text-to-speech Advanced call"
+            }
+          ],
+          "visible_if_any": [
+            "smseagleApiType === 'smseagle-apiv1' && smseagleRecipientType === 'smseagle-to'",
+            "smseagleApiType === 'smseagle-apiv2'"
+          ],
+          "default": "smseagle-sms"
+        },
+        {
+          "name": "smseagleDuration",
+          "type": "number",
+          "required": false,
+          "placeholder": "10",
+          "min": "0",
+          "max": "30",
+          "step": "1",
+          "visible_if_any": [
+            "smseagleApiType === 'smseagle-apiv1' && smseagleRecipientType === 'smseagle-to' && smseagleMsgType === 'smseagle-ring' || smseagleMsgType === 'smseagle-tts' || smseagleMsgType === 'smseagle-tts-advanced'",
+            "smseagleApiType === 'smseagle-apiv2' && smseagleMsgType && smseagleMsgType !== 'smseagle-sms'"
+          ]
+        },
+        {
+          "name": "smseagleTtsModel",
+          "type": "number",
+          "required": true,
+          "placeholder": "1",
+          "visible_if_any": [
+            "smseagleApiType === 'smseagle-apiv1' && smseagleRecipientType === 'smseagle-to' && smseagleMsgType === 'smseagle-tts-advanced'",
+            "smseagleApiType === 'smseagle-apiv2' && smseagleMsgType === 'smseagle-tts-advanced'"
+          ]
+        },
+        {
+          "name": "smseagleRecipientTo",
+          "type": "text",
+          "required": false,
+          "visible_if": "smseagleApiType === 'smseagle-apiv2'"
+        },
+        {
+          "name": "smseagleRecipientGroup",
+          "type": "text",
+          "required": false,
+          "visible_if": "smseagleApiType === 'smseagle-apiv2'"
+        },
+        {
+          "name": "smseagleRecipientContact",
+          "type": "text",
+          "required": false,
+          "visible_if": "smseagleApiType === 'smseagle-apiv2'"
+        }
+      ],
+      "server_fields_read": [
+        "smseagleApiType",
+        "smseagleDuration",
+        "smseagleEncoding",
+        "smseagleMsgType",
+        "smseaglePriority",
+        "smseagleRecipient",
+        "smseagleRecipientContact",
+        "smseagleRecipientGroup",
+        "smseagleRecipientTo",
+        "smseagleRecipientType",
+        "smseagleToken",
+        "smseagleTtsModel",
+        "smseagleUrl"
+      ]
+    },
+    "SMSGateway": {
+      "label": "SMS Gateway",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/SMSGateway.vue",
+      "server_provider": "server/notification-providers/sms-gateway.js",
+      "fields": [
+        {
+          "name": "smsgatewayUrl",
+          "type": "url",
+          "required": true,
+          "placeholder": "http://localhost:8080"
+        },
+        {
+          "name": "smsgatewayApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "smsgatewayTo",
+          "type": "text",
+          "required": true,
+          "placeholder": "+15551234567, +15559876543"
+        }
+      ],
+      "server_fields_read": [
+        "smsgatewayApiKey",
+        "smsgatewayTo",
+        "smsgatewayUrl"
+      ]
+    },
+    "smsir": {
+      "label": "SMS.IR",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/SMSIR.vue",
+      "server_provider": "server/notification-providers/smsir.js",
+      "fields": [
+        {
+          "name": "smsirApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "smsirNumber",
+          "type": "text",
+          "required": true,
+          "placeholder": "9123456789,09987654321"
+        },
+        {
+          "name": "smsirTemplate",
+          "type": "text",
+          "required": true,
+          "placeholder": "12345"
+        }
+      ],
+      "server_fields_read": [
+        "smsirApiKey",
+        "smsirNumber",
+        "smsirTemplate"
+      ]
+    },
+    "SMSManager": {
+      "label": "SmsManager (smsmanager.cz)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/SMSManager.vue",
+      "server_provider": "server/notification-providers/smsmanager.js",
+      "fields": [
+        {
+          "name": "smsmanagerApiKey",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "numbers",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "messageType",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "economy",
+              "label": "Economy"
+            },
+            {
+              "value": "lowcost",
+              "label": "Lowcost"
+            },
+            {
+              "value": "high",
+              "label": "High"
+            }
+          ]
+        }
+      ],
+      "server_fields_read": [
+        "messageType",
+        "numbers",
+        "smsmanagerApiKey"
+      ]
+    },
+    "SMSPartner": {
+      "label": "SMS Partner",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/SMSPartner.vue",
+      "server_provider": "server/notification-providers/smspartner.js",
+      "fields": [
+        {
+          "name": "smspartnerApikey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "smspartnerPhoneNumber",
+          "type": "text",
+          "required": true,
+          "pattern": "^[\\d+,]+$"
+        },
+        {
+          "name": "smspartnerSenderName",
+          "type": "text",
+          "required": true,
+          "pattern": "^[a-zA-Z0-9]*$"
+        }
+      ],
+      "server_fields_read": [
+        "smspartnerApikey",
+        "smspartnerPhoneNumber",
+        "smspartnerSenderName"
+      ]
+    },
+    "SMSPlanet": {
+      "label": "SMSPlanet.pl",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/SMSPlanet.vue",
+      "server_provider": "server/notification-providers/sms-planet.js",
+      "fields": [
+        {
+          "name": "smsplanetApiToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "smsplanetPhoneNumbers",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "smsplanetPhoneNumbers"
+        },
+        {
+          "name": "smsplanetSenderName",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "smsplanetApiToken",
+        "smsplanetPhoneNumbers",
+        "smsplanetSenderName"
+      ]
+    },
+    "smtp": {
+      "label": "Email (SMTP)",
+      "categories": [
+        "email"
+      ],
+      "vue_component": "src/components/notifications/SMTP.vue",
+      "server_provider": "server/notification-providers/smtp.js",
+      "fields": [
+        {
+          "name": "smtpHost",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "smtpPort",
+          "type": "number",
+          "required": true,
+          "min": "0",
+          "max": "65535",
+          "step": "1"
+        },
+        {
+          "name": "smtpSecure",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "{{false}}",
+              "label": "None / STARTTLS (25, 587)"
+            },
+            {
+              "value": "{{true}}",
+              "label": "TLS (465)"
+            }
+          ],
+          "default": false
+        },
+        {
+          "name": "smtpIgnoreTLSError",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "smtpIgnoreSTARTTLS",
+          "type": "checkbox",
+          "required": false,
+          "visible_if": "!smtpSecure"
+        },
+        {
+          "name": "smtpUsername",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "smtpPassword",
+          "type": "password",
+          "required": false
+        },
+        {
+          "name": "smtpFrom",
+          "type": "text",
+          "required": true,
+          "placeholder": "\"Uptime Kuma\" &lt;example@kuma.pet&gt;"
+        },
+        {
+          "name": "smtpTo",
+          "type": "text",
+          "required": false,
+          "placeholder": "example2@kuma.pet, example3@kuma.pet"
+        },
+        {
+          "name": "smtpCC",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "smtpBCC",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "customSubject",
+          "type": "text(liquid-template)",
+          "required": false
+        },
+        {
+          "name": "customBody",
+          "type": "textarea(liquid-template)",
+          "required": false
+        },
+        {
+          "name": "htmlBody",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "smtpAdditionalHeaders",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "headersPlaceholder",
+          "visible_if": "showAdditionalHeadersField"
+        },
+        {
+          "name": "smtpDkimDomain",
+          "type": "text",
+          "required": false,
+          "placeholder": "example.com"
+        },
+        {
+          "name": "smtpDkimKeySelector",
+          "type": "text",
+          "required": false,
+          "placeholder": "2017"
+        },
+        {
+          "name": "smtpDkimPrivateKey",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "-----BEGIN PRIVATE KEY-----"
+        },
+        {
+          "name": "smtpDkimHashAlgo",
+          "type": "text",
+          "required": false,
+          "placeholder": "sha256"
+        },
+        {
+          "name": "smtpDkimheaderFieldNames",
+          "type": "text",
+          "required": false,
+          "placeholder": "message-id:date:from:to"
+        },
+        {
+          "name": "smtpDkimskipFields",
+          "type": "text",
+          "required": false,
+          "placeholder": "message-id:date"
+        }
+      ],
+      "server_fields_read": [
+        "customBody",
+        "customSubject",
+        "htmlBody",
+        "smtpAdditionalHeaders",
+        "smtpBCC",
+        "smtpCC",
+        "smtpDkimDomain",
+        "smtpDkimHashAlgo",
+        "smtpDkimKeySelector",
+        "smtpDkimPrivateKey",
+        "smtpDkimheaderFieldNames",
+        "smtpDkimskipFields",
+        "smtpFrom",
+        "smtpHost",
+        "smtpIgnoreSTARTTLS",
+        "smtpIgnoreTLSError",
+        "smtpPassword",
+        "smtpPort",
+        "smtpSecure",
+        "smtpTo",
+        "smtpUsername"
+      ]
+    },
+    "Splunk": {
+      "label": "Splunk",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/Splunk.vue",
+      "server_provider": "server/notification-providers/splunk.js",
+      "fields": [
+        {
+          "name": "splunkRestURL",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "splunkSeverity",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "INFO",
+              "label": "info"
+            },
+            {
+              "value": "WARNING",
+              "label": "warning"
+            },
+            {
+              "value": "CRITICAL",
+              "label": "critical"
+            }
+          ]
+        },
+        {
+          "name": "splunkAutoResolve",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "0",
+              "label": "do nothing"
+            },
+            {
+              "value": "ACKNOWLEDGEMENT",
+              "label": "auto acknowledged"
+            },
+            {
+              "value": "RECOVERY",
+              "label": "auto resolve"
+            }
+          ]
+        }
+      ],
+      "server_fields_read": [
+        "pagerdutyIntegrationKey",
+        "splunkAutoResolve",
+        "splunkRestURL",
+        "splunkSeverity"
+      ]
+    },
+    "SpugPush": {
+      "label": "SpugPush（Spug推送助手）",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/SpugPush.vue",
+      "server_provider": "server/notification-providers/spugpush.js",
+      "fields": [
+        {
+          "name": "templateKey",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "templateKey"
+      ]
+    },
+    "squadcast": {
+      "label": "SquadCast",
+      "categories": [
+        "incidentManagement"
+      ],
+      "vue_component": "src/components/notifications/Squadcast.vue",
+      "server_provider": "server/notification-providers/squadcast.js",
+      "fields": [
+        {
+          "name": "squadcastWebhookURL",
+          "type": "url",
+          "required": true,
+          "pattern": "https?://.+"
+        }
+      ],
+      "server_fields_read": [
+        "squadcastWebhookURL"
+      ]
+    },
+    "stackfield": {
+      "label": "Stackfield",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Stackfield.vue",
+      "server_provider": "server/notification-providers/stackfield.js",
+      "fields": [
+        {
+          "name": "stackfieldwebhookURL",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "stackfieldwebhookURL"
+      ]
+    },
+    "teams": {
+      "label": "Microsoft Teams",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Teams.vue",
+      "server_provider": "server/notification-providers/teams.js",
+      "fields": [
+        {
+          "name": "webhookUrl",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "teamsEnableTags",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "teamsEnableTags",
+        "webhookUrl"
+      ]
+    },
+    "telegram": {
+      "label": "Telegram",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Telegram.vue",
+      "server_provider": "server/notification-providers/telegram.js",
+      "fields": [
+        {
+          "name": "telegramBotToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "telegramChatID",
+          "type": "text",
+          "required": true,
+          "default": [
+            {
+              "js": "update.channel_post.chat.id"
+            },
+            {
+              "js": "update.message.chat.id"
+            }
+          ]
+        },
+        {
+          "name": "telegramMessageThreadID",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "telegramServerUrl",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "telegramUseTemplate",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "telegramTemplateParseMode",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "plain",
+              "label": "Plain Text"
+            },
+            {
+              "value": "HTML",
+              "label": "HTML"
+            },
+            {
+              "value": "MarkdownV2",
+              "label": "MarkdownV2"
+            }
+          ],
+          "visible_if": "telegramUseTemplate"
+        },
+        {
+          "name": "telegramTemplate",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "placeholder": "telegramTemplatedTextareaPlaceholder",
+          "visible_if": "telegramUseTemplate"
+        },
+        {
+          "name": "telegramSendSilently",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "telegramProtectContent",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "telegramBotToken",
+        "telegramChatID",
+        "telegramMessageThreadID",
+        "telegramProtectContent",
+        "telegramSendSilently",
+        "telegramServerUrl",
+        "telegramTemplate",
+        "telegramTemplateParseMode",
+        "telegramUseTemplate"
+      ]
+    },
+    "telnyx": {
+      "label": "Telnyx",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/Telnyx.vue",
+      "server_provider": "server/notification-providers/telnyx.js",
+      "fields": [
+        {
+          "name": "telnyxApiKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "telnyxPhoneNumber",
+          "type": "text",
+          "required": true,
+          "placeholder": "+15551234567"
+        },
+        {
+          "name": "telnyxToNumber",
+          "type": "text",
+          "required": true,
+          "placeholder": "+15559876543"
+        },
+        {
+          "name": "telnyxMessagingProfileId",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "telnyxApiKey",
+        "telnyxMessagingProfileId",
+        "telnyxPhoneNumber",
+        "telnyxToNumber"
+      ]
+    },
+    "Teltonika": {
+      "label": "Teltonika SMS Gateway",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/Teltonika.vue",
+      "server_provider": "server/notification-providers/teltonika.js",
+      "fields": [
+        {
+          "name": "teltonikaUrl",
+          "type": "url",
+          "required": true,
+          "placeholder": "192.168.100.1"
+        },
+        {
+          "name": "teltonikaUnsafeTls",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "teltonikaUsername",
+          "type": "text",
+          "required": true,
+          "pattern": "^[a-zA-Z0-9]*$"
+        },
+        {
+          "name": "teltonikaPassword",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "teltonikaModem",
+          "type": "text",
+          "required": true,
+          "pattern": "^[0-9]-[0-9]"
+        },
+        {
+          "name": "teltonikaPhoneNumber",
+          "type": "text",
+          "required": true,
+          "pattern": "^[\\d+,]+$"
+        }
+      ],
+      "server_fields_read": [
+        "teltonikaModem",
+        "teltonikaPassword",
+        "teltonikaPhoneNumber",
+        "teltonikaUnsafeTls",
+        "teltonikaUrl",
+        "teltonikaUsername"
+      ]
+    },
+    "threema": {
+      "label": "Threema",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Threema.vue",
+      "server_provider": "server/notification-providers/threema.js",
+      "fields": [
+        {
+          "name": "threemaRecipientType",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "identity",
+              "label": "Threema-ID"
+            },
+            {
+              "value": "phone",
+              "label": "Phone Number"
+            },
+            {
+              "value": "email",
+              "label": "Email Address"
+            }
+          ]
+        },
+        {
+          "name": "threemaRecipient",
+          "type": "text",
+          "required": true,
+          "pattern": "[A-Z0-9]{8}",
+          "visible_if_any": [
+            "threemaRecipientType === 'identity'",
+            "threemaRecipientType === 'phone'",
+            "threemaRecipientType === 'email'"
+          ],
+          "alt_types": [
+            "email"
+          ]
+        },
+        {
+          "name": "threemaSenderIdentity",
+          "type": "text",
+          "required": true,
+          "pattern": "^\\*[A-Z0-9]{7}$"
+        },
+        {
+          "name": "threemaSecret",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "threemaRecipient",
+        "threemaRecipientType",
+        "threemaSecret",
+        "threemaSenderIdentity"
+      ]
+    },
+    "TurboSMTP": {
+      "label": "TurboSMTP",
+      "categories": [
+        "email"
+      ],
+      "vue_component": "src/components/notifications/TurboSMTP.vue",
+      "server_provider": "server/notification-providers/turbosmtp.js",
+      "fields": [
+        {
+          "name": "turbosmtpConsumerKey",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "turbosmtpConsumerSecret",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "turbosmtpRegion",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "us",
+              "label": "US (Default)"
+            },
+            {
+              "value": "eu",
+              "label": "EU"
+            }
+          ],
+          "default": "us"
+        },
+        {
+          "name": "turbosmtpFromEmail",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "turbosmtpToEmail",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "turbosmtpCcEmail",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "turbosmtpBccEmail",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "turbosmtpSubject",
+          "type": "text",
+          "required": false,
+          "default": "Notification from Your Uptime Kuma"
+        }
+      ],
+      "server_fields_read": [
+        "turbosmtpBccEmail",
+        "turbosmtpCcEmail",
+        "turbosmtpConsumerKey",
+        "turbosmtpConsumerSecret",
+        "turbosmtpFromEmail",
+        "turbosmtpRegion",
+        "turbosmtpSubject",
+        "turbosmtpToEmail"
+      ]
+    },
+    "twilio": {
+      "label": "Twilio",
+      "categories": [
+        "smsServices"
+      ],
+      "vue_component": "src/components/notifications/Twilio.vue",
+      "server_provider": "server/notification-providers/twilio.js",
+      "fields": [
+        {
+          "name": "twilioAccountSID",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "twilioApiKey",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "twilioMessagingServiceSID",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "twilioAuthToken",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "twilioFromNumber",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "twilioToNumber",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "twilioAccountSID",
+        "twilioApiKey",
+        "twilioAuthToken",
+        "twilioFromNumber",
+        "twilioMessagingServiceSID",
+        "twilioToNumber"
+      ]
+    },
+    "VK": {
+      "label": "VK",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/VK.vue",
+      "server_provider": "server/notification-providers/vk.js",
+      "fields": [
+        {
+          "name": "vkAccessToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "vkApiVersion",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "vkPeerId",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "vkDontParseLinks",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "server_fields_read": [
+        "vkAccessToken",
+        "vkApiVersion",
+        "vkDontParseLinks",
+        "vkPeerId"
+      ]
+    },
+    "VKTeams": {
+      "label": "VKTeams",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/VKTeams.vue",
+      "server_provider": "server/notification-providers/vkteams.js",
+      "fields": [
+        {
+          "name": "vkteamsBotToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "vkteamsChatId",
+          "type": "text",
+          "required": true,
+          "placeholder": "*****@chat.agent"
+        },
+        {
+          "name": "vkteamsBaseUrl",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "vkteamsUseTemplate",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "vkteamsTemplateFormat",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "plain",
+              "label": "Plain Text"
+            },
+            {
+              "value": "MarkdownV2",
+              "label": "MarkdownV2"
+            },
+            {
+              "value": "HTML",
+              "label": "HTML"
+            }
+          ],
+          "visible_if": "vkteamsUseTemplate"
+        },
+        {
+          "name": "vkteamsTemplate",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "visible_if": "vkteamsUseTemplate"
+        }
+      ],
+      "server_fields_read": [
+        "vkteamsBaseUrl",
+        "vkteamsBotToken",
+        "vkteamsChatId",
+        "vkteamsTemplate",
+        "vkteamsTemplateFormat",
+        "vkteamsUseTemplate"
+      ]
+    },
+    "waha": {
+      "label": "WhatsApp (WAHA)",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/WAHA.vue",
+      "server_provider": "server/notification-providers/waha.js",
+      "fields": [
+        {
+          "name": "wahaApiUrl",
+          "type": "url",
+          "required": true,
+          "placeholder": "http://localhost:3000/"
+        },
+        {
+          "name": "wahaApiKey",
+          "type": "password",
+          "required": false
+        },
+        {
+          "name": "wahaSession",
+          "type": "text",
+          "required": true,
+          "placeholder": "default"
+        },
+        {
+          "name": "wahaChatId",
+          "type": "text",
+          "required": true,
+          "pattern": "^[\\d-]{10,31}$"
+        }
+      ],
+      "server_fields_read": [
+        "wahaApiKey",
+        "wahaApiUrl",
+        "wahaChatId",
+        "wahaSession"
+      ]
+    },
+    "webhook": {
+      "label": "Webhook",
+      "categories": [
+        "universal"
+      ],
+      "vue_component": "src/components/notifications/Webhook.vue",
+      "server_provider": "server/notification-providers/webhook.js",
+      "fields": [
+        {
+          "name": "webhookURL",
+          "type": "url",
+          "required": true,
+          "pattern": "https?://.+"
+        },
+        {
+          "name": "httpMethod",
+          "type": "select",
+          "required": false,
+          "options": [
+            {
+              "value": "post",
+              "label": "POST"
+            },
+            {
+              "value": "get",
+              "label": "GET"
+            }
+          ],
+          "default": "post"
+        },
+        {
+          "name": "webhookContentType",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "json",
+              "label": "Preset - application/json"
+            },
+            {
+              "value": "form-data",
+              "label": "Preset - multipart/form-data"
+            },
+            {
+              "value": "custom",
+              "label": "Custom Body"
+            }
+          ],
+          "visible_if": "httpMethod === 'post'"
+        },
+        {
+          "name": "webhookCustomBody",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "placeholder": "customBodyPlaceholder",
+          "visible_if": "httpMethod === 'post' && webhookContentType == 'custom'"
+        },
+        {
+          "name": "webhookAdditionalHeaders",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "headersPlaceholder",
+          "visible_if": "showAdditionalHeadersField"
+        }
+      ],
+      "server_fields_read": [
+        "httpMethod",
+        "webhookAdditionalHeaders",
+        "webhookContentType",
+        "webhookCustomBody",
+        "webhookURL"
+      ]
+    },
+    "Webpush": {
+      "label": "Webpush",
+      "categories": [
+        "pushServices"
+      ],
+      "vue_component": "src/components/notifications/Webpush.vue",
+      "server_provider": "server/notification-providers/Webpush.js",
+      "fields": [
+        {
+          "name": "subscription",
+          "type": "object(PushSubscription)",
+          "required": true,
+          "notes": "Set by the browser via PushManager.subscribe() with VAPID key from socket event getWebpushVapidPublicKey. Not usable from a native app without implementing Web Push."
+        }
+      ],
+      "server_fields_read": [
+        "subscription"
+      ],
+      "other_fields_referenced": [
+        "subscription"
+      ]
+    },
+    "WeCom": {
+      "label": "WeCom (企业微信群机器人)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/WeCom.vue",
+      "server_provider": "server/notification-providers/wecom.js",
+      "fields": [
+        {
+          "name": "weComBotKey",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "weComMentionedMobileList",
+          "type": "text",
+          "required": false,
+          "placeholder": "13800001111,13900002222,@all"
+        }
+      ],
+      "server_fields_read": [
+        "weComBotKey",
+        "weComMentionedMobileList"
+      ]
+    },
+    "whapi": {
+      "label": "WhatsApp (Whapi)",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/Whapi.vue",
+      "server_provider": "server/notification-providers/whapi.js",
+      "fields": [
+        {
+          "name": "whapiApiUrl",
+          "type": "text",
+          "required": false,
+          "placeholder": "https://gate.whapi.cloud/"
+        },
+        {
+          "name": "whapiAuthToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "whapiRecipient",
+          "type": "text",
+          "required": true,
+          "pattern": "^[\\d-]{10,31}(@[\\w\\.]{1,})?$"
+        }
+      ],
+      "server_fields_read": [
+        "whapiApiUrl",
+        "whapiAuthToken",
+        "whapiRecipient"
+      ]
+    },
+    "Whatsapp360messenger": {
+      "label": "WhatsApp (360messenger)",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/360messenger.vue",
+      "server_provider": "server/notification-providers/360messenger.js",
+      "fields": [
+        {
+          "name": "Whatsapp360messengerAuthToken",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "Whatsapp360messengerRecipient",
+          "type": "text",
+          "required": false,
+          "placeholder": "447488888888, 447499999999"
+        },
+        {
+          "name": "Whatsapp360messengerGroupIds",
+          "type": "multiselect",
+          "required": false,
+          "placeholder": "$t('360messengerSelectGroupList')",
+          "default": [
+            {
+              "js": "[]"
+            },
+            {
+              "js": "normalized"
+            },
+            {
+              "js": "list.filter((x) => x !== id)"
+            }
+          ]
+        },
+        {
+          "name": "Whatsapp360messengerUseTemplate",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "Whatsapp360messengerTemplate",
+          "type": "textarea(liquid-template)",
+          "required": true,
+          "placeholder": "Whatsapp360messengerTemplatedTextareaPlaceholder",
+          "visible_if": "Whatsapp360messengerUseTemplate"
+        }
+      ],
+      "server_fields_read": [
+        "Whatsapp360messengerAuthToken",
+        "Whatsapp360messengerGroupId",
+        "Whatsapp360messengerGroupIds",
+        "Whatsapp360messengerRecipient",
+        "Whatsapp360messengerTemplate",
+        "Whatsapp360messengerUseTemplate"
+      ],
+      "other_fields_referenced": [
+        "Whatsapp360messengerGroupId"
+      ]
+    },
+    "WPush": {
+      "label": "WPush(wpush.cn)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/WPush.vue",
+      "server_provider": "server/notification-providers/wpush.js",
+      "fields": [
+        {
+          "name": "wpushAPIkey",
+          "type": "password",
+          "required": true,
+          "placeholder": "WPushxxxxx"
+        },
+        {
+          "name": "wpushChannel",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "wechat",
+              "label": "微信"
+            },
+            {
+              "value": "sms",
+              "label": "短信"
+            },
+            {
+              "value": "mail",
+              "label": "邮件"
+            },
+            {
+              "value": "feishu",
+              "label": "飞书"
+            },
+            {
+              "value": "dingtalk",
+              "label": "钉钉"
+            },
+            {
+              "value": "wechat_work",
+              "label": "企业微信"
+            }
+          ]
+        }
+      ],
+      "server_fields_read": [
+        "wpushAPIkey",
+        "wpushChannel"
+      ]
+    },
+    "WxPusher": {
+      "label": "WxPusher SPT Push (WxPusher极简推送)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/WxPusher.vue",
+      "server_provider": "server/notification-providers/wxpusher.js",
+      "fields": [
+        {
+          "name": "wxpusherSPT",
+          "type": "password",
+          "required": true,
+          "placeholder": "SPT_xxxxxxxxxxxx"
+        }
+      ],
+      "server_fields_read": [
+        "wxpusherSPT"
+      ]
+    },
+    "YZJ": {
+      "label": "YZJ (云之家自定义机器人)",
+      "categories": [
+        "regional"
+      ],
+      "vue_component": "src/components/notifications/YZJ.vue",
+      "server_provider": "server/notification-providers/yzj.js",
+      "fields": [
+        {
+          "name": "yzjWebHookUrl",
+          "type": "url",
+          "required": true
+        },
+        {
+          "name": "yzjToken",
+          "type": "password",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "yzjToken",
+        "yzjWebHookUrl"
+      ]
+    },
+    "ZohoCliq": {
+      "label": "ZohoCliq",
+      "categories": [
+        "chatPlatforms"
+      ],
+      "vue_component": "src/components/notifications/ZohoCliq.vue",
+      "server_provider": "server/notification-providers/zoho-cliq.js",
+      "fields": [
+        {
+          "name": "webhookUrl",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "server_fields_read": [
+        "webhookUrl"
+      ]
+    }
+  }
+}

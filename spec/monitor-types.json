@@ -1,0 +1,3636 @@
+{
+  "$schema_note": "Hand-derived from Uptime Kuma source; see docs/kuma-api/monitor-types.md for prose.",
+  "version": "2.5.8",
+  "kuma_commit": "0bd417b981d7dd4e7a0ecaa5afcd90c274d74eca",
+  "status_codes": {
+    "DOWN": 0,
+    "UP": 1,
+    "PENDING": 2,
+    "MAINTENANCE": 3
+  },
+  "type_count": 34,
+  "types_order_in_ui": [
+    "http",
+    "keyword",
+    "json-query",
+    "port",
+    "ping",
+    "dns",
+    "docker",
+    "system-service",
+    "pm2",
+    "real-browser",
+    "websocket-upgrade",
+    "sftp",
+    "group",
+    "push",
+    "manual",
+    "globalping",
+    "grpc-keyword",
+    "kafka-producer",
+    "mqtt",
+    "ntp",
+    "rabbitmq",
+    "sip-options",
+    "smtp",
+    "snmp",
+    "tailscale-ping",
+    "sqlserver",
+    "mongodb",
+    "mysql",
+    "oracledb",
+    "postgres",
+    "radius",
+    "redis",
+    "gamedig",
+    "steam"
+  ],
+  "server_registered_monitor_types": [
+    "real-browser",
+    "tailscale-ping",
+    "websocket-upgrade",
+    "dns",
+    "postgres",
+    "mqtt",
+    "smtp",
+    "group",
+    "snmp",
+    "grpc-keyword",
+    "mongodb",
+    "rabbitmq",
+    "sip-options",
+    "gamedig",
+    "steam",
+    "port",
+    "manual",
+    "globalping",
+    "redis",
+    "pm2",
+    "system-service",
+    "sqlserver",
+    "mysql",
+    "sftp",
+    "oracledb",
+    "ntp"
+  ],
+  "inline_monitor_types_in_monitor_js": [
+    "http",
+    "keyword",
+    "json-query",
+    "ping",
+    "push",
+    "docker",
+    "radius",
+    "kafka-producer"
+  ],
+  "field_catalogue": [
+    {
+      "name": "type",
+      "type": "select",
+      "visible_for": "*",
+      "required": true,
+      "default": "http",
+      "options": [
+        "http",
+        "keyword",
+        "json-query",
+        "port",
+        "ping",
+        "dns",
+        "docker",
+        "system-service",
+        "pm2",
+        "real-browser",
+        "websocket-upgrade",
+        "sftp",
+        "group",
+        "push",
+        "manual",
+        "globalping",
+        "grpc-keyword",
+        "kafka-producer",
+        "mqtt",
+        "ntp",
+        "rabbitmq",
+        "sip-options",
+        "smtp",
+        "snmp",
+        "tailscale-ping",
+        "sqlserver",
+        "mongodb",
+        "mysql",
+        "oracledb",
+        "postgres",
+        "radius",
+        "redis",
+        "gamedig",
+        "steam"
+      ],
+      "db_column": "type",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:32-120",
+      "notes": "optgroups: General / Special / Passive / Specific / Database / Game Server. system-service only offered when info.runtime.platform in [linux, win32] and !info.isContainer; sip-options and tailscale-ping hidden when info.isContainer."
+    },
+    {
+      "name": "subtype",
+      "type": "select",
+      "visible_for": [
+        "globalping"
+      ],
+      "required": true,
+      "default": "ping",
+      "options": [
+        "ping",
+        "http",
+        "dns"
+      ],
+      "db_column": "subtype",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:143-155, 3775-3777",
+      "notes": "Set to 'ping' when type becomes globalping."
+    },
+    {
+      "name": "name",
+      "type": "text",
+      "visible_for": "*",
+      "required": false,
+      "default": "",
+      "db_column": "name",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:162-172, 3437-3457, 4338-4340",
+      "notes": "If empty on submit, UI fills defaultFriendlyName (hostname, else system_service_name, else URL host, else $t('defaultFriendlyName'))."
+    },
+    {
+      "name": "manual_status",
+      "type": "select",
+      "visible_for": [
+        "manual"
+      ],
+      "required": false,
+      "options": [
+        1,
+        0
+      ],
+      "db_column": "manual_status",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:175-186; server/monitor-types/manual.js:16-30",
+      "notes": "1 = Up, 0 = Down; null = heartbeat status stays as previous. Not exposed in MonitorJSON."
+    },
+    {
+      "name": "url",
+      "type": "url",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "real-browser",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": true,
+      "default": "https://",
+      "visible_if": "type != 'globalping' || subtype == 'http'",
+      "db_column": "url",
+      "pattern": "https?://.+ (websocket-upgrade: wss?://.+)",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:189-209, 537-551, 3294-3303, 4265-4304",
+      "notes": "Default 'wss://' for websocket-upgrade. isInputValid() checks protocol: http/keyword/json-query -> http:/https:, websocket-upgrade -> ws:/wss:, real-browser -> any parseable URL."
+    },
+    {
+      "name": "wsSubprotocol",
+      "type": "text",
+      "visible_for": [
+        "websocket-upgrade"
+      ],
+      "required": false,
+      "default": "",
+      "db_column": "ws_subprotocol",
+      "placeholder": "mielecloudconnect,soap",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:215-235"
+    },
+    {
+      "name": "headers",
+      "type": "textarea(json)",
+      "visible_for": [
+        "websocket-upgrade",
+        "http",
+        "keyword",
+        "json-query",
+        "globalping"
+      ],
+      "required": false,
+      "visible_if": "type != 'globalping' || subtype == 'http'",
+      "db_column": "headers",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:238-246, 2648-2656, 2882-2890, 4183-4190, 4360-4362; server/model/monitor.js:1682-1688",
+      "notes": "JSON object string, e.g. {\"HeaderName\":\"HeaderValue\"}. Validated as JSON client and server side; UI re-serialises with 4-space indent."
+    },
+    {
+      "name": "grpcUrl",
+      "type": "text",
+      "visible_for": [
+        "grpc-keyword"
+      ],
+      "required": true,
+      "db_column": "grpc_url",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:250-259"
+    },
+    {
+      "name": "pushToken",
+      "type": "text",
+      "visible_for": [
+        "push"
+      ],
+      "required": false,
+      "db_column": "push_token",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:262-273, 3292, 3815-3821, 4309-4311; src/util.ts:536-544",
+      "notes": "Generated client-side: genSecret(32) over [A-Za-z0-9]. Server never generates it. Read-only in UI; 'Reset Token' regenerates. Push URL = baseURL + '/api/push/' + pushToken + '?status=up&msg=OK&ping='."
+    },
+    {
+      "name": "keyword",
+      "type": "text",
+      "visible_for": [
+        "keyword",
+        "grpc-keyword",
+        "globalping"
+      ],
+      "required": false,
+      "visible_if": "type in ['keyword','grpc-keyword'] (required) || (type == 'globalping' && subtype == 'dns') (regex record match, optional) || (type == 'globalping' && subtype == 'http' && responsecheck == 'keyword')",
+      "db_column": "keyword",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:276-288, 662-673, 3055-3067",
+      "notes": "Required for keyword and grpc-keyword."
+    },
+    {
+      "name": "invertKeyword",
+      "type": "checkbox",
+      "visible_for": [
+        "keyword",
+        "grpc-keyword",
+        "globalping"
+      ],
+      "required": false,
+      "default": false,
+      "visible_if": "type in ['keyword','grpc-keyword'] || (type == 'globalping' && subtype == 'http' && responsecheck == 'keyword')",
+      "db_column": "invert_keyword",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:291-307, 3070-3083"
+    },
+    {
+      "name": "remote_browser",
+      "type": "select(remoteBrowserList.id)",
+      "visible_for": [
+        "real-browser"
+      ],
+      "required": false,
+      "default": null,
+      "db_column": "remote_browser",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:310-336, 3482-3498",
+      "notes": "null = local Chromium. UI toggle 'useRemoteBrowser'."
+    },
+    {
+      "name": "game",
+      "type": "select(getGameList keys[0])",
+      "visible_for": [
+        "gamedig"
+      ],
+      "required": true,
+      "db_column": "game",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:340-347, 3882-3891, 3965-3970",
+      "notes": "Selecting a game sets port to game.options.port if port unset or equal to previous game's default."
+    },
+    {
+      "name": "kafkaProducerBrokers",
+      "type": "string[]",
+      "visible_for": [
+        "kafka-producer"
+      ],
+      "required": false,
+      "default": [],
+      "db_column": "kafka_producer_brokers (JSON)",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:351-371; server/server.js:758, 931",
+      "notes": "Taggable multiselect; server JSON.stringify's it."
+    },
+    {
+      "name": "kafkaProducerTopic",
+      "type": "text",
+      "visible_for": [
+        "kafka-producer"
+      ],
+      "required": true,
+      "db_column": "kafka_producer_topic",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:374-385"
+    },
+    {
+      "name": "kafkaProducerMessage",
+      "type": "text",
+      "visible_for": [
+        "kafka-producer"
+      ],
+      "required": true,
+      "db_column": "kafka_producer_message",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:388-399"
+    },
+    {
+      "name": "kafkaProducerSsl",
+      "type": "checkbox",
+      "visible_for": [
+        "kafka-producer"
+      ],
+      "required": false,
+      "default": false,
+      "db_column": "kafka_producer_ssl",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:402-412"
+    },
+    {
+      "name": "kafkaProducerAllowAutoTopicCreation",
+      "type": "checkbox",
+      "visible_for": [
+        "kafka-producer"
+      ],
+      "required": false,
+      "default": false,
+      "db_column": "kafka_producer_allow_auto_topic_creation",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:415-425"
+    },
+    {
+      "name": "rabbitmqNodes",
+      "type": "string[]",
+      "visible_for": [
+        "rabbitmq"
+      ],
+      "required": true,
+      "default": [],
+      "db_column": "rabbitmq_nodes (JSON)",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:430-452, 4198-4211; server/server.js:763, 948",
+      "notes": "Each node must start with http:// or https:// (management API URL, e.g. https://node1:15672)."
+    },
+    {
+      "name": "rabbitmqUsername",
+      "type": "text",
+      "visible_for": [
+        "rabbitmq"
+      ],
+      "required": true,
+      "default": "",
+      "db_column": "rabbitmq_username",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:454-465"
+    },
+    {
+      "name": "rabbitmqPassword",
+      "type": "password",
+      "visible_for": [
+        "rabbitmq"
+      ],
+      "required": true,
+      "default": "",
+      "db_column": "rabbitmq_password",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:467-477"
+    },
+    {
+      "name": "hostname",
+      "type": "text",
+      "visible_for": [
+        "port",
+        "ping",
+        "dns",
+        "steam",
+        "gamedig",
+        "mqtt",
+        "radius",
+        "tailscale-ping",
+        "smtp",
+        "snmp",
+        "sip-options",
+        "sftp",
+        "ntp",
+        "globalping"
+      ],
+      "required": true,
+      "visible_if": "type != 'globalping' || subtype in ['ping','dns']",
+      "db_column": "hostname",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:482-535, 4230-4263, 4282-4284",
+      "notes": "For mqtt the hostname field holds a full URL [mqtt|mqtts|ws|wss]://host[:port]. isInputValid(): for dns/port/ping/steam/gamedig/radius/tailscale-ping/smtp/snmp/ntp must be FQDN (underscores, trailing dot, wildcard for dns allowed) or IP; dns (non-PTR) rejects IPs; dns accepts root zone '.'."
+    },
+    {
+      "name": "location",
+      "type": "text",
+      "visible_for": [
+        "globalping"
+      ],
+      "required": true,
+      "default": "world",
+      "db_column": "location",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:554-585, 3313, 4222-4228",
+      "notes": "Globalping 'magic' location; must not contain a comma."
+    },
+    {
+      "name": "ipFamily",
+      "type": "select",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "grpc-keyword",
+        "globalping"
+      ],
+      "required": false,
+      "default": null,
+      "options": [
+        null,
+        "ipv4",
+        "ipv6"
+      ],
+      "db_column": "ip_family",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:588-598, 2152-2171",
+      "notes": "null = auto-select (Happy Eyeballs)."
+    },
+    {
+      "name": "dns_resolve_server",
+      "type": "text",
+      "visible_for": [
+        "dns",
+        "globalping"
+      ],
+      "required": false,
+      "default": "",
+      "visible_if": "type == 'dns' (required) || (type == 'globalping' && subtype in ['http','dns'])",
+      "db_column": "dns_resolve_server",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:600-613, 1025-1039, 3779-3781",
+      "notes": "UI sets '1.1.1.1' when switching to dns and value empty. For dns: comma separated list allowed (server/monitor-types/dns.js resolveDnsResolverServers)."
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "visible_for": [
+        "port",
+        "steam",
+        "gamedig",
+        "mqtt",
+        "radius",
+        "smtp",
+        "snmp",
+        "sip-options",
+        "sftp",
+        "ntp",
+        "dns",
+        "globalping"
+      ],
+      "required": true,
+      "visible_if": "type in PORT_TYPES || (type == 'globalping' && (subtype == 'dns' || (subtype == 'ping' && protocol == 'TCP')))",
+      "db_column": "port",
+      "min": 0,
+      "max": 65535,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:618-634, 698-727, 1042-1057, 3828-3851, 3927-3943; server/server.js:878-884",
+      "notes": "UI default per type when empty/was a known default: dns 53, radius 1812, snmp 161, ntp 123, sftp 22, globalping ping 80, globalping dns 53, gamedig from game list. Sent as string by the UI; server parseInt, NaN -> null. Not shown (and so unchanged) for other types; existing value is still re-sent."
+    },
+    {
+      "name": "dns_resolve_type",
+      "type": "select",
+      "visible_for": [
+        "dns",
+        "globalping"
+      ],
+      "required": true,
+      "default": "A",
+      "options": {
+        "dns": [
+          "A",
+          "AAAA",
+          "CAA",
+          "CNAME",
+          "MX",
+          "NS",
+          "PTR",
+          "SOA",
+          "SRV",
+          "TXT"
+        ],
+        "globalping(dns)": [
+          "A",
+          "AAAA",
+          "ANY",
+          "CNAME",
+          "DNSKEY",
+          "DS",
+          "HTTPS",
+          "MX",
+          "NS",
+          "NSEC",
+          "PTR",
+          "RRSIG",
+          "SOA",
+          "SRV",
+          "SVCB",
+          "TXT"
+        ]
+      },
+      "visible_if": "type == 'dns' || (type == 'globalping' && subtype == 'dns')",
+      "db_column": "dns_resolve_type",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:636-660, 1059-1083, 3985-4003"
+    },
+    {
+      "name": "protocol",
+      "type": "select",
+      "visible_for": [
+        "globalping"
+      ],
+      "required": true,
+      "default": null,
+      "options": {
+        "ping": [
+          "ICMP",
+          "TCP"
+        ],
+        "http": [
+          null,
+          "HTTP2"
+        ],
+        "dns": [
+          "UDP",
+          "TCP"
+        ]
+      },
+      "db_column": "protocol",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:677-693, 3916-3943",
+      "notes": "Defaults on subtype change: ping -> ICMP, dns -> UDP, http -> null."
+    },
+    {
+      "name": "gamedigToken",
+      "type": "password",
+      "visible_for": [
+        "gamedig"
+      ],
+      "required": false,
+      "default": "",
+      "db_column": "gamedig_token",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:730-742"
+    },
+    {
+      "name": "radiusPassword",
+      "type": "password",
+      "visible_for": [
+        "snmp",
+        "radius",
+        "mysql"
+      ],
+      "required": false,
+      "db_column": "radius_password",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:745-759, 1242-1250, 1486-1496",
+      "notes": "Reused field: snmp = community string (required, placeholder 'public'); radius = password (required); mysql = password (optional, overrides password in connection string)."
+    },
+    {
+      "name": "snmpOid",
+      "type": "text",
+      "visible_for": [
+        "snmp"
+      ],
+      "required": true,
+      "db_column": "snmp_oid",
+      "pattern": "^([0-2])((\\.0)|(\\.[1-9][0-9]*))*$",
+      "placeholder": "1.3.6.1.4.1.9.6.1.101",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:761-778"
+    },
+    {
+      "name": "snmpVersion",
+      "type": "select",
+      "visible_for": [
+        "snmp"
+      ],
+      "required": false,
+      "default": "2c",
+      "options": [
+        "1",
+        "2c",
+        "3"
+      ],
+      "db_column": "snmp_version",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:780-787, 3867-3870"
+    },
+    {
+      "name": "snmpV3Username",
+      "type": "text",
+      "visible_for": [
+        "snmp"
+      ],
+      "required": true,
+      "visible_if": "snmpVersion == '3'",
+      "db_column": "snmp_v3_username",
+      "editable_via_editMonitor": false,
+      "source": "src/pages/EditMonitor.vue:788-801; server/monitor-types/snmp.js:21-32; server/server.js:943",
+      "notes": "UPSTREAM GAP: stored via bean.import on 'add' only; editMonitor does not copy it and toJSON does not return it. Treat as write-once."
+    },
+    {
+      "name": "smtpSecurity",
+      "type": "select",
+      "visible_for": [
+        "smtp"
+      ],
+      "required": false,
+      "options": [
+        "secure",
+        "nostarttls",
+        "starttls"
+      ],
+      "db_column": "smtp_security",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:803-813",
+      "notes": "secure = SMTPS (implicit TLS), nostarttls = ignore STARTTLS, starttls = use STARTTLS."
+    },
+    {
+      "name": "sshUsername",
+      "type": "text",
+      "visible_for": [
+        "sftp"
+      ],
+      "required": true,
+      "db_column": "ssh_username",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:817-827"
+    },
+    {
+      "name": "sshAuthMethod",
+      "type": "select",
+      "visible_for": [
+        "sftp"
+      ],
+      "required": false,
+      "default": "password",
+      "options": [
+        "password",
+        "privateKey"
+      ],
+      "db_column": "ssh_auth_method",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:830-838, 3364; server/model/monitor.js:209"
+    },
+    {
+      "name": "sshPassword",
+      "type": "password",
+      "visible_for": [
+        "sftp"
+      ],
+      "required": true,
+      "visible_if": "sshAuthMethod != 'privateKey'",
+      "db_column": "ssh_password",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:841-849"
+    },
+    {
+      "name": "sshPrivateKey",
+      "type": "textarea",
+      "visible_for": [
+        "sftp"
+      ],
+      "required": true,
+      "visible_if": "sshAuthMethod == 'privateKey'",
+      "db_column": "ssh_private_key",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:852-867"
+    },
+    {
+      "name": "sshPassphrase",
+      "type": "password",
+      "visible_for": [
+        "sftp"
+      ],
+      "required": false,
+      "visible_if": "sshAuthMethod == 'privateKey'",
+      "db_column": "ssh_passphrase",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:868-879"
+    },
+    {
+      "name": "sftpPath",
+      "type": "text",
+      "visible_for": [
+        "sftp"
+      ],
+      "required": false,
+      "db_column": "sftp_path",
+      "placeholder": "/path/to/check (optional)",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:882-892"
+    },
+    {
+      "name": "ntpStratumThreshold",
+      "type": "number",
+      "visible_for": [
+        "ntp"
+      ],
+      "required": false,
+      "default": 5,
+      "db_column": "ntp_stratum_threshold",
+      "min": 1,
+      "max": 15,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:899-915, 3365; server/server.js:960"
+    },
+    {
+      "name": "ntpTimeOffsetThreshold",
+      "type": "number",
+      "visible_for": [
+        "ntp"
+      ],
+      "required": false,
+      "default": 1000,
+      "db_column": "ntp_time_offset_threshold",
+      "min": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:917-932, 3366; server/server.js:961",
+      "notes": "milliseconds"
+    },
+    {
+      "name": "ntpRootDispersionThreshold",
+      "type": "number",
+      "visible_for": [
+        "ntp"
+      ],
+      "required": false,
+      "default": 500,
+      "db_column": "ntp_root_dispersion_threshold",
+      "min": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:934-949, 3367; server/server.js:962",
+      "notes": "milliseconds"
+    },
+    {
+      "name": "jsonPath",
+      "type": "text",
+      "visible_for": [
+        "json-query",
+        "snmp",
+        "mqtt",
+        "mongodb",
+        "globalping"
+      ],
+      "required": false,
+      "default": "$",
+      "visible_if": "type in ['json-query','snmp'] (required) || (type == 'mqtt' && mqttCheckType == 'json-query') (required) || type == 'mongodb' (optional) || (type == 'globalping' && subtype == 'http' && responsecheck == 'json-query') (required)",
+      "db_column": "json_path",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:954-975, 1199-1207, 1544-1546, 3097-3105, 3872-3875",
+      "notes": "JSONata expression. UI sets '$' when empty on type change."
+    },
+    {
+      "name": "jsonPathOperator",
+      "type": "select",
+      "visible_for": [
+        "json-query",
+        "snmp",
+        "globalping"
+      ],
+      "required": true,
+      "default": "==",
+      "options": [
+        ">",
+        ">=",
+        "<",
+        "<=",
+        "!=",
+        "==",
+        "contains"
+      ],
+      "visible_if": "type in ['json-query','snmp'] || (type == 'globalping' && subtype == 'http' && responsecheck == 'json-query')",
+      "db_column": "json_path_operator",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:979-993, 3109-3125, 3877-3880; src/util.ts:710-729",
+      "notes": "Numeric comparison for > >= < <=; string equality for == !=; $contains for contains."
+    },
+    {
+      "name": "expectedValue",
+      "type": "text|number",
+      "visible_for": [
+        "json-query",
+        "snmp",
+        "mqtt",
+        "mongodb",
+        "globalping"
+      ],
+      "required": false,
+      "visible_if": "same as jsonPath (mongodb optional, others required)",
+      "db_column": "expected_value",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:995-1019, 1219-1226, 1557-1565, 3127-3152",
+      "notes": "Rendered as type=number (step .01) when jsonPathOperator not in [contains, ==, !=], else text. Always a string in the payload/DB."
+    },
+    {
+      "name": "docker_container",
+      "type": "text",
+      "visible_for": [
+        "docker"
+      ],
+      "required": true,
+      "default": "",
+      "db_column": "docker_container",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1088-1097"
+    },
+    {
+      "name": "docker_host",
+      "type": "select(dockerHostList.id)",
+      "visible_for": [
+        "docker"
+      ],
+      "required": true,
+      "default": null,
+      "db_column": "docker_host",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1101-1115, 4191-4196",
+      "notes": "isInputValid(): null -> 'DockerHostRequired' error."
+    },
+    {
+      "name": "mqttUsername",
+      "type": "text",
+      "visible_for": [
+        "mqtt"
+      ],
+      "required": false,
+      "default": "",
+      "db_column": "mqtt_username",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1120-1128"
+    },
+    {
+      "name": "mqttPassword",
+      "type": "password",
+      "visible_for": [
+        "mqtt"
+      ],
+      "required": false,
+      "default": "",
+      "db_column": "mqtt_password",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1130-1137"
+    },
+    {
+      "name": "mqttTopic",
+      "type": "text",
+      "visible_for": [
+        "mqtt"
+      ],
+      "required": true,
+      "default": "",
+      "db_column": "mqtt_topic",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1139-1151"
+    },
+    {
+      "name": "mqttWebsocketPath",
+      "type": "text",
+      "visible_for": [
+        "mqtt"
+      ],
+      "required": false,
+      "default": "",
+      "visible_if": "hostname matches /(mqtts?|wss?):\\/\\/.+/ (otherwise disabled)",
+      "db_column": "mqtt_websocket_path",
+      "pattern": "^\\/[A-Za-z0-9-_&()*+]*$",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1153-1168, 4213-4220"
+    },
+    {
+      "name": "mqttCheckType",
+      "type": "select",
+      "visible_for": [
+        "mqtt"
+      ],
+      "required": true,
+      "default": "keyword",
+      "options": [
+        "keyword",
+        "json-query"
+      ],
+      "db_column": "mqtt_check_type",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1170-1181, 3344"
+    },
+    {
+      "name": "mqttSuccessMessage",
+      "type": "text",
+      "visible_for": [
+        "mqtt"
+      ],
+      "required": false,
+      "default": "",
+      "visible_if": "mqttCheckType == 'keyword'",
+      "db_column": "mqtt_success_message",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1183-1196"
+    },
+    {
+      "name": "radiusUsername",
+      "type": "text",
+      "visible_for": [
+        "radius"
+      ],
+      "required": true,
+      "db_column": "radius_username",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1231-1240"
+    },
+    {
+      "name": "radiusSecret",
+      "type": "password",
+      "visible_for": [
+        "radius"
+      ],
+      "required": true,
+      "db_column": "radius_secret",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1252-1261"
+    },
+    {
+      "name": "radiusCalledStationId",
+      "type": "text",
+      "visible_for": [
+        "radius"
+      ],
+      "required": true,
+      "db_column": "radius_called_station_id",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1263-1275"
+    },
+    {
+      "name": "radiusCallingStationId",
+      "type": "text",
+      "visible_for": [
+        "radius"
+      ],
+      "required": true,
+      "db_column": "radius_calling_station_id",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1277-1289"
+    },
+    {
+      "name": "databaseConnectionString",
+      "type": "text",
+      "visible_for": [
+        "sqlserver",
+        "postgres",
+        "mysql",
+        "oracledb",
+        "redis",
+        "mongodb"
+      ],
+      "required": true,
+      "db_column": "database_connection_string",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1293-1315, 3403-3411, 3893-3908",
+      "notes": "UI templates: sqlserver 'Server=<hostname>,<port>;Database=<your database>;User Id=<your user id>;Password=<your password>;Encrypt=<true/false>;TrustServerCertificate=<Yes/No>;Connection Timeout=<int>', postgres 'postgres://username:password@host:port/database', mysql 'mysql://username:password@host:port/database', oracledb 'localhost:1521/FREEPDB1', redis 'redis://user:password@host:port', mongodb 'mongodb://username:password@host:port/database'."
+    },
+    {
+      "name": "basic_auth_user",
+      "type": "text",
+      "visible_for": [
+        "oracledb",
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": false,
+      "default": "",
+      "visible_if": "type == 'oracledb' (required, DB user) || (type in HTTPISH && authMethod in ['basic','ntlm']) || (type == 'websocket-upgrade' && authMethod == 'basic') || (type == 'globalping' && subtype == 'http' && authMethod == 'basic')",
+      "db_column": "basic_auth_user",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1317-1327, 2292-2302, 2817-2827, 2914-2924"
+    },
+    {
+      "name": "basic_auth_pass",
+      "type": "password",
+      "visible_for": [
+        "oracledb",
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": false,
+      "default": "",
+      "visible_if": "same as basic_auth_user",
+      "db_column": "basic_auth_pass",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1329-1337, 2303-2311, 2829-2837, 2926-2936"
+    },
+    {
+      "name": "system_service_name",
+      "type": "text",
+      "visible_for": [
+        "system-service",
+        "pm2"
+      ],
+      "required": true,
+      "default": "",
+      "db_column": "system_service_name",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1340-1484, 4372-4374; server/model/monitor.js:1698-1712",
+      "notes": "system-service: must match ^[a-zA-Z0-9._\\-@]+$ (e.g. 'nginx', Windows 'Dnscache'); pm2: process name (no control chars). Server trims and requires non-empty."
+    },
+    {
+      "name": "databaseQuery",
+      "type": "textarea",
+      "visible_for": [
+        "sqlserver",
+        "postgres",
+        "mysql",
+        "oracledb",
+        "mongodb"
+      ],
+      "required": false,
+      "db_column": "database_query",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1499-1520, 1523-1543; server/model/monitor.js:1777-1784",
+      "notes": "SQL for sql types (optional; e.g. SELECT 1 / SELECT 1 FROM DUAL); for mongodb a JSON command (e.g. {\"ping\":1}), validated as JSON by server."
+    },
+    {
+      "name": "conditions",
+      "type": "Condition[]",
+      "visible_for": [
+        "dns",
+        "mqtt",
+        "sqlserver",
+        "mysql",
+        "oracledb"
+      ],
+      "required": false,
+      "default": [],
+      "visible_if": "monitorTypeList[type].supportsConditions && conditionVariables.length > 0",
+      "db_column": "conditions (JSON, NOT NULL default '[]')",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1569-1574, 3362, 3910-3913; src/components/EditMonitorConditions.vue:42-60; server/monitor-conditions/expression.js:17-33",
+      "notes": "Always send an array (also [] for other types). Reset to [] by the UI when the type changes."
+    },
+    {
+      "name": "interval",
+      "type": "number",
+      "visible_for": "*",
+      "required": true,
+      "default": 60,
+      "db_column": "interval",
+      "min": 1,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1577-1600, 3315, 3823-3826, 4325-4336; server/model/monitor.js:1631-1633; src/util.ts:46",
+      "notes": "Seconds. Server MIN_INTERVAL_SECOND = 1. UI asks for confirmation below 20 s. ntp defaults to 300. For ping the UI raises interval to ceil(min(timeout, ping_count*ping_per_request_timeout)*1.1)."
+    },
+    {
+      "name": "maxretries",
+      "type": "number",
+      "visible_for": "*",
+      "required": true,
+      "default": 0,
+      "db_column": "maxretries",
+      "min": 0,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1602-1616"
+    },
+    {
+      "name": "retryInterval",
+      "type": "number",
+      "visible_for": "*",
+      "required": true,
+      "default": 60,
+      "visible_if": "maxretries > 0",
+      "db_column": "retry_interval",
+      "min": 1,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1618-1636, 3317, 3720-3727; server/model/monitor.js:1635-1637",
+      "notes": "Seconds; UI keeps it equal to interval while both are equal. Must be >= 1 even when hidden."
+    },
+    {
+      "name": "retryOnlyOnStatusCodeFailure",
+      "type": "checkbox",
+      "visible_for": [
+        "json-query"
+      ],
+      "required": false,
+      "default": false,
+      "visible_if": "maxretries > 0",
+      "db_column": "retry_only_on_status_code_failure",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1639-1654; server/server.js:782-784, 946; server/model/monitor.js:934-950",
+      "notes": "When true, a failing JSON query marks DOWN immediately (no PENDING retries)."
+    },
+    {
+      "name": "timeout",
+      "type": "number",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "ping",
+        "rabbitmq",
+        "snmp",
+        "websocket-upgrade",
+        "kafka-producer"
+      ],
+      "required": true,
+      "default": 48,
+      "db_column": "timeout",
+      "min": "0 (ping: 1)",
+      "max": "none (ping: 300)",
+      "step": "0.1 (ping: 1)",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1657-1695, 3425-3435, 3729-3738, 3853-3865, 4136-4144, 4495-4548; server/model/monitor.js:468-472, 1738-1752",
+      "notes": "Seconds. UI defaults on type change: snmp 5, ping 10, kafka-producer 1, others 48; clamped to 80% of interval (not for ping). Server: timeout <= 0 -> interval*0.8 at runtime. Also used by sftp/ntp/steam implementations although hidden in the form."
+    },
+    {
+      "name": "resendInterval",
+      "type": "number",
+      "visible_for": "*",
+      "required": true,
+      "default": 0,
+      "db_column": "resend_interval",
+      "min": 0,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1697-1714; server/model/monitor.js:994-1007",
+      "notes": "0 = disabled; N = re-send DOWN notification every N consecutive DOWN beats."
+    },
+    {
+      "name": "expiryNotification",
+      "type": "checkbox",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "globalping"
+      ],
+      "required": false,
+      "default": false,
+      "visible_if": "type in HTTPISH || (type == 'globalping' && subtype == 'http'); disabled when ignoreTls",
+      "db_column": "expiry_notification",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1718-1741, 3972-3976",
+      "notes": "TLS certificate expiry notification (days from setting tlsExpiryNotifyDays)."
+    },
+    {
+      "name": "screenshot_delay",
+      "type": "number",
+      "visible_for": [
+        "real-browser"
+      ],
+      "required": false,
+      "default": 0,
+      "db_column": "screenshot_delay",
+      "min": 0,
+      "max": "floor(interval*1000*0.5)",
+      "step": 100,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1744-1771, 3358; server/model/monitor.js:1755-1775",
+      "notes": "milliseconds"
+    },
+    {
+      "name": "domainExpiryNotification",
+      "type": "checkbox",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "real-browser",
+        "websocket-upgrade",
+        "port",
+        "ping",
+        "grpc-keyword",
+        "dns",
+        "smtp",
+        "snmp",
+        "gamedig",
+        "steam",
+        "mqtt",
+        "radius",
+        "tailscale-ping",
+        "sip-options"
+      ],
+      "required": false,
+      "default": true,
+      "db_column": "domain_expiry_notification",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1773-1792, 3325, 3459-3461; src/util.ts:757-775",
+      "notes": "Shown for types with a domain-bearing field (see DOMAIN_EXPIRY_TYPES). UI calls checkDomain to display unsupported-TLD reasons."
+    },
+    {
+      "name": "wsIgnoreSecWebsocketAcceptHeader",
+      "type": "checkbox",
+      "visible_for": [
+        "websocket-upgrade"
+      ],
+      "required": false,
+      "default": false,
+      "db_column": "ws_ignore_sec_websocket_accept_header",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1793-1811"
+    },
+    {
+      "name": "ignoreTls",
+      "type": "checkbox",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "redis",
+        "globalping"
+      ],
+      "required": false,
+      "default": false,
+      "visible_if": "type in HTTPISH+['redis'] || (type == 'globalping' && subtype == 'http')",
+      "db_column": "ignore_tls",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1813-1833",
+      "notes": "Setting it true also forces expiryNotification=false in the UI."
+    },
+    {
+      "name": "cacheBust",
+      "type": "checkbox",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "globalping"
+      ],
+      "required": false,
+      "default": false,
+      "visible_if": "type in HTTPISH || (type == 'globalping' && subtype == 'http')",
+      "db_column": "cache_bust",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1835-1864; server/model/monitor.js:586-592",
+      "notes": "Adds query param uptime_kuma_cachebuster=<random>."
+    },
+    {
+      "name": "upsideDown",
+      "type": "checkbox",
+      "visible_for": "*",
+      "required": false,
+      "default": false,
+      "db_column": "upside_down",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1866-1879"
+    },
+    {
+      "name": "gamedigGivenPortOnly",
+      "type": "checkbox",
+      "visible_for": [
+        "gamedig"
+      ],
+      "required": false,
+      "default": true,
+      "db_column": "gamedig_given_port_only",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1881-1896, 3355",
+      "notes": "UI checkbox is 'Guess port' = !gamedigGivenPortOnly (true-value=false)."
+    },
+    {
+      "name": "ping_count",
+      "type": "number",
+      "visible_for": [
+        "ping",
+        "globalping"
+      ],
+      "required": true,
+      "default": 3,
+      "visible_if": "type == 'ping' || (type == 'globalping' && subtype == 'ping')",
+      "db_column": "ping_count",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1899-1920, 4063; server/model/monitor.js:1732-1736",
+      "notes": "DB default 1; UI default 3 for new monitors."
+    },
+    {
+      "name": "ping_numeric",
+      "type": "checkbox",
+      "visible_for": [
+        "ping"
+      ],
+      "required": false,
+      "default": true,
+      "db_column": "ping_numeric",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1923-1937, 4064"
+    },
+    {
+      "name": "packetSize",
+      "type": "number",
+      "visible_for": [
+        "ping"
+      ],
+      "required": true,
+      "default": 56,
+      "db_column": "packet_size",
+      "min": 1,
+      "max": 65500,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1940-1958, 4065; server/model/monitor.js:1716-1720"
+    },
+    {
+      "name": "ping_per_request_timeout",
+      "type": "number",
+      "visible_for": [
+        "ping"
+      ],
+      "required": true,
+      "default": 2,
+      "db_column": "ping_per_request_timeout",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1961-1978, 4066; server/model/monitor.js:1722-1730",
+      "notes": "Seconds; server min 1."
+    },
+    {
+      "name": "accepted_statuscodes",
+      "type": "string[]",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "grpc-keyword",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": true,
+      "default": [
+        "200-299"
+      ],
+      "visible_if": "type in HTTPISH+['grpc-keyword'] || type == 'websocket-upgrade' || (type == 'globalping' && subtype == 'http')",
+      "db_column": "accepted_statuscodes_json (JSON)",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1981-2017, 2127-2150, 2175-2198, 3294-3303, 3783-3813, 3981-4016; server/server.js:751-756, 842-845, 894; server/util-server.js:559-585",
+      "notes": "Entries are single codes '200' or ranges '200-299' as STRINGS. websocket-upgrade default ['1000'] (options 1000-4999). MANDATORY in add/editMonitor for EVERY type (server calls .every on it)."
+    },
+    {
+      "name": "maxredirects",
+      "type": "number",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "grpc-keyword"
+      ],
+      "required": true,
+      "default": 10,
+      "db_column": "maxredirects",
+      "min": 0,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2028-2042, 3326"
+    },
+    {
+      "name": "saveErrorResponse",
+      "type": "checkbox",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query"
+      ],
+      "required": false,
+      "default": true,
+      "db_column": "save_error_response",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2044-2070, 3329"
+    },
+    {
+      "name": "saveResponse",
+      "type": "checkbox",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query"
+      ],
+      "required": false,
+      "default": false,
+      "visible_if": "saveErrorResponse",
+      "db_column": "save_response",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2072-2099, 3328; server/model/monitor.js:659-662",
+      "notes": "Only effective when saveErrorResponse is also true."
+    },
+    {
+      "name": "responseMaxLength",
+      "type": "number",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query"
+      ],
+      "required": true,
+      "default": 1024,
+      "visible_if": "saveResponse || saveErrorResponse",
+      "db_column": "response_max_length",
+      "min": 0,
+      "max": 1048576,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2101-2125, 3330; server/model/monitor.js:1639-1647; src/util.ts:74-79"
+    },
+    {
+      "name": "parent",
+      "type": "select(group monitor id)",
+      "visible_for": "*",
+      "required": false,
+      "default": null,
+      "db_column": "parent",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2200-2212, 3598-3675, 4390-4415; server/server.js:829-835",
+      "notes": "null = none. UI may create a draft group first (type 'group', active:false) then set parent to its id. editMonitor rejects a descendant as parent ('Invalid Monitor Group')."
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "visible_for": "*",
+      "required": false,
+      "db_column": "description",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2214-2224"
+    },
+    {
+      "name": "tags",
+      "type": "MonitorTag[]",
+      "visible_for": "*",
+      "required": false,
+      "default": [],
+      "frontend_only": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2226-2228, 4110-4119, 4420, 4435; src/components/TagsManager.vue:318-390",
+      "notes": "NOT part of add/editMonitor payload (must be absent/undefined on add). Managed with addTag/addMonitorTag/deleteMonitorTag events. In MonitorJSON: [{tag_id, monitor_id, value, name, color}]."
+    },
+    {
+      "name": "notificationIDList",
+      "type": "object<string,boolean>",
+      "visible_for": "*",
+      "required": false,
+      "default": {},
+      "db_column": "monitor_notification (relation)",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2240-2262, 4077-4081; server/server.js:748-749, 791, 977, 1798-1809",
+      "notes": "{ '<notificationId>': true }. Only truthy entries are stored. New monitors get all isDefault notifications."
+    },
+    {
+      "name": "authMethod",
+      "type": "select",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": false,
+      "default": null,
+      "options": {
+        "http/keyword/json-query": [
+          null,
+          "basic",
+          "bearer",
+          "oauth2-cc",
+          "ntlm",
+          "mtls"
+        ],
+        "websocket-upgrade": [
+          null,
+          "basic",
+          "bearer",
+          "oauth2-cc",
+          "mtls"
+        ],
+        "globalping(http)": [
+          null,
+          "basic",
+          "bearer",
+          "oauth2-cc"
+        ]
+      },
+      "db_column": "auth_method",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2273-2290, 2662-2680, 2896-2912; server/model/monitor.js:484-516, 622-632, 1160-1169"
+    },
+    {
+      "name": "bearer_token",
+      "type": "password",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": false,
+      "default": "",
+      "visible_if": "authMethod == 'bearer'",
+      "db_column": "bearer_token",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2314-2324, 2719-2729, 2938-2950; server/model/monitor.js:490-496"
+    },
+    {
+      "name": "oauth_auth_method",
+      "type": "select",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": false,
+      "default": "client_secret_basic",
+      "options": [
+        "client_secret_basic",
+        "client_secret_post"
+      ],
+      "visible_if": "authMethod == 'oauth2-cc'",
+      "db_column": "oauth_auth_method",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2326-2343, 2730-2747, 2951-2968, 3346"
+    },
+    {
+      "name": "oauth_token_url",
+      "type": "text",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": true,
+      "visible_if": "authMethod == 'oauth2-cc'",
+      "db_column": "oauth_token_url",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2344-2356, 2748-2760, 2969-2981"
+    },
+    {
+      "name": "oauth_client_id",
+      "type": "text",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": true,
+      "visible_if": "authMethod == 'oauth2-cc'",
+      "db_column": "oauth_client_id",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2357-2369, 2761-2773, 2982-2992"
+    },
+    {
+      "name": "oauth_client_secret",
+      "type": "password",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": true,
+      "visible_if": "authMethod == 'oauth2-cc'",
+      "db_column": "oauth_client_secret",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2376-2386, 2780-2790, 2999-3011"
+    },
+    {
+      "name": "oauth_scopes",
+      "type": "text",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": false,
+      "visible_if": "authMethod == 'oauth2-cc'",
+      "db_column": "oauth_scopes",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2387-2398, 2791-2802, 3012-3021",
+      "notes": "Space separated list."
+    },
+    {
+      "name": "oauth_audience",
+      "type": "text",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade",
+        "globalping"
+      ],
+      "required": false,
+      "visible_if": "authMethod == 'oauth2-cc'",
+      "db_column": "oauth_audience",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2399-2410, 2803-2814, 3022-3033"
+    },
+    {
+      "name": "tlsCert",
+      "type": "textarea",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade"
+      ],
+      "required": true,
+      "visible_if": "authMethod == 'mtls'",
+      "db_column": "tls_cert",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2415-2426, 2683-2694; server/model/monitor.js:622-632",
+      "notes": "PEM"
+    },
+    {
+      "name": "tlsKey",
+      "type": "textarea",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade"
+      ],
+      "required": true,
+      "visible_if": "authMethod == 'mtls'",
+      "db_column": "tls_key",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2427-2438, 2695-2706",
+      "notes": "PEM"
+    },
+    {
+      "name": "tlsCa",
+      "type": "textarea",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "websocket-upgrade"
+      ],
+      "required": false,
+      "visible_if": "authMethod == 'mtls'",
+      "db_column": "tls_ca",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2439-2449, 2707-2717",
+      "notes": "PEM, optional"
+    },
+    {
+      "name": "authDomain",
+      "type": "text",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query"
+      ],
+      "required": false,
+      "visible_if": "authMethod == 'ntlm'",
+      "db_column": "auth_domain",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2839-2848; server/model/monitor.js:1164-1169"
+    },
+    {
+      "name": "authWorkstation",
+      "type": "text",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query"
+      ],
+      "required": false,
+      "visible_if": "authMethod == 'ntlm'",
+      "db_column": "auth_workstation",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2850-2861"
+    },
+    {
+      "name": "proxyId",
+      "type": "radio(proxyList.id)|null",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query"
+      ],
+      "required": false,
+      "default": null,
+      "db_column": "proxy_id",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2454-2501, 3704-3714, 4069-4075; server/server.js:903",
+      "notes": "New monitors default to the proxy flagged default. Server stores only integers, else null."
+    },
+    {
+      "name": "kafkaProducerSaslOptions",
+      "type": "object",
+      "visible_for": [
+        "kafka-producer"
+      ],
+      "required": false,
+      "default": {
+        "mechanism": "None"
+      },
+      "options": {
+        "mechanism": [
+          "None",
+          "plain",
+          "scram-sha-256",
+          "scram-sha-512",
+          "aws"
+        ],
+        "fields_by_mechanism": {
+          "plain|scram-sha-256|scram-sha-512": [
+            "username",
+            "password"
+          ],
+          "aws": [
+            "authorizationIdentity (required)",
+            "accessKeyId (required)",
+            "secretAccessKey (required)",
+            "sessionToken"
+          ]
+        }
+      },
+      "db_column": "kafka_producer_sasl_options (JSON)",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2505-2596, 3349-3351, 4005; server/server.js:759, 933"
+    },
+    {
+      "name": "method",
+      "type": "select",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query",
+        "globalping"
+      ],
+      "required": false,
+      "default": "GET",
+      "options": {
+        "http/keyword/json-query": [
+          "GET",
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE",
+          "HEAD",
+          "OPTIONS"
+        ],
+        "globalping(http)": [
+          "HEAD",
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "visible_if": "type in HTTPISH || (type == 'globalping' && subtype == 'http')",
+      "db_column": "method",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2609-2620, 2872-2879, 3311"
+    },
+    {
+      "name": "httpBodyEncoding",
+      "type": "select",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query"
+      ],
+      "required": false,
+      "default": "json",
+      "options": [
+        "json",
+        "form",
+        "xml"
+      ],
+      "db_column": "http_body_encoding",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2623-2634, 3347, 4355-4358; server/model/monitor.js:545-560",
+      "notes": "UI sets it to null on submit for all other types. json -> application/json (body must parse), form -> application/x-www-form-urlencoded (raw string), xml -> text/xml; charset=utf-8."
+    },
+    {
+      "name": "body",
+      "type": "textarea",
+      "visible_for": [
+        "http",
+        "keyword",
+        "json-query"
+      ],
+      "required": false,
+      "db_column": "body",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2637-2645, 4175-4182, 4350-4353",
+      "notes": "When encoding json, must be valid JSON; UI re-serialises with 4-space indent."
+    },
+    {
+      "name": "responsecheck",
+      "type": "select",
+      "visible_for": [
+        "globalping"
+      ],
+      "required": false,
+      "options": [
+        null,
+        "keyword",
+        "json-query"
+      ],
+      "visible_if": "subtype == 'http'",
+      "frontend_only": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:3041-3052, 3945-3963, 4122-4130; server/server.js:769-778",
+      "notes": "Frontend-only helper deleted by the server on add; selects whether keyword or jsonPath/expectedValue is used. Derived on load: keyword set -> 'keyword', expectedValue set -> 'json-query'."
+    },
+    {
+      "name": "grpcEnableTls",
+      "type": "checkbox",
+      "visible_for": [
+        "grpc-keyword"
+      ],
+      "required": false,
+      "default": false,
+      "db_column": "grpc_enable_tls",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:3162-3176"
+    },
+    {
+      "name": "grpcServiceName",
+      "type": "text",
+      "visible_for": [
+        "grpc-keyword"
+      ],
+      "required": true,
+      "db_column": "grpc_service_name",
+      "placeholder": "Health",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:3178-3188"
+    },
+    {
+      "name": "grpcMethod",
+      "type": "text",
+      "visible_for": [
+        "grpc-keyword"
+      ],
+      "required": true,
+      "db_column": "grpc_method",
+      "placeholder": "check",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:3190-3204"
+    },
+    {
+      "name": "grpcProtobuf",
+      "type": "textarea",
+      "visible_for": [
+        "grpc-keyword"
+      ],
+      "required": false,
+      "db_column": "grpc_protobuf",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:3206-3215",
+      "notes": "proto3 source"
+    },
+    {
+      "name": "grpcBody",
+      "type": "textarea",
+      "visible_for": [
+        "grpc-keyword"
+      ],
+      "required": false,
+      "db_column": "grpc_body",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:3217-3226",
+      "notes": "JSON"
+    },
+    {
+      "name": "grpcMetadata",
+      "type": "textarea",
+      "visible_for": [
+        "grpc-keyword"
+      ],
+      "required": false,
+      "db_column": "grpc_metadata",
+      "sensitive": true,
+      "editable_via_editMonitor": true,
+      "source": "server/server.js:920; server/model/monitor.js:228",
+      "notes": "No UI field in 2.5.8 but accepted by add/editMonitor and returned in MonitorJSON."
+    },
+    {
+      "name": "active",
+      "type": "boolean",
+      "visible_for": "*",
+      "required": false,
+      "default": true,
+      "db_column": "active",
+      "editable_via_editMonitor": false,
+      "source": "server/server.js:795-797, 1094-1130, 4396-4402",
+      "notes": "add: if active === false the monitor is created paused (used for draft groups). editMonitor ignores it; use pauseMonitor/resumeMonitor. In MonitorJSON 'active' is the effective state (own AND parents)."
+    }
+  ],
+  "common": [
+    {
+      "name": "type",
+      "type": "select",
+      "visible_for": "*",
+      "required": true,
+      "default": "http",
+      "options": [
+        "http",
+        "keyword",
+        "json-query",
+        "port",
+        "ping",
+        "dns",
+        "docker",
+        "system-service",
+        "pm2",
+        "real-browser",
+        "websocket-upgrade",
+        "sftp",
+        "group",
+        "push",
+        "manual",
+        "globalping",
+        "grpc-keyword",
+        "kafka-producer",
+        "mqtt",
+        "ntp",
+        "rabbitmq",
+        "sip-options",
+        "smtp",
+        "snmp",
+        "tailscale-ping",
+        "sqlserver",
+        "mongodb",
+        "mysql",
+        "oracledb",
+        "postgres",
+        "radius",
+        "redis",
+        "gamedig",
+        "steam"
+      ],
+      "db_column": "type",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:32-120",
+      "notes": "optgroups: General / Special / Passive / Specific / Database / Game Server. system-service only offered when info.runtime.platform in [linux, win32] and !info.isContainer; sip-options and tailscale-ping hidden when info.isContainer."
+    },
+    {
+      "name": "name",
+      "type": "text",
+      "visible_for": "*",
+      "required": false,
+      "default": "",
+      "db_column": "name",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:162-172, 3437-3457, 4338-4340",
+      "notes": "If empty on submit, UI fills defaultFriendlyName (hostname, else system_service_name, else URL host, else $t('defaultFriendlyName'))."
+    },
+    {
+      "name": "interval",
+      "type": "number",
+      "visible_for": "*",
+      "required": true,
+      "default": 60,
+      "db_column": "interval",
+      "min": 1,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1577-1600, 3315, 3823-3826, 4325-4336; server/model/monitor.js:1631-1633; src/util.ts:46",
+      "notes": "Seconds. Server MIN_INTERVAL_SECOND = 1. UI asks for confirmation below 20 s. ntp defaults to 300. For ping the UI raises interval to ceil(min(timeout, ping_count*ping_per_request_timeout)*1.1)."
+    },
+    {
+      "name": "maxretries",
+      "type": "number",
+      "visible_for": "*",
+      "required": true,
+      "default": 0,
+      "db_column": "maxretries",
+      "min": 0,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1602-1616"
+    },
+    {
+      "name": "retryInterval",
+      "type": "number",
+      "visible_for": "*",
+      "required": true,
+      "default": 60,
+      "visible_if": "maxretries > 0",
+      "db_column": "retry_interval",
+      "min": 1,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1618-1636, 3317, 3720-3727; server/model/monitor.js:1635-1637",
+      "notes": "Seconds; UI keeps it equal to interval while both are equal. Must be >= 1 even when hidden."
+    },
+    {
+      "name": "resendInterval",
+      "type": "number",
+      "visible_for": "*",
+      "required": true,
+      "default": 0,
+      "db_column": "resend_interval",
+      "min": 0,
+      "step": 1,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1697-1714; server/model/monitor.js:994-1007",
+      "notes": "0 = disabled; N = re-send DOWN notification every N consecutive DOWN beats."
+    },
+    {
+      "name": "upsideDown",
+      "type": "checkbox",
+      "visible_for": "*",
+      "required": false,
+      "default": false,
+      "db_column": "upside_down",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:1866-1879"
+    },
+    {
+      "name": "parent",
+      "type": "select(group monitor id)",
+      "visible_for": "*",
+      "required": false,
+      "default": null,
+      "db_column": "parent",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2200-2212, 3598-3675, 4390-4415; server/server.js:829-835",
+      "notes": "null = none. UI may create a draft group first (type 'group', active:false) then set parent to its id. editMonitor rejects a descendant as parent ('Invalid Monitor Group')."
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "visible_for": "*",
+      "required": false,
+      "db_column": "description",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2214-2224"
+    },
+    {
+      "name": "tags",
+      "type": "MonitorTag[]",
+      "visible_for": "*",
+      "required": false,
+      "default": [],
+      "frontend_only": true,
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2226-2228, 4110-4119, 4420, 4435; src/components/TagsManager.vue:318-390",
+      "notes": "NOT part of add/editMonitor payload (must be absent/undefined on add). Managed with addTag/addMonitorTag/deleteMonitorTag events. In MonitorJSON: [{tag_id, monitor_id, value, name, color}]."
+    },
+    {
+      "name": "notificationIDList",
+      "type": "object<string,boolean>",
+      "visible_for": "*",
+      "required": false,
+      "default": {},
+      "db_column": "monitor_notification (relation)",
+      "editable_via_editMonitor": true,
+      "source": "src/pages/EditMonitor.vue:2240-2262, 4077-4081; server/server.js:748-749, 791, 977, 1798-1809",
+      "notes": "{ '<notificationId>': true }. Only truthy entries are stored. New monitors get all isDefault notifications."
+    },
+    {
+      "name": "active",
+      "type": "boolean",
+      "visible_for": "*",
+      "required": false,
+      "default": true,
+      "db_column": "active",
+      "editable_via_editMonitor": false,
+      "source": "server/server.js:795-797, 1094-1130, 4396-4402",
+      "notes": "add: if active === false the monitor is created paused (used for draft groups). editMonitor ignores it; use pauseMonitor/resumeMonitor. In MonitorJSON 'active' is the effective state (own AND parents)."
+    }
+  ],
+  "types": {
+    "http": {
+      "label": "HTTP(s)",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/model/monitor.js:478-732 (inline)",
+      "fields": [
+        "type",
+        "name",
+        "url",
+        "headers",
+        "ipFamily",
+        "basic_auth_user",
+        "basic_auth_pass",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "timeout",
+        "resendInterval",
+        "expiryNotification",
+        "domainExpiryNotification",
+        "ignoreTls",
+        "cacheBust",
+        "upsideDown",
+        "accepted_statuscodes",
+        "maxredirects",
+        "saveErrorResponse",
+        "saveResponse",
+        "responseMaxLength",
+        "parent",
+        "description",
+        "notificationIDList",
+        "authMethod",
+        "bearer_token",
+        "oauth_auth_method",
+        "oauth_token_url",
+        "oauth_client_id",
+        "oauth_client_secret",
+        "oauth_scopes",
+        "oauth_audience",
+        "tlsCert",
+        "tlsKey",
+        "tlsCa",
+        "authDomain",
+        "authWorkstation",
+        "proxyId",
+        "method",
+        "httpBodyEncoding",
+        "body",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "url": "https://",
+        "accepted_statuscodes": [
+          "200-299"
+        ],
+        "timeout": 48
+      },
+      "domain_expiry_field": "url"
+    },
+    "keyword": {
+      "label": "HTTP(s) - Keyword",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/model/monitor.js:478-732 (inline, keyword check :688-713)",
+      "fields": [
+        "type",
+        "name",
+        "url",
+        "headers",
+        "keyword",
+        "invertKeyword",
+        "ipFamily",
+        "basic_auth_user",
+        "basic_auth_pass",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "timeout",
+        "resendInterval",
+        "expiryNotification",
+        "domainExpiryNotification",
+        "ignoreTls",
+        "cacheBust",
+        "upsideDown",
+        "accepted_statuscodes",
+        "maxredirects",
+        "saveErrorResponse",
+        "saveResponse",
+        "responseMaxLength",
+        "parent",
+        "description",
+        "notificationIDList",
+        "authMethod",
+        "bearer_token",
+        "oauth_auth_method",
+        "oauth_token_url",
+        "oauth_client_id",
+        "oauth_client_secret",
+        "oauth_scopes",
+        "oauth_audience",
+        "tlsCert",
+        "tlsKey",
+        "tlsCa",
+        "authDomain",
+        "authWorkstation",
+        "proxyId",
+        "method",
+        "httpBodyEncoding",
+        "body",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "url": "https://",
+        "accepted_statuscodes": [
+          "200-299"
+        ],
+        "timeout": 48
+      },
+      "domain_expiry_field": "url"
+    },
+    "json-query": {
+      "label": "HTTP(s) - Json Query",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/model/monitor.js:478-732 (inline, :714-732); src/util.ts:669-740",
+      "fields": [
+        "type",
+        "name",
+        "url",
+        "headers",
+        "ipFamily",
+        "jsonPath",
+        "jsonPathOperator",
+        "expectedValue",
+        "basic_auth_user",
+        "basic_auth_pass",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "retryOnlyOnStatusCodeFailure",
+        "timeout",
+        "resendInterval",
+        "expiryNotification",
+        "domainExpiryNotification",
+        "ignoreTls",
+        "cacheBust",
+        "upsideDown",
+        "accepted_statuscodes",
+        "maxredirects",
+        "saveErrorResponse",
+        "saveResponse",
+        "responseMaxLength",
+        "parent",
+        "description",
+        "notificationIDList",
+        "authMethod",
+        "bearer_token",
+        "oauth_auth_method",
+        "oauth_token_url",
+        "oauth_client_id",
+        "oauth_client_secret",
+        "oauth_scopes",
+        "oauth_audience",
+        "tlsCert",
+        "tlsKey",
+        "tlsCa",
+        "authDomain",
+        "authWorkstation",
+        "proxyId",
+        "method",
+        "httpBodyEncoding",
+        "body",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": "url"
+    },
+    "port": {
+      "label": "TCP Port",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/monitor-types/tcp.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "port",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": "hostname"
+    },
+    "ping": {
+      "label": "Ping",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/model/monitor.js:733-744 (inline); server/util-server.js:115-130",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "timeout",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "ping_count",
+        "ping_numeric",
+        "packetSize",
+        "ping_per_request_timeout",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "timeout": 10
+      },
+      "domain_expiry_field": "hostname"
+    },
+    "dns": {
+      "label": "DNS",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/monitor-types/dns.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "dns_resolve_server",
+        "port",
+        "dns_resolve_type",
+        "conditions",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "dns_resolve_server": "1.1.1.1 (if empty)",
+        "port": "53",
+        "timeout": 48
+      },
+      "domain_expiry_field": "hostname",
+      "condition_variables": [
+        {
+          "id": "record",
+          "operators": "string"
+        }
+      ]
+    },
+    "docker": {
+      "label": "Docker Container",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/model/monitor.js:783-846 (inline)",
+      "fields": [
+        "type",
+        "name",
+        "docker_container",
+        "docker_host",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": null
+    },
+    "system-service": {
+      "label": "System Service",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/monitor-types/system-service.js",
+      "fields": [
+        "type",
+        "name",
+        "system_service_name",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": null,
+      "available_if": "info.runtime.platform in ['linux','win32'] && !info.isContainer"
+    },
+    "pm2": {
+      "label": "PM2 Process",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/monitor-types/pm2.js",
+      "fields": [
+        "type",
+        "name",
+        "system_service_name",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": null
+    },
+    "real-browser": {
+      "label": "HTTP(s) - Browser Engine (Chrome/Chromium) (Beta)",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/monitor-types/real-browser-monitor-type.js",
+      "fields": [
+        "type",
+        "name",
+        "url",
+        "remote_browser",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "screenshot_delay",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "url": "https://",
+        "timeout": 48
+      },
+      "domain_expiry_field": "url"
+    },
+    "websocket-upgrade": {
+      "label": "Websocket Upgrade",
+      "optgroup": "General Monitor Type (also listed under Specific)",
+      "server_implementation": "server/monitor-types/websocket-upgrade.js",
+      "fields": [
+        "type",
+        "name",
+        "url",
+        "wsSubprotocol",
+        "headers",
+        "basic_auth_user",
+        "basic_auth_pass",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "timeout",
+        "resendInterval",
+        "domainExpiryNotification",
+        "wsIgnoreSecWebsocketAcceptHeader",
+        "upsideDown",
+        "accepted_statuscodes",
+        "parent",
+        "description",
+        "notificationIDList",
+        "authMethod",
+        "bearer_token",
+        "oauth_auth_method",
+        "oauth_token_url",
+        "oauth_client_id",
+        "oauth_client_secret",
+        "oauth_scopes",
+        "oauth_audience",
+        "tlsCert",
+        "tlsKey",
+        "tlsCa",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "url": "wss://",
+        "accepted_statuscodes": [
+          "1000"
+        ],
+        "timeout": 48
+      },
+      "domain_expiry_field": "url"
+    },
+    "sftp": {
+      "label": "SFTP",
+      "optgroup": "General Monitor Type",
+      "server_implementation": "server/monitor-types/sftp.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "port",
+        "sshUsername",
+        "sshAuthMethod",
+        "sshPassword",
+        "sshPrivateKey",
+        "sshPassphrase",
+        "sftpPath",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "port": "22",
+        "timeout": 48
+      },
+      "domain_expiry_field": null
+    },
+    "group": {
+      "label": "Group",
+      "optgroup": "Special",
+      "server_implementation": "server/monitor-types/group.js",
+      "fields": [
+        "type",
+        "name",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": null,
+      "notes": "allowCustomStatus; status derived from children. Children reference it via parent."
+    },
+    "push": {
+      "label": "Push",
+      "optgroup": "Passive Monitor Type",
+      "server_implementation": "server/model/monitor.js:745-782 (inline); server/routers/api-router.js:46-145",
+      "fields": [
+        "type",
+        "name",
+        "pushToken",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "pushToken": "genSecret(32) if missing",
+        "timeout": 48
+      },
+      "domain_expiry_field": null
+    },
+    "manual": {
+      "label": "Manual",
+      "optgroup": "Passive Monitor Type",
+      "server_implementation": "server/monitor-types/manual.js",
+      "fields": [
+        "type",
+        "name",
+        "manual_status",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": null,
+      "notes": "allowCustomStatus; status = manual_status (1 Up / 0 Down)."
+    },
+    "globalping": {
+      "label": "Globalping - Access global monitoring probes",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/monitor-types/globalping.js",
+      "fields": [
+        "type",
+        "subtype",
+        "name",
+        "url",
+        "headers",
+        "keyword",
+        "invertKeyword",
+        "hostname",
+        "location",
+        "ipFamily",
+        "dns_resolve_server",
+        "port",
+        "dns_resolve_type",
+        "protocol",
+        "jsonPath",
+        "jsonPathOperator",
+        "expectedValue",
+        "basic_auth_user",
+        "basic_auth_pass",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "expiryNotification",
+        "ignoreTls",
+        "cacheBust",
+        "upsideDown",
+        "ping_count",
+        "accepted_statuscodes",
+        "parent",
+        "description",
+        "notificationIDList",
+        "authMethod",
+        "bearer_token",
+        "oauth_auth_method",
+        "oauth_token_url",
+        "oauth_client_id",
+        "oauth_client_secret",
+        "oauth_scopes",
+        "oauth_audience",
+        "method",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "subtype": "ping (if empty)",
+        "protocol": "ICMP|UDP|null by subtype",
+        "port": "80 (ping) / 53 (dns)",
+        "timeout": 48
+      },
+      "domain_expiry_field": null,
+      "notes": "Uses setting globalpingApiToken. subtype ping|http|dns selects the sub-form."
+    },
+    "grpc-keyword": {
+      "label": "gRPC(s) - Keyword",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/monitor-types/grpc.js",
+      "fields": [
+        "type",
+        "name",
+        "grpcUrl",
+        "keyword",
+        "invertKeyword",
+        "ipFamily",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "accepted_statuscodes",
+        "maxredirects",
+        "parent",
+        "description",
+        "notificationIDList",
+        "grpcEnableTls",
+        "grpcServiceName",
+        "grpcMethod",
+        "grpcProtobuf",
+        "grpcBody",
+        "grpcMetadata",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": "grpcUrl"
+    },
+    "kafka-producer": {
+      "label": "Kafka Producer",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/model/monitor.js:888-905 (inline); server/util-server.js kafkaProducerAsync",
+      "fields": [
+        "type",
+        "name",
+        "kafkaProducerBrokers",
+        "kafkaProducerTopic",
+        "kafkaProducerMessage",
+        "kafkaProducerSsl",
+        "kafkaProducerAllowAutoTopicCreation",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "timeout",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "kafkaProducerSaslOptions",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "timeout": 1
+      },
+      "domain_expiry_field": null
+    },
+    "mqtt": {
+      "label": "MQTT",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/monitor-types/mqtt.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "port",
+        "jsonPath",
+        "expectedValue",
+        "mqttUsername",
+        "mqttPassword",
+        "mqttTopic",
+        "mqttWebsocketPath",
+        "mqttCheckType",
+        "mqttSuccessMessage",
+        "conditions",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": "hostname",
+      "condition_variables": [
+        {
+          "id": "topic",
+          "operators": "string"
+        },
+        {
+          "id": "message",
+          "operators": "string"
+        },
+        {
+          "id": "json_value",
+          "operators": "string+number"
+        }
+      ]
+    },
+    "ntp": {
+      "label": "NTP",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/monitor-types/ntp.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "port",
+        "ntpStratumThreshold",
+        "ntpTimeOffsetThreshold",
+        "ntpRootDispersionThreshold",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "port": "123",
+        "interval": 300,
+        "timeout": 48
+      },
+      "domain_expiry_field": null
+    },
+    "rabbitmq": {
+      "label": "RabbitMQ",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/monitor-types/rabbitmq.js",
+      "fields": [
+        "type",
+        "name",
+        "rabbitmqNodes",
+        "rabbitmqUsername",
+        "rabbitmqPassword",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "timeout",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": null
+    },
+    "sip-options": {
+      "label": "SIP Options Ping",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/monitor-types/sip-options.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "port",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": "hostname",
+      "available_if": "!info.isContainer"
+    },
+    "smtp": {
+      "label": "SMTP",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/monitor-types/smtp.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "port",
+        "smtpSecurity",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": "hostname"
+    },
+    "snmp": {
+      "label": "SNMP",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/monitor-types/snmp.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "port",
+        "radiusPassword",
+        "snmpOid",
+        "snmpVersion",
+        "snmpV3Username",
+        "jsonPath",
+        "jsonPathOperator",
+        "expectedValue",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "timeout",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "port": "161",
+        "timeout": 5,
+        "snmpVersion": "2c (if empty)"
+      },
+      "domain_expiry_field": "hostname"
+    },
+    "tailscale-ping": {
+      "label": "Tailscale Ping",
+      "optgroup": "Specific Monitor Type",
+      "server_implementation": "server/monitor-types/tailscale-ping.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": "hostname",
+      "available_if": "!info.isContainer"
+    },
+    "sqlserver": {
+      "label": "Microsoft SQL Server",
+      "optgroup": "Database Monitor Type",
+      "server_implementation": "server/monitor-types/mssql.js",
+      "fields": [
+        "type",
+        "name",
+        "databaseConnectionString",
+        "databaseQuery",
+        "conditions",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "databaseConnectionString": "template"
+      },
+      "domain_expiry_field": null,
+      "condition_variables": [
+        {
+          "id": "result",
+          "operators": "string"
+        }
+      ]
+    },
+    "mongodb": {
+      "label": "MongoDB",
+      "optgroup": "Database Monitor Type",
+      "server_implementation": "server/monitor-types/mongodb.js",
+      "fields": [
+        "type",
+        "name",
+        "jsonPath",
+        "expectedValue",
+        "databaseConnectionString",
+        "databaseQuery",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "databaseConnectionString": "template"
+      },
+      "domain_expiry_field": null
+    },
+    "mysql": {
+      "label": "MySQL/MariaDB",
+      "optgroup": "Database Monitor Type",
+      "server_implementation": "server/monitor-types/mysql.js",
+      "fields": [
+        "type",
+        "name",
+        "radiusPassword",
+        "databaseConnectionString",
+        "databaseQuery",
+        "conditions",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "databaseConnectionString": "template"
+      },
+      "domain_expiry_field": null,
+      "condition_variables": [
+        {
+          "id": "result",
+          "operators": "string"
+        }
+      ]
+    },
+    "oracledb": {
+      "label": "Oracle Database",
+      "optgroup": "Database Monitor Type",
+      "server_implementation": "server/monitor-types/oracledb.js",
+      "fields": [
+        "type",
+        "name",
+        "databaseConnectionString",
+        "basic_auth_user",
+        "basic_auth_pass",
+        "databaseQuery",
+        "conditions",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "databaseConnectionString": "template"
+      },
+      "domain_expiry_field": null,
+      "condition_variables": [
+        {
+          "id": "result",
+          "operators": "string"
+        }
+      ]
+    },
+    "postgres": {
+      "label": "PostgreSQL",
+      "optgroup": "Database Monitor Type",
+      "server_implementation": "server/monitor-types/postgres.js",
+      "fields": [
+        "type",
+        "name",
+        "databaseConnectionString",
+        "databaseQuery",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "databaseConnectionString": "template"
+      },
+      "domain_expiry_field": null
+    },
+    "radius": {
+      "label": "Radius",
+      "optgroup": "Database Monitor Type",
+      "server_implementation": "server/model/monitor.js:847-873 (inline); server/radius-client.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "port",
+        "radiusPassword",
+        "radiusUsername",
+        "radiusSecret",
+        "radiusCalledStationId",
+        "radiusCallingStationId",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "port": "1812",
+        "timeout": 48
+      },
+      "domain_expiry_field": "hostname"
+    },
+    "redis": {
+      "label": "Redis",
+      "optgroup": "Database Monitor Type",
+      "server_implementation": "server/monitor-types/redis.js",
+      "fields": [
+        "type",
+        "name",
+        "databaseConnectionString",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "ignoreTls",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "databaseConnectionString": "template"
+      },
+      "domain_expiry_field": null
+    },
+    "gamedig": {
+      "label": "GameDig",
+      "optgroup": "Game Server",
+      "server_implementation": "server/monitor-types/gamedig.js",
+      "fields": [
+        "type",
+        "name",
+        "game",
+        "hostname",
+        "port",
+        "gamedigToken",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "gamedigGivenPortOnly",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {
+        "port": "from game list",
+        "timeout": 48
+      },
+      "domain_expiry_field": "hostname"
+    },
+    "steam": {
+      "label": "Steam Game Server",
+      "optgroup": "Game Server",
+      "server_implementation": "server/monitor-types/steam.js",
+      "fields": [
+        "type",
+        "name",
+        "hostname",
+        "port",
+        "interval",
+        "maxretries",
+        "retryInterval",
+        "resendInterval",
+        "domainExpiryNotification",
+        "upsideDown",
+        "parent",
+        "description",
+        "notificationIDList",
+        "active"
+      ],
+      "hidden_common": [
+        "tags"
+      ],
+      "ui_defaults_on_select": {},
+      "domain_expiry_field": "hostname",
+      "notes": "Uses setting steamAPIKey."
+    }
+  },
+  "monitor_defaults_new": {
+    "type": "http",
+    "name": "",
+    "parent": null,
+    "url": "https://",
+    "wsSubprotocol": "",
+    "method": "GET",
+    "protocol": null,
+    "location": "world",
+    "ipFamily": null,
+    "interval": 60,
+    "retryInterval": 60,
+    "resendInterval": 0,
+    "maxretries": 0,
+    "retryOnlyOnStatusCodeFailure": false,
+    "notificationIDList": {},
+    "ignoreTls": false,
+    "upsideDown": false,
+    "expiryNotification": false,
+    "domainExpiryNotification": true,
+    "maxredirects": 10,
+    "accepted_statuscodes": [
+      "200-299"
+    ],
+    "saveResponse": false,
+    "saveErrorResponse": true,
+    "responseMaxLength": 1024,
+    "dns_resolve_type": "A",
+    "dns_resolve_server": "",
+    "docker_container": "",
+    "docker_host": null,
+    "proxyId": null,
+    "basic_auth_user": "",
+    "basic_auth_pass": "",
+    "bearer_token": "",
+    "mqttUsername": "",
+    "mqttPassword": "",
+    "mqttTopic": "",
+    "mqttWebsocketPath": "",
+    "mqttSuccessMessage": "",
+    "mqttCheckType": "keyword",
+    "authMethod": null,
+    "oauth_auth_method": "client_secret_basic",
+    "httpBodyEncoding": "json",
+    "kafkaProducerBrokers": [],
+    "kafkaProducerSaslOptions": {
+      "mechanism": "None"
+    },
+    "cacheBust": false,
+    "kafkaProducerSsl": false,
+    "kafkaProducerAllowAutoTopicCreation": false,
+    "gamedigGivenPortOnly": true,
+    "gamedigToken": "",
+    "remote_browser": null,
+    "screenshot_delay": 0,
+    "rabbitmqNodes": [],
+    "rabbitmqUsername": "",
+    "rabbitmqPassword": "",
+    "conditions": [],
+    "system_service_name": "",
+    "sshAuthMethod": "password",
+    "ntpStratumThreshold": 5,
+    "ntpTimeOffsetThreshold": 1000,
+    "ntpRootDispersionThreshold": 500,
+    "ping_count": 3,
+    "ping_numeric": true,
+    "packetSize": 56,
+    "ping_per_request_timeout": 2,
+    "timeout": 48,
+    "jsonPath": "$",
+    "jsonPathOperator": "==",
+    "snmpVersion": "2c"
+  },
+  "readonly_in_monitor_json_do_not_send_on_add": [
+    "id",
+    "path",
+    "pathName",
+    "childrenIDs",
+    "weight",
+    "forceInactive",
+    "maintenance",
+    "screenshot",
+    "includeSensitiveData",
+    "dns_last_result",
+    "tags"
+  ],
+  "edit_monitor_copied_fields": [
+    "name",
+    "description",
+    "parent",
+    "type",
+    "subtype",
+    "url",
+    "wsIgnoreSecWebsocketAcceptHeader",
+    "wsSubprotocol",
+    "method",
+    "body",
+    "ipFamily",
+    "headers",
+    "basic_auth_user",
+    "basic_auth_pass",
+    "bearer_token",
+    "timeout",
+    "oauth_client_id",
+    "oauth_client_secret",
+    "oauth_auth_method",
+    "oauth_token_url",
+    "oauth_scopes",
+    "oauth_audience",
+    "tlsCa",
+    "tlsCert",
+    "tlsKey",
+    "interval",
+    "retryInterval",
+    "resendInterval",
+    "hostname",
+    "game",
+    "maxretries",
+    "port",
+    "location",
+    "protocol",
+    "keyword",
+    "invertKeyword",
+    "ignoreTls",
+    "expiryNotification",
+    "domainExpiryNotification",
+    "upsideDown",
+    "packetSize",
+    "maxredirects",
+    "accepted_statuscodes",
+    "saveResponse",
+    "saveErrorResponse",
+    "responseMaxLength",
+    "dns_resolve_type",
+    "dns_resolve_server",
+    "pushToken",
+    "docker_container",
+    "docker_host",
+    "proxyId",
+    "mqttUsername",
+    "mqttPassword",
+    "mqttTopic",
+    "mqttSuccessMessage",
+    "mqttCheckType",
+    "mqttWebsocketPath",
+    "databaseConnectionString",
+    "databaseQuery",
+    "authMethod",
+    "authWorkstation",
+    "authDomain",
+    "grpcUrl",
+    "grpcProtobuf",
+    "grpcServiceName",
+    "grpcMethod",
+    "grpcBody",
+    "grpcMetadata",
+    "grpcEnableTls",
+    "radiusUsername",
+    "radiusPassword",
+    "radiusCalledStationId",
+    "radiusCallingStationId",
+    "radiusSecret",
+    "httpBodyEncoding",
+    "expectedValue",
+    "jsonPath",
+    "kafkaProducerTopic",
+    "kafkaProducerBrokers",
+    "kafkaProducerAllowAutoTopicCreation",
+    "kafkaProducerSaslOptions",
+    "kafkaProducerMessage",
+    "cacheBust",
+    "kafkaProducerSsl",
+    "gamedigGivenPortOnly",
+    "gamedigToken",
+    "remote_browser",
+    "screenshot_delay",
+    "smtpSecurity",
+    "snmpVersion",
+    "snmpOid",
+    "jsonPathOperator",
+    "retryOnlyOnStatusCodeFailure",
+    "rabbitmqNodes",
+    "rabbitmqUsername",
+    "rabbitmqPassword",
+    "conditions",
+    "manual_status",
+    "system_service_name",
+    "sshUsername",
+    "sshPassword",
+    "sftpPath",
+    "sshPrivateKey",
+    "sshPassphrase",
+    "sshAuthMethod",
+    "ntpStratumThreshold",
+    "ntpTimeOffsetThreshold",
+    "ntpRootDispersionThreshold",
+    "ping_numeric",
+    "ping_count",
+    "ping_per_request_timeout",
+    "notificationIDList"
+  ],
+  "conditions": {
+    "schema": {
+      "expression": {
+        "type": "expression",
+        "variable": "<variable id>",
+        "operator": "<operator id>",
+        "value": "string",
+        "andOr": "and|or"
+      },
+      "group": {
+        "type": "group",
+        "children": [
+          "expression|group"
+        ],
+        "andOr": "and|or"
+      },
+      "notes": "Top-level value is an array of expression/group objects. andOr links an item with the previous result (first item's andOr ignored). Source: src/components/EditMonitorConditions.vue:42-60, server/monitor-conditions/expression.js:17-33, evaluator.js:38-83, operators.js:14-40."
+    },
+    "operators": {
+      "string": [
+        "equals",
+        "not_equals",
+        "contains",
+        "not_contains",
+        "starts_with",
+        "not_starts_with",
+        "ends_with",
+        "not_ends_with"
+      ],
+      "number": [
+        "num_equals",
+        "num_not_equals",
+        "lt",
+        "gt",
+        "lte",
+        "gte"
+      ]
+    },
+    "operator_captions": {
+      "equals": "equals",
+      "not_equals": "not equals",
+      "contains": "contains",
+      "not_contains": "not contains",
+      "starts_with": "starts with",
+      "not_starts_with": "not starts with",
+      "ends_with": "ends with",
+      "not_ends_with": "not ends with",
+      "num_equals": "equals",
+      "num_not_equals": "not equals",
+      "lt": "less than",
+      "gt": "greater than",
+      "lte": "less than or equal to",
+      "gte": "greater than or equal to"
+    }
+  },
+  "add_payload": {
+    "event": "add",
+    "signature": "socket.emit('add', monitor, callback)",
+    "ack": {
+      "ok": true,
+      "msg": "successAdded",
+      "msgi18n": true,
+      "monitorID": "number"
+    },
+    "rules": [
+      "Send monitor_defaults_new merged with the type-specific values; omit 'id' and every readonly field.",
+      "accepted_statuscodes must be an array of strings for every type (server.js:751-756).",
+      "notificationIDList is an object {id: true}; it is removed from the bean and stored as relations.",
+      "kafkaProducerBrokers, kafkaProducerSaslOptions, conditions, rabbitmqNodes are JSON.stringify'ed (server.js:758-763).",
+      "humanReadableInterval, globalpingdnsresolvetypeoptions, responsecheck are deleted (server.js:769-778).",
+      "retryOnlyOnStatusCodeFailure -> retry_only_on_status_code_failure (server.js:782-784).",
+      "active === false creates the monitor paused (server.js:795-797).",
+      "Monitor.validate() (monitor.js:1630-1785) runs; errors are returned as {ok:false, msg}."
+    ]
+  },
+  "edit_payload": {
+    "event": "editMonitor",
+    "signature": "socket.emit('editMonitor', monitor /* must contain id */, callback)",
+    "ack": {
+      "ok": true,
+      "msg": "Saved.",
+      "msgi18n": true,
+      "monitorID": "number"
+    },
+    "rules": [
+      "Only edit_monitor_copied_fields are applied (server.js:847-967); unknown keys are ignored (safe to send the full MonitorJSON back).",
+      "accepted_statuscodes must be an array of strings (server.js:842-845).",
+      "port is parseInt'ed; NaN -> null. proxyId must be an integer else null.",
+      "parent must not be a descendant of the monitor ('Invalid Monitor Group').",
+      "Changing type from group to something else unlinks all children.",
+      "The monitor is restarted only if it (and its parents) is active.",
+      "snmpV3Username, active, weight, tags are NOT updated by this event."
+    ]
+  }
+}
