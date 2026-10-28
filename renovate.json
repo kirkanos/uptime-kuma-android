@@ -1,0 +1,51 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "enabledManagers": [
+    "gradle",
+    "gradle-wrapper",
+    "github-actions"
+  ],
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "timezone": "Europe/Berlin",
+  "labels": [
+    "dependencies"
+  ],
+  "prConcurrentLimit": 5,
+  "ignoreUnstable": true,
+  "packageRules": [
+    {
+      "description": "Group all AndroidX libraries (incl. Compose BOM) into one PR",
+      "matchManagers": ["gradle"],
+      "matchPackagePrefixes": ["androidx."],
+      "groupName": "androidx"
+    },
+    {
+      "description": "Kotlin, its compiler plugins and KSP move together",
+      "matchManagers": ["gradle"],
+      "matchPackagePrefixes": ["org.jetbrains.kotlin", "com.google.devtools.ksp"],
+      "groupName": "kotlin"
+    },
+    {
+      "description": "Dagger/Hilt artifacts share one version",
+      "matchManagers": ["gradle"],
+      "matchPackagePrefixes": ["com.google.dagger"],
+      "groupName": "hilt"
+    },
+    {
+      "description": "Android Gradle plugin gets its own PR (often needs follow-up changes)",
+      "matchManagers": ["gradle"],
+      "matchPackagePrefixes": ["com.android.tools.build", "com.android.application", "com.android.library"],
+      "groupName": "android-gradle-plugin"
+    },
+    {
+      "description": "Pin GitHub Actions to major tags, grouped",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    }
+  ]
+}

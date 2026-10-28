@@ -1,0 +1,79 @@
+# ntfy service block for the Uptime Kuma compose stack, behind Traefik.
+# Image pinned to the release the push spike was tested against (see docs/push/README.md).
+# Required .env variables: SERVICE (stack prefix, same as the Kuma service uses), NTFY_HOST (e.g. ntfy.example.com).
+# Optional: TRAEFIK_ENTRYPOINT (default websecure), TZ.
+#
+# After first start, create users/ACL/tokens once (they live in ./ntfy/user.db):
+#   docker compose exec ntfy sh -c 'NTFY_PASSWORD=... ntfy user add kuma && ntfy access kuma "up*" write-only'
+#   docker compose exec ntfy sh -c 'NTFY_PASSWORD=... ntfy user add app  && ntfy access app  "up*" read-only'
+#   docker compose exec ntfy ntfy token add --label kuma-<device> kuma      # -> tk_... goes into the Kuma webhook headers
+
+services:
+  ntfy:
+    image: binwiederhier/ntfy:v2.34.0
+    container_name: ${SERVICE}-ntfy
+    command: serve
+    # Reaps zombie processes left by the shell-based healthcheck (ntfy's own docs/install.md recommends this).
+    init: true
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Europe/Berlin}
+      # Public URL. Must equal what users enter as "Default server" in the ntfy app; the UnifiedPush
+      # endpoint is built as "<base-url>/up<12 random chars>?up=1" on the phone.
+      NTFY_BASE_URL: https://${NTFY_HOST}
+      NTFY_LISTEN_HTTP: ":80"
+      # Traefik terminates TLS; trust X-Forwarded-For so per-client rate limits work instead of
+      # counting every client as one visitor.
+      NTFY_BEHIND_PROXY: "true"
+      # Private instance: nothing is readable/writable without an ACL entry.
+      NTFY_AUTH_FILE: /var/lib/ntfy/user.db
+      NTFY_AUTH_DEFAULT_ACCESS: deny-all
+      # Persistent message cache so a phone that was offline can replay with since=<last id>.
+      NTFY_CACHE_FILE: /var/lib/ntfy/cache.db
+      NTFY_CACHE_DURATION: 24h
+      # Attachments are intentionally OFF: NTFY_ATTACHMENT_CACHE_DIR is left unset.
+      # Message size limit stays at the 4K default; the Kuma webhook payload is ~400 bytes.
+      # Raising it is "not recommended and largely untested" per ntfy and is capped at 5M.
+      # NTFY_MESSAGE_SIZE_LIMIT: 4K
+      # Must stay off: when on, publishing to up* topics returns HTTP 507 until a subscriber with
+      # read-write permission has connected, and our "app" user is read-only by design.
+      NTFY_VISITOR_SUBSCRIBER_RATE_LIMITING: "false"
+      # Kuma publishes from a single IP. Default burst is 60 requests, replenished 1 per 5s.
+      # Uncomment if a large outage (>60 monitors flipping at once) should not hit 429s.
+      # NTFY_VISITOR_REQUEST_LIMIT_BURST: "200"
+      # NTFY_VISITOR_REQUEST_LIMIT_EXEMPT_HOSTS: "uptime-kuma"
+      #
+      # NOT needed for this design, left here so nobody adds it "for faster Android delivery":
+      # upstream-base-url forwards a poll_request for every message to ntfy.sh so that iOS (APNS) and
+      # FCM-based clients can be woken up. (1) ntfy never forwards UnifiedPush (?up=1) messages
+      # upstream at all (server.go: `upstream: !unifiedpush`), and (2) the Android ntfy app only uses
+      # Firebase for topics on ntfy.sh itself; self-hosted and UnifiedPush subscriptions always use the
+      # app's own foreground-service connection. Enabling it would only leak metadata to ntfy.sh.
+      # NTFY_UPSTREAM_BASE_URL: https://ntfy.sh
+    volumes:
+      - ./ntfy:/var/lib/ntfy
+    networks:
+      - traefik-network
+    # List syntax on purpose: compose interpolates ${VAR} only in values, never in mapping keys,
+    # so "traefik.http.routers.${SERVICE}-ntfy.rule: ..." as a map key would NOT be substituted.
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${SERVICE}-ntfy.rule=Host(`${NTFY_HOST}`)"
+      - "traefik.http.routers.${SERVICE}-ntfy.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}"
+      - "traefik.http.routers.${SERVICE}-ntfy.tls=true"
+      - "traefik.http.routers.${SERVICE}-ntfy.tls.certresolver=default"
+      - "traefik.http.services.${SERVICE}-ntfy.loadbalancer.server.port=80"
+      # WebSocket upgrades and the long-lived /json stream need no extra Traefik config; ntfy sends a
+      # keepalive event every 45s.
+    healthcheck:
+      # The image is Alpine with BusyBox wget only (no curl). BusyBox accepts --tries (ignored) and -q/-O.
+      # Verified against v2.34.0: prints {"healthy":true,"role":"active"}, exit 0.
+      test: ["CMD-SHELL", "wget -q --tries=1 -O- http://localhost:80/v1/health | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+networks:
+  traefik-network:
+    external: true

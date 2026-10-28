@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_monitors_label">Uptime Kuma monitors</string>
+    <string name="widget_monitors_description">Shows the status of your Uptime Kuma monitors.</string>
+</resources>
