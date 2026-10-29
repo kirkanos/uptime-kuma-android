@@ -6,11 +6,17 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.multibindings.Multibinds
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import net.kirkanos.uptimekuma.core.domain.AlertHistoryRepository
+import net.kirkanos.uptimekuma.core.domain.AlertPreferencesRepository
+import net.kirkanos.uptimekuma.core.domain.MonitorStateListener
 import net.kirkanos.uptimekuma.core.domain.PushRepository
+import net.kirkanos.uptimekuma.push.alerts.AlertHistoryStore
+import net.kirkanos.uptimekuma.push.alerts.DataStoreAlertPreferencesRepository
 import net.kirkanos.uptimekuma.push.data.DataStorePushRegistrationStore
 import net.kirkanos.uptimekuma.push.data.DeviceNameProvider
 import net.kirkanos.uptimekuma.push.data.DistributorGateway
@@ -51,6 +57,16 @@ internal abstract class PushBindingsModule {
 
     @Binds
     abstract fun bindWorkScheduler(impl: WorkManagerPushScheduler): PushWorkScheduler
+
+    @Binds
+    abstract fun bindAlertPreferencesRepository(impl: DataStoreAlertPreferencesRepository): AlertPreferencesRepository
+
+    @Binds
+    abstract fun bindAlertHistoryRepository(impl: AlertHistoryStore): AlertHistoryRepository
+
+    /** Widget / tile contribute with `@Binds @IntoSet`; empty when none is installed. */
+    @Multibinds
+    abstract fun monitorStateListeners(): Set<MonitorStateListener>
 }
 
 @Module

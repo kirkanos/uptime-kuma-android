@@ -19,17 +19,15 @@ import net.kirkanos.uptimekuma.feature.monitors.dashboardScreen
 import net.kirkanos.uptimekuma.feature.monitors.monitorDetailScreen
 import net.kirkanos.uptimekuma.feature.onboarding.OnboardingRoute
 import net.kirkanos.uptimekuma.feature.onboarding.onboardingScreen
+import net.kirkanos.uptimekuma.feature.settings.SettingsRoute
+import net.kirkanos.uptimekuma.feature.settings.settingsGraph
 import net.kirkanos.uptimekuma.push.ui.PushSetupRoute
-import net.kirkanos.uptimekuma.ui.settings.SettingsScreen
 
 /** Push notification setup. [fromOnboarding] = continue to the dashboard when done instead of going back. */
 @Serializable
 data class PushSetupDestination(
     val fromOnboarding: Boolean = false,
 )
-
-@Serializable
-data object SettingsDestination
 
 /**
  * Root composable: navigation between onboarding, dashboard, monitor detail, settings and push setup.
@@ -76,18 +74,17 @@ fun KumaApp(
 
         dashboardScreen(
             onMonitorClick = { id -> navController.navigate(MonitorDetailRoute(id)) },
-            onSettingsClick = { navController.navigate(SettingsDestination) { launchSingleTop = true } },
+            onSettingsClick = { navController.navigate(SettingsRoute) { launchSingleTop = true } },
             onReLogin = { navController.navigate(OnboardingRoute) { launchSingleTop = true } },
         )
 
         monitorDetailScreen(onBack = { navController.popBackStack() })
 
-        composable<SettingsDestination> {
-            SettingsScreen(
-                onBack = { navController.popBackStack() },
-                onPushSetup = { navController.navigate(PushSetupDestination(fromOnboarding = false)) },
-            )
-        }
+        settingsGraph(
+            navController = navController,
+            onMonitorClick = { id -> navController.navigate(MonitorDetailRoute(id)) },
+            onPushSetup = { navController.navigate(PushSetupDestination(fromOnboarding = false)) },
+        )
     }
 }
 

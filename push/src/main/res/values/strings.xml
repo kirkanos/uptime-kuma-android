@@ -93,4 +93,16 @@
     <string name="push_open_distributor_title">Open ntfy once</string>
     <string name="push_open_distributor_text">Android only lets ntfy start its connection while it is in the foreground. Open it once now, otherwise alerts may not arrive until the next time you open ntfy.</string>
     <string name="push_open_distributor_button">Open ntfy</string>
+
+    <!-- Per-monitor alert toggle -->
+    <string name="push_monitor_alerts_title">Notifications</string>
+    <string name="push_monitor_alerts_on">Alerts for this monitor are on</string>
+    <string name="push_monitor_alerts_muted_until">Muted until %1$s</string>
+    <string name="push_monitor_alerts_muted_indefinitely">Muted until you unmute</string>
+    <string name="push_monitor_alerts_mute">Mute</string>
+    <string name="push_monitor_alerts_unmute">Unmute</string>
+    <string name="push_mute_1h">For 1 hour</string>
+    <string name="push_mute_8h">For 8 hours</string>
+    <string name="push_mute_24h">For 24 hours</string>
+    <string name="push_mute_indefinitely">Until unmuted</string>
 </resources>

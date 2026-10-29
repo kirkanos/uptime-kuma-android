@@ -93,4 +93,16 @@
     <string name="push_open_distributor_title">ntfy einmal öffnen</string>
     <string name="push_open_distributor_text">Android erlaubt ntfy den Verbindungsaufbau nur im Vordergrund. Öffne ntfy jetzt einmal, sonst kommen Alarme womöglich erst an, wenn du ntfy das nächste Mal öffnest.</string>
     <string name="push_open_distributor_button">ntfy öffnen</string>
+
+    <!-- Benachrichtigungen pro Monitor -->
+    <string name="push_monitor_alerts_title">Benachrichtigungen</string>
+    <string name="push_monitor_alerts_on">Alarme für diesen Monitor sind an</string>
+    <string name="push_monitor_alerts_muted_until">Stumm bis %1$s</string>
+    <string name="push_monitor_alerts_muted_indefinitely">Stumm, bis du die Stummschaltung aufhebst</string>
+    <string name="push_monitor_alerts_mute">Stumm</string>
+    <string name="push_monitor_alerts_unmute">Aufheben</string>
+    <string name="push_mute_1h">Für 1 Stunde</string>
+    <string name="push_mute_8h">Für 8 Stunden</string>
+    <string name="push_mute_24h">Für 24 Stunden</string>
+    <string name="push_mute_indefinitely">Bis zur Aufhebung</string>
 </resources>

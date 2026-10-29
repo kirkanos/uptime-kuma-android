@@ -2,4 +2,34 @@
 <resources>
     <string name="widget_monitors_label">Uptime Kuma monitors</string>
     <string name="widget_monitors_description">Shows the status of your Uptime Kuma monitors.</string>
+    <string name="widget_title">Uptime Kuma</string>
+    <string name="widget_all_up">All up</string>
+    <plurals name="widget_down">
+        <item quantity="one">%d down</item>
+        <item quantity="other">%d down</item>
+    </plurals>
+    <plurals name="widget_pending">
+        <item quantity="one">%d pending</item>
+        <item quantity="other">%d pending</item>
+    </plurals>
+    <plurals name="widget_monitor_count">
+        <item quantity="one">%d monitor</item>
+        <item quantity="other">%d monitors</item>
+    </plurals>
+    <plurals name="widget_more">
+        <item quantity="one">+%d more</item>
+        <item quantity="other">+%d more</item>
+    </plurals>
+    <string name="widget_not_configured">Not configured</string>
+    <string name="widget_not_configured_hint">Open the app to sign in</string>
+    <string name="widget_no_monitors">No monitors</string>
+    <string name="widget_updated">as of %1$s</string>
+    <string name="widget_ping">%1$d ms</string>
+    <string name="widget_status_up">Up</string>
+    <string name="widget_status_down">Down</string>
+    <string name="widget_status_pending">Pending</string>
+    <string name="widget_status_maintenance">Maintenance</string>
+    <string name="widget_status_paused">Paused</string>
+    <string name="widget_status_unknown">Unknown</string>
+    <string name="tile_label">Uptime Kuma</string>
 </resources>

@@ -13,5 +13,20 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_monitors_info" />
         </receiver>
+
+        <!-- Active tile: bound only on TileService.requestListeningState (state change), when added or tapped. -->
+        <service
+            android:name=".tile.MonitorsTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_tile_kuma"
+            android:label="@string/tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" />
+        </service>
     </application>
 </manifest>

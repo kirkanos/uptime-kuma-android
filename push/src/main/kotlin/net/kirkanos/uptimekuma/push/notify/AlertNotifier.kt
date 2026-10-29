@@ -14,10 +14,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import net.kirkanos.uptimekuma.core.model.AlertRecord
 import net.kirkanos.uptimekuma.core.model.MonitorStatus
 import net.kirkanos.uptimekuma.core.model.PushEvent
 import net.kirkanos.uptimekuma.push.NotificationIntents
 import net.kirkanos.uptimekuma.push.R
+import net.kirkanos.uptimekuma.push.alerts.AlertDecision
+import net.kirkanos.uptimekuma.push.alerts.AlertGate
+import net.kirkanos.uptimekuma.push.alerts.AlertHistoryStore
+import net.kirkanos.uptimekuma.push.alerts.DataStoreAlertPreferencesRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,6 +32,10 @@ import javax.inject.Singleton
  * Every monitor owns one notification slot (tag `monitor:<id>`), so an UP replaces the DOWN of the same
  * monitor. All monitor alerts share one group with a summary. Missing POST_NOTIFICATIONS permission or
  * disabled notifications are tolerated silently.
+ *
+ * Every non-duplicate event is written to the in-app alert history ([AlertHistoryStore]); the user's
+ * [AlertPreferences][net.kirkanos.uptimekuma.core.model.AlertPreferences] (mutes, quiet hours, UP / certificate
+ * switches) decide via [AlertGate] whether it also becomes a system notification.
  */
 @Singleton
 class AlertNotifier
@@ -34,15 +43,26 @@ class AlertNotifier
     constructor(
         @ApplicationContext private val context: Context,
         private val history: AlertHistory,
+        private val preferences: DataStoreAlertPreferencesRepository,
+        private val gate: AlertGate,
+        private val alertLog: AlertHistoryStore,
     ) {
         private val manager = NotificationManagerCompat.from(context)
 
-        /** Shows the event. Returns `false` if it was dropped (duplicate) or could not be posted. */
+        /** Shows the event. Returns `false` if it was dropped (duplicate, suppressed) or could not be posted. */
         fun show(event: PushEvent): Boolean {
             val monitorId = event.monitorId
             val status = event.status
             val downSince = monitorId?.let(history::downSince)
             if (!history.accept(monitorId, event.timeMillis, status)) return false
+            val decision = gate.decide(event, preferences.current())
+            alertLog.record(event.toRecord(gate.nowMillis(), notified = decision == AlertDecision.SHOW))
+            if (decision != AlertDecision.SHOW) {
+                Log.i(LOG_TAG, "Alert not shown: $decision")
+                // A silent recovery still resolves the monitor's DOWN notification.
+                if (monitorId != null && status == MonitorStatus.UP) cancel(monitorId)
+                return false
+            }
             NotificationChannels.ensure(context)
             val notification =
                 when {
@@ -277,3 +297,18 @@ internal data class DurationParts(
         }
     }
 }
+
+/** History entry for this event, received at [nowMillis]. */
+internal fun PushEvent.toRecord(
+    nowMillis: Long,
+    notified: Boolean,
+): AlertRecord =
+    AlertRecord(
+        receivedAtMillis = nowMillis,
+        monitorId = monitorId,
+        monitorName = monitorName,
+        status = status,
+        message = message,
+        eventTimeMillis = timeMillis,
+        notified = notified,
+    )

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kuma.android.library.compose)
     alias(libs.plugins.kuma.android.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {

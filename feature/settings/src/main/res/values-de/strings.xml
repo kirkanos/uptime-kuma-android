@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_back">Zurück</string>
+    <string name="settings_ok">OK</string>
+    <string name="settings_cancel">Abbrechen</string>
+
+    <!-- Abschnitte -->
+    <string name="settings_section_notifications">Benachrichtigungen</string>
+    <string name="settings_section_server">Server</string>
+    <string name="settings_section_administration">Verwaltung</string>
+    <string name="settings_section_about">Über</string>
+
+    <!-- Benachrichtigungen -->
+    <string name="settings_notify_up">Entwarnungen</string>
+    <string name="settings_notify_up_summary">Benachrichtigen, wenn ein Monitor wieder online ist</string>
+    <string name="settings_notify_cert">Zertifikatsablauf</string>
+    <string name="settings_notify_cert_summary">Bei bald ablaufenden TLS-Zertifikaten benachrichtigen</string>
+    <string name="settings_quiet_hours">Ruhezeit</string>
+    <string name="settings_quiet_hours_summary_off">Aus</string>
+    <string name="settings_quiet_hours_summary_on">%1$s – %2$s: nur Ausfälle (DOWN) melden sich</string>
+    <string name="settings_quiet_start">Beginn</string>
+    <string name="settings_quiet_end">Ende</string>
+    <string name="settings_system_notifications">System-Benachrichtigungseinstellungen</string>
+    <string name="settings_system_notifications_summary">Töne, Vibration und Wichtigkeit pro Kanal</string>
+    <string name="settings_alert_history">Alarmverlauf</string>
+    <string name="settings_alert_history_summary">Auf diesem Gerät empfangene Alarme</string>
+
+    <!-- Server -->
+    <string name="settings_server">Server</string>
+    <string name="settings_server_none">Kein Server eingerichtet</string>
+    <string name="settings_logged_in_as">Angemeldet als %1$s</string>
+    <string name="settings_server_version">Uptime Kuma %1$s</string>
+    <string name="settings_logout">Abmelden</string>
+    <string name="settings_logout_title">Abmelden?</string>
+    <string name="settings_logout_message">Die App vergisst diesen Server, die zwischengespeicherten Daten und die Push-Registrierung auf diesem Gerät.</string>
+
+    <!-- Über -->
+    <string name="settings_version">Version</string>
+    <string name="settings_license">Lizenz</string>
+    <string name="settings_license_summary">GNU General Public License v3.0</string>
+    <string name="settings_source">Quellcode</string>
+
+    <!-- Alarmverlauf -->
+    <string name="history_empty_title">Noch keine Alarme</string>
+    <string name="history_empty_message">Auf diesem Gerät empfangene Push-Alarme erscheinen hier.</string>
+    <string name="history_clear">Leeren</string>
+    <string name="history_clear_title">Alarmverlauf leeren?</string>
+    <string name="history_clear_message">Alle Einträge werden von diesem Gerät entfernt.</string>
+    <string name="history_monitor_fallback">Monitor #%1$d</string>
+    <string name="history_generic_title">Uptime Kuma</string>
+    <string name="history_info">Info</string>
+    <string name="history_not_notified">Nicht benachrichtigt (stumm, Ruhezeit oder deaktiviert)</string>
+</resources>

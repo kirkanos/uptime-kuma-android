@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_back">Back</string>
+    <string name="settings_ok">OK</string>
+    <string name="settings_cancel">Cancel</string>
+
+    <!-- Sections -->
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="settings_section_server">Server</string>
+    <string name="settings_section_administration">Administration</string>
+    <string name="settings_section_about">About</string>
+
+    <!-- Notifications -->
+    <string name="settings_notify_up">Recovery alerts</string>
+    <string name="settings_notify_up_summary">Notify when a monitor is back up</string>
+    <string name="settings_notify_cert">Certificate expiry</string>
+    <string name="settings_notify_cert_summary">Notify about TLS certificates that are about to expire</string>
+    <string name="settings_quiet_hours">Quiet hours</string>
+    <string name="settings_quiet_hours_summary_off">Off</string>
+    <string name="settings_quiet_hours_summary_on">%1$s – %2$s: only outages (DOWN) alert</string>
+    <string name="settings_quiet_start">Start</string>
+    <string name="settings_quiet_end">End</string>
+    <string name="settings_system_notifications">System notification settings</string>
+    <string name="settings_system_notifications_summary">Sounds, vibration and importance per channel</string>
+    <string name="settings_alert_history">Alert history</string>
+    <string name="settings_alert_history_summary">Alerts received on this device</string>
+
+    <!-- Server -->
+    <string name="settings_server">Server</string>
+    <string name="settings_server_none">No server configured</string>
+    <string name="settings_logged_in_as">Logged in as %1$s</string>
+    <string name="settings_server_version">Uptime Kuma %1$s</string>
+    <string name="settings_logout">Log out</string>
+    <string name="settings_logout_title">Log out?</string>
+    <string name="settings_logout_message">The app forgets this server, its cached data and the push registration on this device.</string>
+
+    <!-- About -->
+    <string name="settings_version">Version</string>
+    <string name="settings_license">License</string>
+    <string name="settings_license_summary">GNU General Public License v3.0</string>
+    <string name="settings_source">Source code</string>
+
+    <!-- Alert history -->
+    <string name="history_empty_title">No alerts yet</string>
+    <string name="history_empty_message">Push alerts received on this device show up here.</string>
+    <string name="history_clear">Clear</string>
+    <string name="history_clear_title">Clear alert history?</string>
+    <string name="history_clear_message">All entries are removed from this device.</string>
+    <string name="history_monitor_fallback">Monitor #%1$d</string>
+    <string name="history_generic_title">Uptime Kuma</string>
+    <string name="history_info">Info</string>
+    <string name="history_not_notified">Not notified (muted, quiet hours or disabled)</string>
+</resources>
