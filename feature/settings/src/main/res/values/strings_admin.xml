@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Server administration: common -->
+    <string name="admin_save">Save</string>
+    <string name="admin_saving">Saving…</string>
+    <string name="admin_add">Add</string>
+    <string name="admin_test">Test</string>
+    <string name="admin_retry">Retry</string>
+    <string name="admin_next">Next</string>
+    <string name="admin_ok">OK</string>
+    <string name="admin_done">Done</string>
+    <string name="admin_copy">Copy</string>
+    <string name="admin_yes">Yes</string>
+    <string name="admin_no">No</string>
+    <string name="admin_name">Name</string>
+    <string name="admin_search">Search</string>
+    <string name="admin_delete">Delete</string>
+    <string name="admin_delete_title">Delete?</string>
+    <string name="admin_delete_message">“%1$s” is deleted on the server.</string>
+    <string name="admin_delete_named">Delete %1$s</string>
+    <string name="admin_show_secret">Show</string>
+    <string name="admin_hide_secret">Hide</string>
+    <string name="admin_current_password">Current password</string>
+    <string name="admin_advanced">Advanced</string>
+
+    <string name="admin_done_saved">Saved</string>
+    <string name="admin_done_created">Created</string>
+    <string name="admin_done_deleted">Deleted</string>
+    <string name="admin_done_enabled">Enabled</string>
+    <string name="admin_done_disabled">Disabled</string>
+    <string name="admin_done_test_ok">Connected successfully</string>
+    <string name="admin_done_password_changed">Password changed. Other devices have been logged out.</string>
+    <string name="admin_done_2fa_enabled">Two-factor authentication enabled</string>
+    <string name="admin_done_2fa_disabled">Two-factor authentication disabled</string>
+    <string name="admin_done_statistics_cleared">All statistics cleared</string>
+    <string name="admin_done_database_shrunk">Database shrunk</string>
+    <string name="admin_done_auth_disabled">Authentication disabled</string>
+    <string name="admin_done_auth_enabled">Authentication enabled</string>
+    <string name="admin_done_tunnel_starting">Starting tunnel…</string>
+    <string name="admin_done_tunnel_stopping">Stopping tunnel…</string>
+    <string name="admin_done_token_removed">Token removed</string>
+    <string name="admin_done_with_detail">%1$s: %2$s</string>
+
+    <string name="admin_error_password_too_weak">The password is too weak.</string>
+    <string name="admin_error_invalid_token">Invalid code. Check the time on your device and try again.</string>
+    <string name="admin_error_2fa_already_enabled">Two-factor authentication is already enabled.</string>
+    <string name="admin_error_wrong_password">The current password is wrong.</string>
+
+    <!-- General -->
+    <string name="admin_general_title">General</string>
+    <string name="admin_general_summary">Timezone, base URL, entry page, search engines</string>
+    <string name="admin_general_timezone">Timezone</string>
+    <string name="admin_general_server_timezone">Server timezone</string>
+    <string name="admin_general_timezone_auto">Auto (this device: %1$s)</string>
+    <string name="admin_general_display_timezone_hint">Used for maintenance windows and reports on the server. The app always shows times in this device\'s timezone.</string>
+    <string name="admin_general_primary_url">Primary base URL</string>
+    <string name="admin_general_primary_url_hint">Used by the server for links in notifications.</string>
+    <string name="admin_general_primary_url_invalid">Enter a URL starting with http:// or https://.</string>
+    <string name="admin_general_primary_url_use_app">Use %1$s</string>
+    <string name="admin_general_primary_url_app_info">The app uses this URL too, e.g. for push monitor URLs. Leave it empty to use the address the app connects to.</string>
+    <string name="admin_general_search_engine">Search engine visibility</string>
+    <string name="admin_general_search_allow">Allow indexing</string>
+    <string name="admin_general_search_discourage">Discourage search engines from indexing the site</string>
+    <string name="admin_general_entry_page">Entry page</string>
+    <string name="admin_general_entry_dashboard">Dashboard</string>
+    <string name="admin_general_entry_status_page">Status page: %1$s</string>
+    <string name="admin_general_integrations">Integrations</string>
+    <string name="admin_general_steam_key">Steam API key</string>
+    <string name="admin_general_steam_key_hint">Needed for Steam game server monitors.</string>
+    <string name="admin_general_globalping_token">Globalping API token</string>
+    <string name="admin_general_nscd">Enable NSCD</string>
+    <string name="admin_general_nscd_summary">Name Service Cache Daemon: caches all DNS requests of the server</string>
+    <string name="admin_general_chrome">Chrome / Chromium</string>
+    <string name="admin_general_chrome_executable">Chrome executable</string>
+    <string name="admin_general_chrome_hint">Used by browser engine monitors. Leave empty to detect it automatically.</string>
+    <string name="admin_general_chrome_found">Found Chromium %1$s</string>
+
+    <!-- Expiry notifications -->
+    <string name="admin_expiry_title">Expiry notifications</string>
+    <string name="admin_expiry_summary">When to warn about expiring certificates and domains</string>
+    <string name="admin_expiry_info">The server sends a notification this many days before a TLS certificate or domain of a monitor expires.</string>
+    <string name="admin_expiry_tls">TLS certificate expiry</string>
+    <string name="admin_expiry_domain">Domain name expiry</string>
+    <string name="admin_expiry_none">No notifications</string>
+    <string name="admin_expiry_add_label">Days before expiry</string>
+    <string name="admin_expiry_invalid">Enter a number from 1 to %1$d.</string>
+    <string name="admin_expiry_remove">Remove %1$s</string>
+    <string name="admin_expiry_defaults">Reset to 7, 14 and 21 days</string>
+    <plurals name="admin_expiry_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+
+    <!-- Reverse proxy -->
+    <string name="admin_reverse_proxy_title">Reverse proxy</string>
+    <string name="admin_reverse_proxy_summary">Cloudflare tunnel, trusted proxy headers</string>
+    <string name="admin_cloudflared_title">Cloudflare tunnel</string>
+    <string name="admin_cloudflared_not_installed">cloudflared is not installed on the server, so the built-in Cloudflare tunnel is not available. The official Docker image includes it.</string>
+    <string name="admin_cloudflared_running">Tunnel is running</string>
+    <string name="admin_cloudflared_stopped">Tunnel is not running</string>
+    <string name="admin_cloudflared_token">Cloudflare tunnel token</string>
+    <string name="admin_cloudflared_token_hint">From the Zero Trust dashboard (Networks → Tunnels).</string>
+    <string name="admin_cloudflared_start">Start tunnel</string>
+    <string name="admin_cloudflared_stop">Stop tunnel</string>
+    <string name="admin_cloudflared_stop_message">If you use the tunnel to reach the server, the app and the web UI lose the connection.</string>
+    <string name="admin_cloudflared_remove_token">Remove token</string>
+    <string name="admin_cloudflared_info">The server starts the tunnel automatically on every restart while a token is stored.</string>
+    <string name="admin_reverse_proxy_other">Other reverse proxies</string>
+    <string name="admin_reverse_proxy_other_info">Nginx, Apache, Caddy and others need WebSocket support for Uptime Kuma.</string>
+    <string name="admin_reverse_proxy_wiki">Reverse proxy guide</string>
+    <string name="admin_trust_proxy">Trust proxy</string>
+    <string name="admin_trust_proxy_summary">Trust X-Forwarded-* headers. Enable it only if the server is behind a reverse proxy that sets them, so the real client IP is logged.</string>
+
+    <!-- Security -->
+    <string name="admin_security_title">Security</string>
+    <string name="admin_security_summary">Password, two-factor authentication</string>
+    <string name="admin_password_title">Change password</string>
+    <string name="admin_new_password">New password</string>
+    <string name="admin_repeat_password">Repeat new password</string>
+    <string name="admin_password_mismatch">The passwords do not match.</string>
+    <string name="admin_password_info">All other sessions (web UI, other devices) are logged out. This app stays logged in.</string>
+    <string name="admin_password_change">Change password</string>
+    <string name="admin_strength">Strength: %1$s</string>
+    <string name="admin_strength_too_weak">too weak</string>
+    <string name="admin_strength_weak">weak</string>
+    <string name="admin_strength_medium">medium</string>
+    <string name="admin_strength_strong">strong</string>
+    <string name="admin_2fa_title">Two-factor authentication</string>
+    <string name="admin_2fa_loading">Checking status…</string>
+    <string name="admin_2fa_on">Enabled</string>
+    <string name="admin_2fa_off">Disabled</string>
+    <string name="admin_2fa_enable">Enable 2FA</string>
+    <string name="admin_2fa_disable">Disable 2FA</string>
+    <string name="admin_2fa_enable_intro">Confirm with your password to create a new secret.</string>
+    <string name="admin_2fa_scan_intro">Add the secret to an authenticator app, then enter the 6-digit code it shows.</string>
+    <string name="admin_2fa_open_app">Open in authenticator</string>
+    <string name="admin_2fa_copy_secret">Copy secret</string>
+    <string name="admin_2fa_no_app">No authenticator app found. Copy the secret and enter it manually.</string>
+    <string name="admin_2fa_secret">Secret</string>
+    <string name="admin_2fa_code">6-digit code</string>
+    <string name="admin_2fa_verify_and_enable">Verify and enable</string>
+    <string name="admin_2fa_disable_intro">Enter your password and a current code from your authenticator app.</string>
+    <string name="admin_auth_disable">Disable authentication</string>
+    <string name="admin_auth_disable_summary">Anyone who can reach the server gets full access without logging in</string>
+    <string name="admin_auth_disabled_warning">Authentication is disabled. Everyone who can reach the server has full access.</string>
+    <string name="admin_auth_disable_title">Disable authentication?</string>
+    <string name="admin_auth_disable_warning">This is meant only for servers behind your own authentication (e.g. a reverse proxy with login). Without it, everyone who can reach the server can change or delete everything.</string>
+    <string name="admin_auth_disable_final">Last step: confirm with your password.</string>
+    <string name="admin_auth_disable_understood">I understand the risk</string>
+    <string name="admin_auth_disable_confirm">Disable authentication</string>
+    <string name="admin_auth_enable_title">Enable authentication?</string>
+    <string name="admin_auth_enable_message">All other sessions are logged out. If this app was set up while authentication was disabled, you have to log in again.</string>
+    <string name="admin_auth_enable">Enable</string>
+
+    <!-- API keys -->
+    <string name="admin_api_keys_title">API keys</string>
+    <string name="admin_api_keys_summary">Keys for the /metrics endpoint</string>
+    <string name="admin_api_keys_empty">No API keys</string>
+    <string name="admin_api_keys_info">API keys authenticate requests to /metrics (e.g. Prometheus). As soon as the first key was created, the server accepts only API keys there and no longer the username and password.</string>
+    <string name="admin_api_key">API key</string>
+    <string name="admin_api_key_add">Add API key</string>
+    <string name="admin_api_key_generate">Generate</string>
+    <string name="admin_api_key_never_expires">Never expires</string>
+    <string name="admin_api_key_expires">Expires %1$s</string>
+    <string name="admin_api_key_created">Created %1$s</string>
+    <string name="admin_api_key_expiry_date">Expiry date</string>
+    <string name="admin_api_key_expiry_past">The expiry date must be in the future.</string>
+    <string name="admin_api_key_active">Active</string>
+    <string name="admin_api_key_status_active">Active</string>
+    <string name="admin_api_key_status_inactive">Inactive</string>
+    <string name="admin_api_key_status_expired">Expired</string>
+    <string name="admin_api_key_status_unknown">Unknown</string>
+    <string name="admin_api_key_enable">Enable %1$s</string>
+    <string name="admin_api_key_disable">Disable %1$s</string>
+    <string name="admin_api_key_delete_message">Applications using “%1$s” lose access.</string>
+    <string name="admin_api_key_created_title">API key created</string>
+    <string name="admin_api_key_created_warning">Copy the key now. It is shown only once and cannot be displayed again.</string>
+
+    <!-- Proxies -->
+    <string name="admin_proxies_title">Proxies</string>
+    <string name="admin_proxies_summary">HTTP and SOCKS proxies for monitors</string>
+    <string name="admin_proxies_empty">No proxies</string>
+    <string name="admin_proxies_empty_message">HTTP monitors can send their requests through a proxy.</string>
+    <string name="admin_proxy_add">Add proxy</string>
+    <string name="admin_proxy_edit">Edit proxy</string>
+    <string name="admin_proxy_protocol">Protocol</string>
+    <string name="admin_proxy_host">Host</string>
+    <string name="admin_proxy_port">Port</string>
+    <string name="admin_proxy_auth">Proxy requires authentication</string>
+    <string name="admin_proxy_auth_as">Authenticated as %1$s</string>
+    <string name="admin_proxy_username">Username</string>
+    <string name="admin_proxy_password">Password</string>
+    <string name="admin_proxy_default">Default</string>
+    <string name="admin_proxy_set_default">Default for new monitors</string>
+    <string name="admin_proxy_default_hint">New monitors use this proxy unless you choose another one.</string>
+    <string name="admin_proxy_apply_existing">Apply to all existing monitors</string>
+
+    <!-- Docker hosts -->
+    <string name="admin_docker_title">Docker hosts</string>
+    <string name="admin_docker_summary">Daemons for Docker container monitors</string>
+    <string name="admin_docker_empty">No Docker hosts</string>
+    <string name="admin_docker_empty_message">Docker container monitors need a Docker host the server can reach.</string>
+    <string name="admin_docker_add">Add Docker host</string>
+    <string name="admin_docker_edit">Edit Docker host</string>
+    <string name="admin_docker_connection_type">Connection type</string>
+    <string name="admin_docker_type_socket">Socket</string>
+    <string name="admin_docker_type_tcp">TCP / HTTP</string>
+    <string name="admin_docker_daemon">Docker daemon</string>
+    <string name="admin_docker_socket_hint">Path of the Docker socket inside the server (mount it into the container).</string>
+    <string name="admin_docker_tcp_hint">e.g. tcp://host:2375 or https://host:2376</string>
+
+    <!-- Remote browsers -->
+    <string name="admin_browsers_title">Remote browsers</string>
+    <string name="admin_browsers_summary">Chromium instances for browser engine monitors</string>
+    <string name="admin_browsers_empty">No remote browsers</string>
+    <string name="admin_browsers_empty_message">Browser engine monitors can use a remote Chromium instead of the one on the server.</string>
+    <string name="admin_browser_add">Add remote browser</string>
+    <string name="admin_browser_edit">Edit remote browser</string>
+    <string name="admin_browser_url">WebSocket URL</string>
+    <string name="admin_browser_url_hint">Playwright / Chrome DevTools endpoint (ws:// or wss://).</string>
+
+    <!-- Monitor history -->
+    <string name="admin_history_title">Monitor history</string>
+    <string name="admin_history_summary">Data retention, database size</string>
+    <string name="admin_history_keep_days">Keep monitor history (days)</string>
+    <string name="admin_history_keep_days_hint">0 keeps the history forever.</string>
+    <string name="admin_history_keep_forever">History is kept forever</string>
+    <plurals name="admin_history_keep_for">
+        <item quantity="one">Heartbeats older than %1$d day are deleted</item>
+        <item quantity="other">Heartbeats older than %1$d days are deleted</item>
+    </plurals>
+    <string name="admin_history_database">Database</string>
+    <string name="admin_history_database_size">Database size</string>
+    <string name="admin_history_shrink">Shrink database</string>
+    <string name="admin_history_shrink_info">Runs VACUUM on the SQLite database to give unused space back to the disk.</string>
+    <string name="admin_history_danger">Danger zone</string>
+    <string name="admin_history_clear">Clear all statistics</string>
+    <string name="admin_history_clear_info">Deletes the heartbeats and uptime statistics of all monitors. Monitors and their settings are kept.</string>
+    <string name="admin_history_clear_title">Clear all statistics?</string>
+    <string name="admin_history_clear_message">All heartbeats and statistics of every monitor are deleted on the server. This cannot be undone.</string>
+
+    <!-- About server -->
+    <string name="admin_about_title">About the server</string>
+    <string name="admin_about_summary">Version, updates, runtime</string>
+    <string name="admin_about_version">Server version</string>
+    <string name="admin_about_latest">Latest version</string>
+    <string name="admin_about_latest_unknown">Unknown (update check disabled or failed)</string>
+    <string name="admin_about_update_available">Update available</string>
+    <string name="admin_about_release_notes">Release notes</string>
+    <string name="admin_about_runtime">Runtime</string>
+    <string name="admin_about_container">Running in a container</string>
+    <string name="admin_about_database">Database</string>
+    <string name="admin_about_timezone">Server timezone</string>
+    <string name="admin_about_updates">Updates</string>
+    <string name="admin_about_check_update">Show update when available</string>
+    <string name="admin_about_check_update_summary">The server checks GitHub for new releases.</string>
+    <string name="admin_about_check_beta">Also check beta releases</string>
+    <string name="admin_about_check_beta_summary">Include pre-releases in the update check.</string>
+</resources>

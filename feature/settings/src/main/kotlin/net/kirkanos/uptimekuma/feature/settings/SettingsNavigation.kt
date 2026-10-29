@@ -8,6 +8,8 @@ import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import net.kirkanos.uptimekuma.feature.settings.history.AlertHistoryEntry
 import net.kirkanos.uptimekuma.feature.settings.main.SettingsEntry
+import net.kirkanos.uptimekuma.feature.settings.server.ServerAdminRoute
+import net.kirkanos.uptimekuma.feature.settings.server.serverAdminScreens
 
 /** Public entry route of the settings feature. */
 @Serializable
@@ -29,7 +31,8 @@ data class AdministrationEntry(
 )
 
 /**
- * Settings screen ([SettingsRoute]) and alert history ([AlertHistoryRoute]).
+ * Settings screen ([SettingsRoute]), alert history ([AlertHistoryRoute]) and the server administration screens
+ * ([net.kirkanos.uptimekuma.feature.settings.server.ServerAdminRoute]).
  *
  * Logout clears the server config; the app's nav host reacts to that and returns to onboarding, so no
  * callback is needed for it.
@@ -45,10 +48,14 @@ fun NavGraphBuilder.settingsGraph(
             onBack = { navController.popBackStack() },
             onPushSetup = onPushSetup,
             onAlertHistory = { navController.navigate(AlertHistoryRoute) { launchSingleTop = true } },
+            onServerSection = { section ->
+                navController.navigate(ServerAdminRoute(section)) { launchSingleTop = true }
+            },
             administrationEntries = administrationEntries,
         )
     }
     composable<AlertHistoryRoute> {
         AlertHistoryEntry(onBack = { navController.popBackStack() }, onMonitorClick = onMonitorClick)
     }
+    serverAdminScreens(navController)
 }

@@ -63,6 +63,7 @@ import net.kirkanos.uptimekuma.core.ui.format.currentLocale
 import net.kirkanos.uptimekuma.core.ui.theme.KumaTheme
 import net.kirkanos.uptimekuma.feature.settings.AdministrationEntry
 import net.kirkanos.uptimekuma.feature.settings.R
+import net.kirkanos.uptimekuma.feature.settings.server.ServerSection
 import net.kirkanos.uptimekuma.push.ui.PushStatusCard
 import net.kirkanos.uptimekuma.push.ui.PushStatusCardContent
 
@@ -74,6 +75,7 @@ internal fun SettingsEntry(
     onBack: () -> Unit,
     onPushSetup: () -> Unit,
     onAlertHistory: () -> Unit,
+    onServerSection: (ServerSection) -> Unit,
     administrationEntries: List<AdministrationEntry>,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -87,6 +89,7 @@ internal fun SettingsEntry(
             SettingsActions(
                 onBack = onBack,
                 onAlertHistory = onAlertHistory,
+                onServerSection = onServerSection,
                 onNotifyOnUp = viewModel::setNotifyOnUp,
                 onNotifyOnCertExpiry = viewModel::setNotifyOnCertExpiry,
                 onQuietHoursEnabled = viewModel::setQuietHoursEnabled,
@@ -103,6 +106,7 @@ internal fun SettingsEntry(
 internal data class SettingsActions(
     val onBack: () -> Unit = {},
     val onAlertHistory: () -> Unit = {},
+    val onServerSection: (ServerSection) -> Unit = {},
     val onNotifyOnUp: (Boolean) -> Unit = {},
     val onNotifyOnCertExpiry: (Boolean) -> Unit = {},
     val onQuietHoursEnabled: (Boolean) -> Unit = {},
@@ -181,7 +185,16 @@ internal fun SettingsContent(
             HorizontalDivider(Modifier.padding(top = 8.dp))
             SectionHeader(stringResource(R.string.settings_section_server))
             ServerRows(state.serverConfig, state.serverInfo)
-            // TODO(Phase 3): server-side settings (general, security, backup, ...) go into this section.
+            if (state.serverConfig != null) {
+                ServerSection.entries.forEach { section ->
+                    ClickRow(
+                        title = stringResource(section.titleRes),
+                        summary = stringResource(section.summaryRes),
+                        icon = section.icon,
+                        onClick = { actions.onServerSection(section) },
+                    )
+                }
+            }
 
             if (administrationEntries.isNotEmpty()) {
                 HorizontalDivider(Modifier.padding(top = 8.dp))
