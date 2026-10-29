@@ -1,5 +1,7 @@
 package net.kirkanos.uptimekuma.ui
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,9 +21,13 @@ import net.kirkanos.uptimekuma.feature.monitors.dashboardScreen
 import net.kirkanos.uptimekuma.feature.monitors.monitorDetailScreen
 import net.kirkanos.uptimekuma.feature.onboarding.OnboardingRoute
 import net.kirkanos.uptimekuma.feature.onboarding.onboardingScreen
+import net.kirkanos.uptimekuma.feature.settings.AdministrationEntry
 import net.kirkanos.uptimekuma.feature.settings.SettingsRoute
 import net.kirkanos.uptimekuma.feature.settings.settingsGraph
+import net.kirkanos.uptimekuma.feature.statuspage.StatusPageListRoute
+import net.kirkanos.uptimekuma.feature.statuspage.statusPagesGraph
 import net.kirkanos.uptimekuma.push.ui.PushSetupRoute
+import net.kirkanos.uptimekuma.feature.statuspage.R as StatusPageR
 
 /** Push notification setup. [fromOnboarding] = continue to the dashboard when done instead of going back. */
 @Serializable
@@ -84,7 +90,17 @@ fun KumaApp(
             navController = navController,
             onMonitorClick = { id -> navController.navigate(MonitorDetailRoute(id)) },
             onPushSetup = { navController.navigate(PushSetupDestination(fromOnboarding = false)) },
+            administrationEntries =
+                listOf(
+                    AdministrationEntry(
+                        titleRes = StatusPageR.string.statuspage_list_title,
+                        icon = Icons.Outlined.Public,
+                        onClick = { navController.navigate(StatusPageListRoute) },
+                    ),
+                ),
         )
+
+        statusPagesGraph(navController)
     }
 }
 
