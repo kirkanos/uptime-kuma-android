@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Server administration: common -->
+    <string name="admin_save">Speichern</string>
+    <string name="admin_saving">Speichert…</string>
+    <string name="admin_add">Hinzufügen</string>
+    <string name="admin_test">Testen</string>
+    <string name="admin_retry">Erneut versuchen</string>
+    <string name="admin_next">Weiter</string>
+    <string name="admin_ok">OK</string>
+    <string name="admin_done">Fertig</string>
+    <string name="admin_copy">Kopieren</string>
+    <string name="admin_yes">Ja</string>
+    <string name="admin_no">Nein</string>
+    <string name="admin_name">Name</string>
+    <string name="admin_search">Suchen</string>
+    <string name="admin_delete">Löschen</string>
+    <string name="admin_delete_title">Löschen?</string>
+    <string name="admin_delete_message">„%1$s“ wird auf dem Server gelöscht.</string>
+    <string name="admin_delete_named">%1$s löschen</string>
+    <string name="admin_show_secret">Anzeigen</string>
+    <string name="admin_hide_secret">Verbergen</string>
+    <string name="admin_current_password">Aktuelles Passwort</string>
+    <string name="admin_advanced">Erweitert</string>
+
+    <string name="admin_done_saved">Gespeichert</string>
+    <string name="admin_done_created">Angelegt</string>
+    <string name="admin_done_deleted">Gelöscht</string>
+    <string name="admin_done_enabled">Aktiviert</string>
+    <string name="admin_done_disabled">Deaktiviert</string>
+    <string name="admin_done_test_ok">Verbindung erfolgreich</string>
+    <string name="admin_done_password_changed">Passwort geändert. Andere Geräte wurden abgemeldet.</string>
+    <string name="admin_done_2fa_enabled">Zwei-Faktor-Authentifizierung aktiviert</string>
+    <string name="admin_done_2fa_disabled">Zwei-Faktor-Authentifizierung deaktiviert</string>
+    <string name="admin_done_statistics_cleared">Alle Statistiken gelöscht</string>
+    <string name="admin_done_database_shrunk">Datenbank verkleinert</string>
+    <string name="admin_done_auth_disabled">Authentifizierung deaktiviert</string>
+    <string name="admin_done_auth_enabled">Authentifizierung aktiviert</string>
+    <string name="admin_done_tunnel_starting">Tunnel wird gestartet…</string>
+    <string name="admin_done_tunnel_stopping">Tunnel wird gestoppt…</string>
+    <string name="admin_done_token_removed">Token entfernt</string>
+    <string name="admin_done_with_detail">%1$s: %2$s</string>
+
+    <string name="admin_error_password_too_weak">Das Passwort ist zu schwach.</string>
+    <string name="admin_error_invalid_token">Ungültiger Code. Prüfe die Uhrzeit deines Geräts und versuche es erneut.</string>
+    <string name="admin_error_2fa_already_enabled">Die Zwei-Faktor-Authentifizierung ist bereits aktiv.</string>
+    <string name="admin_error_wrong_password">Das aktuelle Passwort ist falsch.</string>
+
+    <!-- General -->
+    <string name="admin_general_title">Allgemein</string>
+    <string name="admin_general_summary">Zeitzone, Basis-URL, Startseite, Suchmaschinen</string>
+    <string name="admin_general_timezone">Zeitzone</string>
+    <string name="admin_general_server_timezone">Server-Zeitzone</string>
+    <string name="admin_general_timezone_auto">Automatisch (dieses Gerät: %1$s)</string>
+    <string name="admin_general_display_timezone_hint">Gilt für Wartungsfenster und Berichte auf dem Server. Die App zeigt Zeiten immer in der Zeitzone dieses Geräts.</string>
+    <string name="admin_general_primary_url">Primäre Basis-URL</string>
+    <string name="admin_general_primary_url_hint">Der Server verwendet sie für Links in Benachrichtigungen.</string>
+    <string name="admin_general_primary_url_invalid">Gib eine URL ein, die mit http:// oder https:// beginnt.</string>
+    <string name="admin_general_primary_url_use_app">%1$s verwenden</string>
+    <string name="admin_general_primary_url_app_info">Auch die App verwendet diese URL, z. B. für Push-Monitor-URLs. Leer lassen, um die Adresse zu verwenden, mit der die App verbunden ist.</string>
+    <string name="admin_general_search_engine">Sichtbarkeit für Suchmaschinen</string>
+    <string name="admin_general_search_allow">Indexierung erlauben</string>
+    <string name="admin_general_search_discourage">Suchmaschinen von der Indexierung abhalten</string>
+    <string name="admin_general_entry_page">Startseite</string>
+    <string name="admin_general_entry_dashboard">Dashboard</string>
+    <string name="admin_general_entry_status_page">Statusseite: %1$s</string>
+    <string name="admin_general_integrations">Integrationen</string>
+    <string name="admin_general_steam_key">Steam-API-Schlüssel</string>
+    <string name="admin_general_steam_key_hint">Wird für Steam-Gameserver-Monitore benötigt.</string>
+    <string name="admin_general_globalping_token">Globalping-API-Token</string>
+    <string name="admin_general_nscd">NSCD aktivieren</string>
+    <string name="admin_general_nscd_summary">Name Service Cache Daemon: speichert alle DNS-Anfragen des Servers zwischen</string>
+    <string name="admin_general_chrome">Chrome / Chromium</string>
+    <string name="admin_general_chrome_executable">Chrome-Programmdatei</string>
+    <string name="admin_general_chrome_hint">Wird von Browser-Engine-Monitoren verwendet. Leer lassen für automatische Erkennung.</string>
+    <string name="admin_general_chrome_found">Chromium %1$s gefunden</string>
+
+    <!-- Expiry notifications -->
+    <string name="admin_expiry_title">Ablauf-Benachrichtigungen</string>
+    <string name="admin_expiry_summary">Wann vor ablaufenden Zertifikaten und Domains gewarnt wird</string>
+    <string name="admin_expiry_info">Der Server benachrichtigt so viele Tage, bevor das TLS-Zertifikat oder die Domain eines Monitors abläuft.</string>
+    <string name="admin_expiry_tls">Ablauf des TLS-Zertifikats</string>
+    <string name="admin_expiry_domain">Ablauf des Domainnamens</string>
+    <string name="admin_expiry_none">Keine Benachrichtigungen</string>
+    <string name="admin_expiry_add_label">Tage vor Ablauf</string>
+    <string name="admin_expiry_invalid">Gib eine Zahl von 1 bis %1$d ein.</string>
+    <string name="admin_expiry_remove">%1$s entfernen</string>
+    <string name="admin_expiry_defaults">Auf 7, 14 und 21 Tage zurücksetzen</string>
+    <plurals name="admin_expiry_days">
+        <item quantity="one">%1$d Tag</item>
+        <item quantity="other">%1$d Tage</item>
+    </plurals>
+
+    <!-- Reverse proxy -->
+    <string name="admin_reverse_proxy_title">Reverse Proxy</string>
+    <string name="admin_reverse_proxy_summary">Cloudflare-Tunnel, vertrauenswürdige Proxy-Header</string>
+    <string name="admin_cloudflared_title">Cloudflare-Tunnel</string>
+    <string name="admin_cloudflared_not_installed">cloudflared ist auf dem Server nicht installiert, daher ist der eingebaute Cloudflare-Tunnel nicht verfügbar. Das offizielle Docker-Image enthält es.</string>
+    <string name="admin_cloudflared_running">Tunnel läuft</string>
+    <string name="admin_cloudflared_stopped">Tunnel läuft nicht</string>
+    <string name="admin_cloudflared_token">Cloudflare-Tunnel-Token</string>
+    <string name="admin_cloudflared_token_hint">Aus dem Zero-Trust-Dashboard (Networks → Tunnels).</string>
+    <string name="admin_cloudflared_start">Tunnel starten</string>
+    <string name="admin_cloudflared_stop">Tunnel stoppen</string>
+    <string name="admin_cloudflared_stop_message">Wenn du den Server über den Tunnel erreichst, verlieren App und Web-Oberfläche die Verbindung.</string>
+    <string name="admin_cloudflared_remove_token">Token entfernen</string>
+    <string name="admin_cloudflared_info">Solange ein Token gespeichert ist, startet der Server den Tunnel bei jedem Neustart automatisch.</string>
+    <string name="admin_reverse_proxy_other">Andere Reverse Proxys</string>
+    <string name="admin_reverse_proxy_other_info">Nginx, Apache, Caddy und andere brauchen für Uptime Kuma WebSocket-Unterstützung.</string>
+    <string name="admin_reverse_proxy_wiki">Anleitung für Reverse Proxys</string>
+    <string name="admin_trust_proxy">Proxy vertrauen</string>
+    <string name="admin_trust_proxy_summary">X-Forwarded-*-Headern vertrauen. Nur aktivieren, wenn der Server hinter einem Reverse Proxy steht, der sie setzt, damit die echte Client-IP protokolliert wird.</string>
+
+    <!-- Security -->
+    <string name="admin_security_title">Sicherheit</string>
+    <string name="admin_security_summary">Passwort, Zwei-Faktor-Authentifizierung</string>
+    <string name="admin_password_title">Passwort ändern</string>
+    <string name="admin_new_password">Neues Passwort</string>
+    <string name="admin_repeat_password">Neues Passwort wiederholen</string>
+    <string name="admin_password_mismatch">Die Passwörter stimmen nicht überein.</string>
+    <string name="admin_password_info">Alle anderen Sitzungen (Web-Oberfläche, andere Geräte) werden abgemeldet. Diese App bleibt angemeldet.</string>
+    <string name="admin_password_change">Passwort ändern</string>
+    <string name="admin_strength">Stärke: %1$s</string>
+    <string name="admin_strength_too_weak">zu schwach</string>
+    <string name="admin_strength_weak">schwach</string>
+    <string name="admin_strength_medium">mittel</string>
+    <string name="admin_strength_strong">stark</string>
+    <string name="admin_2fa_title">Zwei-Faktor-Authentifizierung</string>
+    <string name="admin_2fa_loading">Status wird geprüft…</string>
+    <string name="admin_2fa_on">Aktiviert</string>
+    <string name="admin_2fa_off">Deaktiviert</string>
+    <string name="admin_2fa_enable">2FA aktivieren</string>
+    <string name="admin_2fa_disable">2FA deaktivieren</string>
+    <string name="admin_2fa_enable_intro">Bestätige mit deinem Passwort, um ein neues Geheimnis zu erzeugen.</string>
+    <string name="admin_2fa_scan_intro">Füge das Geheimnis zu einer Authenticator-App hinzu und gib dann den angezeigten 6-stelligen Code ein.</string>
+    <string name="admin_2fa_open_app">In Authenticator öffnen</string>
+    <string name="admin_2fa_copy_secret">Geheimnis kopieren</string>
+    <string name="admin_2fa_no_app">Keine Authenticator-App gefunden. Kopiere das Geheimnis und gib es manuell ein.</string>
+    <string name="admin_2fa_secret">Geheimnis</string>
+    <string name="admin_2fa_code">6-stelliger Code</string>
+    <string name="admin_2fa_verify_and_enable">Prüfen und aktivieren</string>
+    <string name="admin_2fa_disable_intro">Gib dein Passwort und einen aktuellen Code aus deiner Authenticator-App ein.</string>
+    <string name="admin_auth_disable">Authentifizierung deaktivieren</string>
+    <string name="admin_auth_disable_summary">Jeder, der den Server erreicht, hat ohne Anmeldung vollen Zugriff</string>
+    <string name="admin_auth_disabled_warning">Die Authentifizierung ist deaktiviert. Jeder, der den Server erreicht, hat vollen Zugriff.</string>
+    <string name="admin_auth_disable_title">Authentifizierung deaktivieren?</string>
+    <string name="admin_auth_disable_warning">Das ist nur für Server gedacht, die durch eine eigene Anmeldung geschützt sind (z. B. ein Reverse Proxy mit Login). Ohne sie kann jeder, der den Server erreicht, alles ändern oder löschen.</string>
+    <string name="admin_auth_disable_final">Letzter Schritt: mit deinem Passwort bestätigen.</string>
+    <string name="admin_auth_disable_understood">Ich verstehe das Risiko</string>
+    <string name="admin_auth_disable_confirm">Authentifizierung deaktivieren</string>
+    <string name="admin_auth_enable_title">Authentifizierung aktivieren?</string>
+    <string name="admin_auth_enable_message">Alle anderen Sitzungen werden abgemeldet. Wurde diese App bei deaktivierter Authentifizierung eingerichtet, musst du dich erneut anmelden.</string>
+    <string name="admin_auth_enable">Aktivieren</string>
+
+    <!-- API keys -->
+    <string name="admin_api_keys_title">API-Schlüssel</string>
+    <string name="admin_api_keys_summary">Schlüssel für den /metrics-Endpunkt</string>
+    <string name="admin_api_keys_empty">Keine API-Schlüssel</string>
+    <string name="admin_api_keys_info">API-Schlüssel authentifizieren Anfragen an /metrics (z. B. Prometheus). Sobald der erste Schlüssel angelegt wurde, akzeptiert der Server dort nur noch API-Schlüssel und nicht mehr Benutzername und Passwort.</string>
+    <string name="admin_api_key">API-Schlüssel</string>
+    <string name="admin_api_key_add">API-Schlüssel hinzufügen</string>
+    <string name="admin_api_key_generate">Erzeugen</string>
+    <string name="admin_api_key_never_expires">Läuft nie ab</string>
+    <string name="admin_api_key_expires">Läuft ab: %1$s</string>
+    <string name="admin_api_key_created">Angelegt: %1$s</string>
+    <string name="admin_api_key_expiry_date">Ablaufdatum</string>
+    <string name="admin_api_key_expiry_past">Das Ablaufdatum muss in der Zukunft liegen.</string>
+    <string name="admin_api_key_active">Aktiv</string>
+    <string name="admin_api_key_status_active">Aktiv</string>
+    <string name="admin_api_key_status_inactive">Inaktiv</string>
+    <string name="admin_api_key_status_expired">Abgelaufen</string>
+    <string name="admin_api_key_status_unknown">Unbekannt</string>
+    <string name="admin_api_key_enable">%1$s aktivieren</string>
+    <string name="admin_api_key_disable">%1$s deaktivieren</string>
+    <string name="admin_api_key_delete_message">Anwendungen, die „%1$s“ verwenden, verlieren den Zugriff.</string>
+    <string name="admin_api_key_created_title">API-Schlüssel angelegt</string>
+    <string name="admin_api_key_created_warning">Kopiere den Schlüssel jetzt. Er wird nur einmal angezeigt und kann später nicht mehr abgerufen werden.</string>
+
+    <!-- Proxies -->
+    <string name="admin_proxies_title">Proxys</string>
+    <string name="admin_proxies_summary">HTTP- und SOCKS-Proxys für Monitore</string>
+    <string name="admin_proxies_empty">Keine Proxys</string>
+    <string name="admin_proxies_empty_message">HTTP-Monitore können ihre Anfragen über einen Proxy senden.</string>
+    <string name="admin_proxy_add">Proxy hinzufügen</string>
+    <string name="admin_proxy_edit">Proxy bearbeiten</string>
+    <string name="admin_proxy_protocol">Protokoll</string>
+    <string name="admin_proxy_host">Host</string>
+    <string name="admin_proxy_port">Port</string>
+    <string name="admin_proxy_auth">Proxy erfordert Anmeldung</string>
+    <string name="admin_proxy_auth_as">Angemeldet als %1$s</string>
+    <string name="admin_proxy_username">Benutzername</string>
+    <string name="admin_proxy_password">Passwort</string>
+    <string name="admin_proxy_default">Standard</string>
+    <string name="admin_proxy_set_default">Standard für neue Monitore</string>
+    <string name="admin_proxy_default_hint">Neue Monitore verwenden diesen Proxy, sofern du keinen anderen wählst.</string>
+    <string name="admin_proxy_apply_existing">Auf alle vorhandenen Monitore anwenden</string>
+
+    <!-- Docker hosts -->
+    <string name="admin_docker_title">Docker-Hosts</string>
+    <string name="admin_docker_summary">Daemons für Docker-Container-Monitore</string>
+    <string name="admin_docker_empty">Keine Docker-Hosts</string>
+    <string name="admin_docker_empty_message">Docker-Container-Monitore brauchen einen Docker-Host, den der Server erreicht.</string>
+    <string name="admin_docker_add">Docker-Host hinzufügen</string>
+    <string name="admin_docker_edit">Docker-Host bearbeiten</string>
+    <string name="admin_docker_connection_type">Verbindungsart</string>
+    <string name="admin_docker_type_socket">Socket</string>
+    <string name="admin_docker_type_tcp">TCP / HTTP</string>
+    <string name="admin_docker_daemon">Docker-Daemon</string>
+    <string name="admin_docker_socket_hint">Pfad des Docker-Sockets im Server (in den Container einbinden).</string>
+    <string name="admin_docker_tcp_hint">z. B. tcp://host:2375 oder https://host:2376</string>
+
+    <!-- Remote browsers -->
+    <string name="admin_browsers_title">Remote-Browser</string>
+    <string name="admin_browsers_summary">Chromium-Instanzen für Browser-Engine-Monitore</string>
+    <string name="admin_browsers_empty">Keine Remote-Browser</string>
+    <string name="admin_browsers_empty_message">Browser-Engine-Monitore können ein entferntes Chromium statt dem auf dem Server verwenden.</string>
+    <string name="admin_browser_add">Remote-Browser hinzufügen</string>
+    <string name="admin_browser_edit">Remote-Browser bearbeiten</string>
+    <string name="admin_browser_url">WebSocket-URL</string>
+    <string name="admin_browser_url_hint">Playwright-/Chrome-DevTools-Endpunkt (ws:// oder wss://).</string>
+
+    <!-- Monitor history -->
+    <string name="admin_history_title">Monitor-Verlauf</string>
+    <string name="admin_history_summary">Aufbewahrung, Datenbankgröße</string>
+    <string name="admin_history_keep_days">Monitor-Verlauf aufbewahren (Tage)</string>
+    <string name="admin_history_keep_days_hint">0 bewahrt den Verlauf für immer auf.</string>
+    <string name="admin_history_keep_forever">Der Verlauf wird für immer aufbewahrt</string>
+    <plurals name="admin_history_keep_for">
+        <item quantity="one">Heartbeats, die älter als %1$d Tag sind, werden gelöscht</item>
+        <item quantity="other">Heartbeats, die älter als %1$d Tage sind, werden gelöscht</item>
+    </plurals>
+    <string name="admin_history_database">Datenbank</string>
+    <string name="admin_history_database_size">Datenbankgröße</string>
+    <string name="admin_history_shrink">Datenbank verkleinern</string>
+    <string name="admin_history_shrink_info">Führt VACUUM auf der SQLite-Datenbank aus, um ungenutzten Speicher freizugeben.</string>
+    <string name="admin_history_danger">Gefahrenbereich</string>
+    <string name="admin_history_clear">Alle Statistiken löschen</string>
+    <string name="admin_history_clear_info">Löscht die Heartbeats und Verfügbarkeitsstatistiken aller Monitore. Monitore und ihre Einstellungen bleiben erhalten.</string>
+    <string name="admin_history_clear_title">Alle Statistiken löschen?</string>
+    <string name="admin_history_clear_message">Alle Heartbeats und Statistiken aller Monitore werden auf dem Server gelöscht. Das kann nicht rückgängig gemacht werden.</string>
+
+    <!-- About server -->
+    <string name="admin_about_title">Über den Server</string>
+    <string name="admin_about_summary">Version, Updates, Laufzeitumgebung</string>
+    <string name="admin_about_version">Server-Version</string>
+    <string name="admin_about_latest">Neueste Version</string>
+    <string name="admin_about_latest_unknown">Unbekannt (Update-Prüfung deaktiviert oder fehlgeschlagen)</string>
+    <string name="admin_about_update_available">Update verfügbar</string>
+    <string name="admin_about_release_notes">Versionshinweise</string>
+    <string name="admin_about_runtime">Laufzeitumgebung</string>
+    <string name="admin_about_container">Läuft in einem Container</string>
+    <string name="admin_about_database">Datenbank</string>
+    <string name="admin_about_timezone">Server-Zeitzone</string>
+    <string name="admin_about_updates">Updates</string>
+    <string name="admin_about_check_update">Verfügbare Updates anzeigen</string>
+    <string name="admin_about_check_update_summary">Der Server prüft GitHub auf neue Versionen.</string>
+    <string name="admin_about_check_beta">Auch Beta-Versionen prüfen</string>
+    <string name="admin_about_check_beta_summary">Vorabversionen in die Update-Prüfung einbeziehen.</string>
+</resources>

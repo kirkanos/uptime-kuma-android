@@ -37,7 +37,19 @@ object KumaEventParser {
             "certInfo",
             "maintenanceList",
             "notificationList",
-        ) + listOf("statusPageList", "proxyList", "dockerHostList", "remoteBrowserList", "apiKeyList")
+        ) + listOf("statusPageList", "proxyList", "dockerHostList", "remoteBrowserList", "apiKeyList") +
+            CLOUDFLARED_EVENTS
+
+    /** Cloudflare tunnel state (settings screen), delivered only as [KumaEvent.Raw]. */
+    private val CLOUDFLARED_EVENTS: List<String>
+        get() =
+            listOf(
+                "cloudflared_installed",
+                "cloudflared_running",
+                "cloudflared_message",
+                "cloudflared_errorMessage",
+                "cloudflared_token",
+            )
 
     /**
      * List events that are additionally delivered unparsed as [KumaEvent.Raw] (full payload,
@@ -52,7 +64,10 @@ object KumaEventParser {
             "dockerHostList",
             "remoteBrowserList",
             "apiKeyList",
-        )
+            // Server administration (settings screens): full `info` (dbType, runtime, isContainer) and the
+            // Cloudflare tunnel state, which have no typed event.
+            "info",
+        ) + CLOUDFLARED_EVENTS
 
     /**
      * Parses [args] of [event]. Returns `null` for unknown events or payloads that do not make
