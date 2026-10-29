@@ -21,17 +21,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.automirrored.outlined.Sort
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SearchOff
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -52,7 +58,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -117,6 +125,8 @@ internal class DashboardActions(
     val onMonitorClick: (Long) -> Unit = {},
     val onSettingsClick: () -> Unit = {},
     val onReLogin: () -> Unit = {},
+    val onAddMonitor: () -> Unit = {},
+    val onManageTags: () -> Unit = {},
 )
 
 @Composable
@@ -124,11 +134,13 @@ internal fun DashboardEntry(
     onMonitorClick: (Long) -> Unit,
     onSettingsClick: () -> Unit,
     onReLogin: () -> Unit,
+    onAddMonitor: () -> Unit = {},
+    onManageTags: () -> Unit = {},
     viewModel: DashboardViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val actions =
-        remember(viewModel, onMonitorClick, onSettingsClick, onReLogin) {
+        remember(viewModel, onMonitorClick, onSettingsClick, onReLogin, onAddMonitor, onManageTags) {
             DashboardActions(
                 onQueryChange = viewModel::onQueryChange,
                 onToggleStatus = viewModel::toggleStatus,
@@ -141,6 +153,8 @@ internal fun DashboardEntry(
                 onMonitorClick = onMonitorClick,
                 onSettingsClick = onSettingsClick,
                 onReLogin = onReLogin,
+                onAddMonitor = onAddMonitor,
+                onManageTags = onManageTags,
             )
         }
     DashboardScreen(state = state, actions = actions)
@@ -173,11 +187,19 @@ internal fun DashboardScreen(
                     IconButton(onClick = actions.onSettingsClick) {
                         Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.monitors_settings))
                     }
+                    DashboardOverflow(onManageTags = actions.onManageTags)
                 },
                 scrollBehavior = scrollBehavior,
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = actions.onAddMonitor,
+                icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
+                text = { Text(stringResource(R.string.editor_add_monitor)) },
+            )
+        },
     ) { padding ->
         PullToRefreshBox(
             isRefreshing = state.refreshing,
@@ -199,7 +221,7 @@ private fun MonitorListContent(
     actions: DashboardActions,
     nowMillis: Long,
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
+    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 96.dp)) {
         item(key = "connection", contentType = "connection") {
             ConnectionBanner(state.connection, onRetry = actions.onRefresh, onReLogin = actions.onReLogin)
         }
@@ -246,6 +268,24 @@ private fun MonitorListContent(
                 onToggleGroup = actions.onToggleGroup,
             )
         }
+    }
+}
+
+@Composable
+private fun DashboardOverflow(onManageTags: () -> Unit) {
+    var open by remember { mutableStateOf(false) }
+    IconButton(onClick = { open = true }) {
+        Icon(Icons.Outlined.MoreVert, contentDescription = stringResource(R.string.monitors_more_actions))
+    }
+    DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.tags_manage)) },
+            leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Label, contentDescription = null) },
+            onClick = {
+                open = false
+                onManageTags()
+            },
+        )
     }
 }
 

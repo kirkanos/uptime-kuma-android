@@ -21,6 +21,10 @@ import net.kirkanos.uptimekuma.feature.maintenance.maintenanceGraph
 import net.kirkanos.uptimekuma.feature.monitors.DashboardRoute
 import net.kirkanos.uptimekuma.feature.monitors.MonitorDetailRoute
 import net.kirkanos.uptimekuma.feature.monitors.dashboardScreen
+import net.kirkanos.uptimekuma.feature.monitors.editor.MonitorEditorRoute
+import net.kirkanos.uptimekuma.feature.monitors.editor.MonitorTypePickerRoute
+import net.kirkanos.uptimekuma.feature.monitors.editor.TagManagerRoute
+import net.kirkanos.uptimekuma.feature.monitors.editor.monitorEditorGraph
 import net.kirkanos.uptimekuma.feature.monitors.monitorDetailScreen
 import net.kirkanos.uptimekuma.feature.onboarding.OnboardingRoute
 import net.kirkanos.uptimekuma.feature.onboarding.onboardingScreen
@@ -86,9 +90,16 @@ fun KumaApp(
             onMonitorClick = { id -> navController.navigate(MonitorDetailRoute(id)) },
             onSettingsClick = { navController.navigate(SettingsRoute) { launchSingleTop = true } },
             onReLogin = { navController.navigate(OnboardingRoute) { launchSingleTop = true } },
+            onAddMonitor = { navController.navigate(MonitorTypePickerRoute) },
+            onManageTags = { navController.navigate(TagManagerRoute) },
         )
 
-        monitorDetailScreen(onBack = { navController.popBackStack() })
+        monitorDetailScreen(
+            onBack = { navController.popBackStack() },
+            onEdit = { id -> navController.navigate(MonitorEditorRoute(monitorId = id)) },
+            onClone = { id -> navController.navigate(MonitorEditorRoute(cloneOf = id)) },
+        )
+        monitorEditorGraph(navController)
 
         settingsGraph(
             navController = navController,
