@@ -27,6 +27,9 @@ internal object KumaJourneys {
     private val continueButton = text("Continue|Weiter")
     private val loginButton = text("Log in|Anmelden")
 
+    // The dashboard has a search field too, so detect onboarding by its heading, not by an EditText.
+    private val onboardingTitle = text("Connect to Uptime Kuma|Mit Uptime Kuma verbinden")
+
     private fun text(regex: String): BySelector = By.text(Pattern.compile(regex, Pattern.CASE_INSENSITIVE))
 
     private fun argument(name: String): String? =
@@ -47,7 +50,7 @@ internal object KumaJourneys {
     }
 
     private fun MacrobenchmarkScope.isOnboarding(): Boolean =
-        device.wait(Until.hasObject(By.clazz("android.widget.EditText")), SHORT_TIMEOUT) == true
+        device.wait(Until.hasObject(onboardingTitle), SHORT_TIMEOUT) == true
 
     private fun MacrobenchmarkScope.login() {
         val url =
@@ -63,7 +66,8 @@ internal object KumaJourneys {
         val fields = device.findObjects(By.clazz("android.widget.EditText"))
         fields[0].text = user
         fields[1].text = password
-        device.findObject(loginButton).click()
+        // The step heading reads "Log in" as well; the button is the lowest match.
+        device.findObjects(loginButton).maxBy { it.visibleBounds.top }.click()
         // The "done" step shows a Continue button once the login succeeded.
         check(device.wait(Until.hasObject(continueButton), SYNC_TIMEOUT) == true) { "Login did not succeed" }
     }

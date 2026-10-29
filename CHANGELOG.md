@@ -34,7 +34,13 @@ First public version.
   incidents, and a public viewer for `/status/<slug>` links without login.
 - Home screen widget (Glance) and Quick Settings tile with the overall status, redrawn on changes
   without polling.
+- Notification providers: manage all 108 Kuma provider types (generic form from a spec of Kuma's
+  dialogs, curated layouts for the 15 most used), test with the unsaved configuration.
+- Server administration: general settings, expiry notifications, reverse proxy and Cloudflare tunnel,
+  password and two-factor authentication, API keys, proxies, Docker hosts, remote browsers, monitor
+  history and database size, server version and update information.
 - Settings screen with notifications, administration entries and about.
+- Push setup can be postponed during onboarding ("Set up later").
 - English and German translations, Material 3 with dynamic color and dark mode.
 
 ### Performance and robustness
@@ -44,7 +50,20 @@ First public version.
 - Monitor list reads only the newest 100 heartbeats per monitor, shares one query pipeline between
   dashboard, detail, widget and tile and throttles updates during event bursts (tested with 500
   monitors x 100 beats).
-- Minified release build (R8 full mode, resource shrinking), baseline profile infrastructure.
+- Minified release build (R8 full mode, resource shrinking), baseline profile.
+- Monitor editor works with Kuma 2.4: fields the older server does not know are dropped and the save
+  is retried (33 of 34 types verified live; SFTP exists from Kuma 2.5.4).
+- Plain `http` servers and user-installed CA certificates are accepted (self-hosted LAN setups).
+
+### Fixed (found in device tests)
+
+- Release build crashed when opening the monitor editor (spec resource lookup broke after R8
+  repackaging) and the notification list (a regex valid on the JVM but rejected by Android's ICU
+  engine; CI now checks all regex literals).
+- New monitors were not attached to the device's push notification; it is now Kuma's default
+  notification when "all monitors" is chosen.
+- "Update available" was shown when Kuma's update check reported an older version.
+- Setup hint to open the ntfy app once: Android only lets it start its connection from the foreground.
 
 ### Infrastructure
 
