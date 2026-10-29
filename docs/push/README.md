@@ -311,8 +311,8 @@ user app added with role user
 $ ntfy access kuma "up*" write-only && ntfy access app "up*" read-only
 granted write-only access to topic up*
 granted read-only access to topic up*
-$ ntfy token add --label kuma-cli kuma   -> tk_1dhqpum98dnir06c5lrhwwe44f3qz
-$ ntfy token add --label app-cli app     -> tk_ni2t30gncaaw9236qis602uhstx31
+$ ntfy token add --label kuma-cli kuma   -> tk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+$ ntfy token add --label app-cli app     -> tk_yyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 $ ntfy access
 user app (role: user, tier: none)
 - read-only access to topic up*
