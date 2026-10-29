@@ -5,7 +5,9 @@ All notable changes to this project are documented in this file. The format is b
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html). The version is defined once in
 `gradle.properties` (`VERSION_NAME`); release tags are `v<VERSION_NAME>`.
 
-## [Unreleased] - 0.1.0
+## [Unreleased]
+
+## [0.1.0] - 2026-10-29
 
 First public version.
 
@@ -86,4 +88,5 @@ First public version.
   GitHub release: `uptime-kuma-android-<version>.apk` (`full`) and `uptime-kuma-android-<version>-foss.apk`,
   each with a SHA-256 checksum and the R8 mapping file.
 
-[Unreleased]: https://keepachangelog.com/en/1.1.0/
+[Unreleased]: https://github.com/kirkanos/uptime-kuma-android/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/kirkanos/uptime-kuma-android/releases/tag/v0.1.0

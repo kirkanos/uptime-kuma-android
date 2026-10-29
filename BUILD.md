@@ -115,7 +115,8 @@ Releases are built by **Woodpecker**, not by GitHub Actions, so GitHub never hol
   with `KEYSTORE_FILE` and the three values from `signing.env`, deletes the decrypted key, verifies the
   signatures with `apksigner`, runs `scripts/check-foss-apk.py`, and publishes
   `uptime-kuma-android-<version>.apk` (`full`) and `uptime-kuma-android-<version>-foss.apk`, each with a
-  `.sha256` file and its R8 mapping, as a GitHub release (`woodpeckerci/plugin-release`, secret
+  `.sha256` file and its R8 mapping, as a GitHub release with the version's CHANGELOG section as text
+  (`scripts/release-notes.sh`; `woodpeckerci/plugin-release`, secret
   `github_release_token`: fine-grained token for this repository, *Contents: read and write*).
   The repository must be *trusted* in Woodpecker (the Gradle home is a host volume).
 

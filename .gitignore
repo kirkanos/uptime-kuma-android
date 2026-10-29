@@ -26,3 +26,4 @@ infra/.data/
 # Decrypted release key material and release output (see BUILD.md, Release signing)
 signing/signing.env
 /dist/
+release-notes.md

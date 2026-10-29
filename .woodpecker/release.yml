@@ -25,6 +25,9 @@ steps:
       - echo "$CI_COMMIT_TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$' || (echo "Release tags must look like vX.Y.Z, got $CI_COMMIT_TAG" && exit 1)
       - test "$TAG_VERSION" = "$VERSION_NAME" || (echo "Tag $CI_COMMIT_TAG does not match VERSION_NAME=$VERSION_NAME in gradle.properties" && exit 1)
       - echo "Releasing $VERSION_NAME (versionCode $(sed -n 's/^VERSION_CODE=//p' gradle.properties))"
+      # Release notes: this version's section of CHANGELOG.md.
+      - sh scripts/release-notes.sh "$VERSION_NAME" > release-notes.md
+      - cat release-notes.md
 
   - name: decrypt release key
     image: registry.kirkanos.net/images/ci-build:alpine
@@ -74,5 +77,5 @@ steps:
       files:
         - "dist/*"
       title: ${CI_COMMIT_TAG}
-      generate_release_notes: true
+      note: release-notes.md
       file_exists: fail
