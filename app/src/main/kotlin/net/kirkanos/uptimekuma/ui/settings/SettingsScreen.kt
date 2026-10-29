@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Dns
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -44,6 +45,7 @@ import net.kirkanos.uptimekuma.core.domain.SessionRepository
 import net.kirkanos.uptimekuma.core.model.ServerConfig
 import net.kirkanos.uptimekuma.core.ui.theme.KumaTheme
 import javax.inject.Inject
+import net.kirkanos.uptimekuma.feature.statuspage.R as StatusPageR
 
 /**
  * Minimal settings screen (server, push entry, logout). Lives in :app until :feature:settings is built out;
@@ -73,10 +75,17 @@ class SettingsViewModel
 fun SettingsScreen(
     onBack: () -> Unit,
     onPushSetup: () -> Unit,
+    onStatusPages: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val config by viewModel.serverConfig.collectAsStateWithLifecycle()
-    SettingsContent(config = config, onBack = onBack, onPushSetup = onPushSetup, onLogout = viewModel::logout)
+    SettingsContent(
+        config = config,
+        onBack = onBack,
+        onPushSetup = onPushSetup,
+        onLogout = viewModel::logout,
+        onStatusPages = onStatusPages,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,6 +95,7 @@ private fun SettingsContent(
     onBack: () -> Unit,
     onPushSetup: () -> Unit,
     onLogout: () -> Unit,
+    onStatusPages: () -> Unit = {},
 ) {
     var confirmLogout by rememberSaveable { mutableStateOf(false) }
     Scaffold(
@@ -118,6 +128,11 @@ private fun SettingsContent(
                 supportingContent = { Text(stringResource(R.string.settings_push_summary)) },
                 leadingContent = { Icon(Icons.Outlined.Notifications, contentDescription = null) },
                 modifier = Modifier.clickable(onClick = onPushSetup),
+            )
+            ListItem(
+                headlineContent = { Text(stringResource(StatusPageR.string.statuspage_list_title)) },
+                leadingContent = { Icon(Icons.Outlined.Public, contentDescription = null) },
+                modifier = Modifier.clickable(onClick = onStatusPages),
             )
             ListItem(
                 headlineContent = {

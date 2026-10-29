@@ -19,6 +19,8 @@ import net.kirkanos.uptimekuma.feature.monitors.dashboardScreen
 import net.kirkanos.uptimekuma.feature.monitors.monitorDetailScreen
 import net.kirkanos.uptimekuma.feature.onboarding.OnboardingRoute
 import net.kirkanos.uptimekuma.feature.onboarding.onboardingScreen
+import net.kirkanos.uptimekuma.feature.statuspage.StatusPageListRoute
+import net.kirkanos.uptimekuma.feature.statuspage.statusPagesGraph
 import net.kirkanos.uptimekuma.push.ui.PushSetupRoute
 import net.kirkanos.uptimekuma.ui.settings.SettingsScreen
 
@@ -86,8 +88,11 @@ fun KumaApp(
             SettingsScreen(
                 onBack = { navController.popBackStack() },
                 onPushSetup = { navController.navigate(PushSetupDestination(fromOnboarding = false)) },
+                onStatusPages = { navController.navigate(StatusPageListRoute) },
             )
         }
+
+        statusPagesGraph(navController)
     }
 }
 

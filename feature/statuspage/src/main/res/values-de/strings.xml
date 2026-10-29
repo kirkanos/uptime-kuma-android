@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="statuspage_back">Zurück</string>
+    <string name="statuspage_cancel">Abbrechen</string>
+    <string name="statuspage_retry">Erneut versuchen</string>
+    <string name="statuspage_refresh">Aktualisieren</string>
+    <string name="statuspage_more">Weitere Aktionen</string>
+    <string name="statuspage_slug_path">/status/%1$s</string>
+
+    <!-- List -->
+    <string name="statuspage_list_title">Statusseiten</string>
+    <string name="statuspage_create">Neue Statusseite</string>
+    <string name="statuspage_view_public">Öffentliche Statusseite ansehen</string>
+    <string name="statuspage_empty_title">Noch keine Statusseiten</string>
+    <string name="statuspage_empty_message">Erstelle eine Statusseite, um den Zustand deiner Monitore öffentlich zu zeigen.</string>
+    <string name="statuspage_published">Veröffentlicht</string>
+    <string name="statuspage_unpublished">Nicht veröffentlicht</string>
+
+    <!-- Create dialog -->
+    <string name="statuspage_field_name">Name</string>
+    <string name="statuspage_field_slug">Slug</string>
+    <string name="statuspage_slug_help" tools:ignore="TypographyDashes">Erlaubt: a-z, 0-9 und -, keine doppelten Bindestriche</string>
+    <string name="statuspage_slug_default_hint">Die Seite mit dem Slug „default“ wird auch unter /status angezeigt.</string>
+    <string name="statuspage_slug_empty">Slug eingeben</string>
+    <string name="statuspage_slug_invalid_chars" tools:ignore="TypographyDashes">Nur a-z, 0-9 und - sind erlaubt</string>
+    <string name="statuspage_slug_dashes">Kein Bindestrich am Anfang, am Ende oder doppelt</string>
+    <string name="statuspage_name_missing">Name eingeben</string>
+    <string name="statuspage_create_confirm">Erstellen</string>
+
+    <!-- Public viewer -->
+    <string name="statuspage_public_message">Gib den Link einer beliebigen Uptime-Kuma-Statusseite ein. Eine Anmeldung ist nicht nötig.</string>
+    <string name="statuspage_public_url">Link der Statusseite</string>
+    <string name="statuspage_public_url_hint">https://status.example.org/status/meine-seite</string>
+    <string name="statuspage_public_url_invalid">Gib einen Link wie https://host/status/slug ein</string>
+    <string name="statuspage_public_open">Öffnen</string>
+    <string name="statuspage_public_title">Öffentliche Statusseite</string>
+    <string name="statuspage_public_invalid_title">Ungültiger Link</string>
+
+    <!-- Detail -->
+    <string name="statuspage_open_browser">Im Browser öffnen</string>
+    <string name="statuspage_edit">Bearbeiten</string>
+    <string name="statuspage_post_incident">Vorfall melden</string>
+    <string name="statuspage_edit_incident">Vorfall bearbeiten</string>
+    <string name="statuspage_unpin">Vorfall lösen</string>
+    <string name="statuspage_delete">Statusseite löschen</string>
+    <string name="statuspage_delete_title">Statusseite löschen?</string>
+    <string name="statuspage_delete_message">„%1$s“ und alle Vorfälle werden gelöscht. Das kann nicht rückgängig gemacht werden.</string>
+    <string name="statuspage_delete_confirm">Löschen</string>
+    <string name="statuspage_overall_all_up">Alle Systeme betriebsbereit</string>
+    <string name="statuspage_overall_partial">Teilweise eingeschränkter Dienst</string>
+    <string name="statuspage_overall_all_down">Eingeschränkter Dienst</string>
+    <string name="statuspage_overall_maintenance">Wartung</string>
+    <string name="statuspage_overall_unknown">Noch keine Daten</string>
+    <string name="statuspage_maintenance_label">Wartung</string>
+    <string name="statuspage_incident_label">Vorfall</string>
+    <string name="statuspage_incident_created">Erstellt %1$s</string>
+    <string name="statuspage_incident_updated">Aktualisiert %1$s</string>
+    <string name="statuspage_groups_empty">Auf dieser Seite sind noch keine Monitore.</string>
+    <string name="statuspage_uptime_24h">Verfügbarkeit 24 h</string>
+    <plurals name="statuspage_cert_days">
+        <item quantity="one">Zertifikat läuft in %1$d Tag ab</item>
+        <item quantity="other">Zertifikat läuft in %1$d Tagen ab</item>
+    </plurals>
+    <string name="statuspage_cert_invalid">Zertifikat ungültig</string>
+    <string name="statuspage_open_link">%1$s öffnen</string>
+    <string name="statuspage_history_title">Vorfallverlauf</string>
+    <string name="statuspage_history_empty">Keine Vorfälle</string>
+    <string name="statuspage_history_more">Mehr laden</string>
+    <string name="statuspage_history_pinned">Angeheftet</string>
+    <string name="statuspage_history_resolved">Behoben</string>
+    <string name="statuspage_powered_by">Bereitgestellt mit Uptime Kuma</string>
+    <string name="statuspage_refresh_failed">Aktualisierung fehlgeschlagen: %1$s</string>
+    <string name="statuspage_not_published">Diese Seite ist nicht veröffentlicht.</string>
+
+    <!-- Incident editor -->
+    <string name="statuspage_incident_title">Titel</string>
+    <string name="statuspage_incident_content">Inhalt</string>
+    <string name="statuspage_markdown_hint">Markdown wird auf der Webseite unterstützt.</string>
+    <string name="statuspage_incident_style">Stil</string>
+    <string name="statuspage_style_info">Info</string>
+    <string name="statuspage_style_warning">Warnung</string>
+    <string name="statuspage_style_danger">Gefahr</string>
+    <string name="statuspage_style_primary">Primär</string>
+    <string name="statuspage_style_light">Hell</string>
+    <string name="statuspage_style_dark">Dunkel</string>
+    <string name="statuspage_incident_post">Veröffentlichen</string>
+    <string name="statuspage_incident_missing">Bitte Titel und Inhalt eingeben</string>
+
+    <!-- Editor -->
+    <string name="statuspage_edit_title">Statusseite bearbeiten</string>
+    <string name="statuspage_save">Speichern</string>
+    <string name="statuspage_section_general">Allgemein</string>
+    <string name="statuspage_section_appearance">Darstellung</string>
+    <string name="statuspage_section_domains">Domainnamen</string>
+    <string name="statuspage_section_analytics">Analyse</string>
+    <string name="statuspage_section_advanced">RSS und eigenes CSS</string>
+    <string name="statuspage_section_groups">Gruppen und Monitore</string>
+    <string name="statuspage_field_description">Beschreibung</string>
+    <string name="statuspage_field_footer">Fußzeile</string>
+    <string name="statuspage_field_refresh">Aktualisierungsintervall (Sekunden)</string>
+    <string name="statuspage_refresh_help">Die Seite aktualisiert sich alle %1$s Sekunden (mindestens 5).</string>
+    <string name="statuspage_refresh_invalid">Mindestens 5 Sekunden eingeben</string>
+    <string name="statuspage_field_theme">Design</string>
+    <string name="statuspage_theme_auto">Automatisch</string>
+    <string name="statuspage_theme_light">Hell</string>
+    <string name="statuspage_theme_dark">Dunkel</string>
+    <string name="statuspage_show_tags">Tags anzeigen</string>
+    <string name="statuspage_show_powered_by">„Powered by“ anzeigen</string>
+    <string name="statuspage_show_cert_expiry">Zertifikatsablauf anzeigen</string>
+    <string name="statuspage_show_only_last_heartbeat">Nur den letzten Heartbeat anzeigen</string>
+    <string name="statuspage_add_domain">Domain hinzufügen</string>
+    <string name="statuspage_remove_domain">Domain %1$s entfernen</string>
+    <string name="statuspage_domain_hint">example.com</string>
+    <string name="statuspage_field_analytics_type">Analysedienst</string>
+    <string name="statuspage_analytics_none">Keiner</string>
+    <string name="statuspage_field_analytics_id">Analyse-ID</string>
+    <string name="statuspage_field_analytics_script">URL des Analyse-Skripts</string>
+    <string name="statuspage_field_rss_title">RSS-Titel</string>
+    <string name="statuspage_field_custom_css">Eigenes CSS</string>
+    <string name="statuspage_logo_note">Das Logo bleibt unverändert. Es kann in der Weboberfläche geändert werden.</string>
+    <string name="statuspage_add_group">Gruppe hinzufügen</string>
+    <string name="statuspage_group_name">Gruppenname</string>
+    <string name="statuspage_group_services">Dienste</string>
+    <string name="statuspage_group_untitled">Unbenannte Gruppe</string>
+    <string name="statuspage_no_groups">Noch keine Gruppen. Füge eine Gruppe hinzu und dann Monitore.</string>
+    <string name="statuspage_group_empty">Keine Monitore in dieser Gruppe</string>
+    <string name="statuspage_move_group_up">Gruppe %1$s nach oben</string>
+    <string name="statuspage_move_group_down">Gruppe %1$s nach unten</string>
+    <string name="statuspage_delete_group">Gruppe %1$s löschen</string>
+    <string name="statuspage_add_monitors">Monitore hinzufügen</string>
+    <string name="statuspage_move_monitor_up">%1$s nach oben</string>
+    <string name="statuspage_move_monitor_down">%1$s nach unten</string>
+    <string name="statuspage_remove_monitor">%1$s entfernen</string>
+    <string name="statuspage_show_link">Anklickbaren Link anzeigen</string>
+    <string name="statuspage_custom_url">Eigene URL (optional)</string>
+    <string name="statuspage_picker_search">Monitore suchen</string>
+    <string name="statuspage_picker_empty">Keine weiteren Monitore verfügbar</string>
+    <string name="statuspage_picker_add">Hinzufügen (%1$d)</string>
+    <string name="statuspage_discard_title">Änderungen verwerfen?</string>
+    <string name="statuspage_discard_message">Deine Änderungen wurden nicht gespeichert.</string>
+    <string name="statuspage_discard_confirm">Verwerfen</string>
+
+    <!-- Server messages -->
+    <string name="statuspage_error_slug_taken">Der Slug ist bereits vergeben. Bitte wähle einen anderen.</string>
+    <string name="statuspage_error_not_found">Statusseite nicht gefunden.</string>
+    <string name="statuspage_error_invalid_slug">Ungültiger Slug.</string>
+    <string name="statuspage_error_png">Nur PNG-Logos sind erlaubt.</string>
+    <string name="statuspage_error_analytics">Ungültiger Analysedienst.</string>
+</resources>
