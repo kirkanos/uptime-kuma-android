@@ -18,7 +18,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PlayArrow
@@ -107,6 +109,7 @@ private const val SECONDS_PER_MINUTE = 60
 private const val SECONDS_PER_HOUR = 3_600
 
 /** Callbacks of [MonitorDetailScreen]. */
+@Suppress("LongParameterList")
 @Immutable
 internal class MonitorDetailActions(
     val onBack: () -> Unit = {},
@@ -117,11 +120,15 @@ internal class MonitorDetailActions(
     val onResume: () -> Unit = {},
     val onDelete: () -> Unit = {},
     val onDismissActionError: () -> Unit = {},
+    val onEdit: () -> Unit = {},
+    val onClone: () -> Unit = {},
 )
 
 @Composable
 internal fun MonitorDetailEntry(
     onBack: () -> Unit,
+    onEdit: (Long) -> Unit = {},
+    onClone: (Long) -> Unit = {},
     viewModel: MonitorDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -129,7 +136,7 @@ internal fun MonitorDetailEntry(
         if (state.deleted) onBack()
     }
     val actions =
-        remember(viewModel, onBack) {
+        remember(viewModel, onBack, onEdit, onClone) {
             MonitorDetailActions(
                 onBack = onBack,
                 onSelectPeriod = viewModel::selectPeriod,
@@ -139,6 +146,8 @@ internal fun MonitorDetailEntry(
                 onResume = viewModel::resume,
                 onDelete = viewModel::delete,
                 onDismissActionError = viewModel::dismissActionError,
+                onEdit = { onEdit(viewModel.monitorId) },
+                onClone = { onClone(viewModel.monitorId) },
             )
         }
     MonitorDetailScreen(state = state, actions = actions)
@@ -189,6 +198,8 @@ internal fun MonitorDetailScreen(
                             onPause = { confirm = MonitorAction.PAUSE },
                             onResume = actions.onResume,
                             onDelete = { confirm = MonitorAction.DELETE },
+                            onEdit = actions.onEdit,
+                            onClone = actions.onClone,
                         )
                     }
                 },
@@ -243,6 +254,8 @@ private fun DetailActions(
     onPause: () -> Unit,
     onResume: () -> Unit,
     onDelete: () -> Unit,
+    onEdit: () -> Unit = {},
+    onClone: () -> Unit = {},
 ) {
     val overview = state.overview ?: return
     val uriHandler = LocalUriHandler.current
@@ -263,6 +276,24 @@ private fun DetailActions(
         Icon(Icons.Outlined.MoreVert, contentDescription = stringResource(R.string.monitors_more_actions))
     }
     DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.editor_edit)) },
+            leadingIcon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
+            enabled = !busy,
+            onClick = {
+                menuOpen = false
+                onEdit()
+            },
+        )
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.editor_clone)) },
+            leadingIcon = { Icon(Icons.Outlined.ContentCopy, contentDescription = null) },
+            enabled = !busy,
+            onClick = {
+                menuOpen = false
+                onClone()
+            },
+        )
         state.webUrl?.let { url ->
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.monitors_open_web_ui)) },

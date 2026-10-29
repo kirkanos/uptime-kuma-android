@@ -25,12 +25,24 @@ fun NavGraphBuilder.dashboardScreen(
     onMonitorClick: (Long) -> Unit,
     onSettingsClick: () -> Unit,
     onReLogin: () -> Unit,
+    onAddMonitor: () -> Unit = {},
+    onManageTags: () -> Unit = {},
 ) {
     composable<DashboardRoute> {
-        DashboardEntry(onMonitorClick = onMonitorClick, onSettingsClick = onSettingsClick, onReLogin = onReLogin)
+        DashboardEntry(
+            onMonitorClick = onMonitorClick,
+            onSettingsClick = onSettingsClick,
+            onReLogin = onReLogin,
+            onAddMonitor = onAddMonitor,
+            onManageTags = onManageTags,
+        )
     }
 }
 
-fun NavGraphBuilder.monitorDetailScreen(onBack: () -> Unit) {
-    composable<MonitorDetailRoute> { MonitorDetailEntry(onBack = onBack) }
+fun NavGraphBuilder.monitorDetailScreen(
+    onBack: () -> Unit,
+    onEdit: (Long) -> Unit = {},
+    onClone: (Long) -> Unit = {},
+) {
+    composable<MonitorDetailRoute> { MonitorDetailEntry(onBack = onBack, onEdit = onEdit, onClone = onClone) }
 }

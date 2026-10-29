@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Entry points -->
+    <string name="editor_add_monitor">Monitor hinzufügen</string>
+    <string name="editor_edit">Bearbeiten</string>
+    <string name="editor_clone">Duplizieren</string>
+
+    <!-- Type picker -->
+    <string name="editor_type_picker_title">Monitor-Typ wählen</string>
+    <string name="editor_group_general">Allgemein</string>
+    <string name="editor_group_specific">Spezifisch</string>
+    <string name="editor_group_database">Datenbanken</string>
+    <string name="editor_group_game">Spieleserver</string>
+    <string name="editor_group_passive">Passiv</string>
+    <string name="editor_group_other">Sonstige</string>
+    <string name="editor_type_hint_push">Dein Dienst ruft eine URL auf; der Server prüft nicht selbst</string>
+    <string name="editor_type_hint_group">Fasst andere Monitore zusammen, kein eigenes Ziel</string>
+    <string name="editor_type_hint_manual">Status wird von Hand gesetzt</string>
+    <string name="editor_type_hint_host_only">Nur verfügbar, wenn Kuma nicht in einem Container läuft</string>
+
+    <!-- Editor -->
+    <string name="editor_title_new">Neuer Monitor</string>
+    <string name="editor_title_edit">Monitor bearbeiten</string>
+    <string name="editor_title_clone">Monitor duplizieren</string>
+    <string name="editor_clone_name">Kopie von %1$s</string>
+    <string name="editor_close">Schließen</string>
+    <string name="editor_save">Speichern</string>
+    <string name="editor_save_anyway">Trotzdem speichern</string>
+    <string name="editor_dismiss">Ausblenden</string>
+    <string name="editor_add">Hinzufügen</string>
+    <string name="editor_change">Ändern</string>
+    <string name="editor_change_type">Monitor-Typ ändern</string>
+    <string name="editor_monitor_type">Monitor-Typ</string>
+    <string name="editor_required_label">%1$s *</string>
+    <string name="editor_seconds_label">%1$s (s)</string>
+    <string name="editor_show_password">Passwort anzeigen</string>
+    <string name="editor_hide_password">Passwort verbergen</string>
+    <string name="editor_format_json">JSON formatieren</string>
+    <string name="editor_one_per_line">Ein Eintrag pro Zeile</string>
+    <string name="editor_remove_item">%1$s entfernen</string>
+    <string name="editor_status_code_add_hint" tools:ignore="TypographyDashes">Weiterer Code oder Bereich, z. B. 418 oder 200-399</string>
+    <string name="editor_header_name">Header</string>
+    <string name="editor_header_value">Wert</string>
+    <string name="editor_headers_as_json">Als JSON bearbeiten</string>
+    <string name="editor_headers_as_list">Als Liste bearbeiten</string>
+    <string name="editor_notifications_empty">Keine Benachrichtigungen eingerichtet. Lege sie in den Einstellungen oder der Weboberfläche an.</string>
+    <string name="editor_notification_default">Standard</string>
+    <string name="editor_proxies_empty">Auf dem Server sind keine Proxys eingerichtet.</string>
+    <string name="editor_proxy_none">Kein Proxy</string>
+    <string name="editor_docker_hosts_empty">Keine Docker-Hosts eingerichtet. Lege zuerst einen in der Weboberfläche an.</string>
+    <string name="editor_push_url_unavailable">Die Push-URL erscheint, sobald die Serveradresse bekannt ist.</string>
+    <string name="editor_push_hint">Rufe diese URL von deinem Dienst mindestens einmal pro Prüfintervall auf. Speichere den Monitor, bevor du ein neues Token verwendest.</string>
+    <string name="editor_copy">Kopieren</string>
+    <string name="editor_reset_token">Neues Token</string>
+
+    <!-- Sections -->
+    <string name="editor_section_general">Allgemein</string>
+    <string name="editor_section_type">%1$s-Einstellungen</string>
+    <string name="editor_section_monitoring">Überwachung</string>
+    <string name="editor_section_http">HTTP-Anfrage</string>
+    <string name="editor_section_auth">Authentifizierung</string>
+    <string name="editor_section_advanced">Erweitert</string>
+    <string name="editor_section_proxy">Proxy</string>
+    <string name="editor_section_notifications">Benachrichtigungen</string>
+    <string name="editor_section_tags">Tags</string>
+
+    <!-- Options -->
+    <string name="editor_option_none">Keine</string>
+    <string name="editor_option_auto">Automatisch</string>
+    <string name="editor_option_default">Standard</string>
+    <string name="editor_option_ipv4">Nur IPv4</string>
+    <string name="editor_option_ipv6">Nur IPv6</string>
+    <string name="editor_option_auth_basic">HTTP-Basic-Auth</string>
+    <string name="editor_option_auth_bearer">Bearer-Token</string>
+    <string name="editor_option_auth_oauth">OAuth2 Client Credentials</string>
+    <string name="editor_option_auth_ntlm">NTLM</string>
+    <string name="editor_option_auth_mtls">mTLS (Client-Zertifikat)</string>
+    <string name="editor_option_smtp_secure">SMTPS (implizites TLS)</string>
+    <string name="editor_option_smtp_nostarttls">STARTTLS ignorieren</string>
+    <string name="editor_option_smtp_starttls">STARTTLS verwenden</string>
+    <string name="editor_option_ssh_password">Passwort</string>
+    <string name="editor_option_ssh_key">Privater Schlüssel</string>
+    <string name="editor_option_keyword">Schlüsselwort</string>
+    <string name="editor_option_json_query">JSON-Abfrage</string>
+    <string name="editor_option_status_only">Nur Statuscode</string>
+    <string name="editor_option_up">Up</string>
+    <string name="editor_option_down">Down</string>
+    <string name="editor_option_oauth_basic">Authorization-Header</string>
+    <string name="editor_option_oauth_post">Anfrage-Body</string>
+    <string name="editor_option_ping">Ping</string>
+    <string name="editor_option_http">HTTP</string>
+    <string name="editor_option_dns">DNS</string>
+
+    <!-- Durations -->
+    <plurals name="editor_duration_seconds">
+        <item quantity="one">%d Sekunde</item>
+        <item quantity="other">%d Sekunden</item>
+    </plurals>
+    <plurals name="editor_duration_minutes">
+        <item quantity="one">%d Minute</item>
+        <item quantity="other">%d Minuten</item>
+    </plurals>
+    <plurals name="editor_duration_hours">
+        <item quantity="one">%d Stunde</item>
+        <item quantity="other">%d Stunden</item>
+    </plurals>
+
+    <!-- Conditions -->
+    <string name="editor_conditions_hint">Die Prüfung ist up, wenn die Bedingungen zutreffen. Verschachtelte Gruppen aus der Weboberfläche bleiben erhalten.</string>
+    <string name="editor_condition_add">Bedingung hinzufügen</string>
+    <string name="editor_condition_remove">Bedingung entfernen</string>
+    <string name="editor_condition_value">Wert</string>
+    <string name="editor_condition_and">Und</string>
+    <string name="editor_condition_or">Oder</string>
+    <plurals name="editor_condition_group">
+        <item quantity="one">Gruppe mit %d Bedingung (in der Weboberfläche bearbeiten)</item>
+        <item quantity="other">Gruppe mit %d Bedingungen (in der Weboberfläche bearbeiten)</item>
+    </plurals>
+    <string name="editor_op_equals">ist gleich</string>
+    <string name="editor_op_not_equals">ist ungleich</string>
+    <string name="editor_op_contains">enthält</string>
+    <string name="editor_op_not_contains">enthält nicht</string>
+    <string name="editor_op_starts_with">beginnt mit</string>
+    <string name="editor_op_not_starts_with">beginnt nicht mit</string>
+    <string name="editor_op_ends_with">endet mit</string>
+    <string name="editor_op_not_ends_with">endet nicht mit</string>
+    <string name="editor_op_num_equals">=</string>
+    <string name="editor_op_num_not_equals">≠</string>
+    <string name="editor_op_lt">&lt;</string>
+    <string name="editor_op_gt">&gt;</string>
+    <string name="editor_op_lte">≤</string>
+    <string name="editor_op_gte">≥</string>
+
+    <!-- Tags in the editor -->
+    <string name="editor_tags_empty">Keine Tags.</string>
+    <string name="editor_tag_add">Tag hinzufügen</string>
+    <string name="editor_tag">Tag</string>
+    <string name="editor_tag_existing">Vorhanden</string>
+    <string name="editor_tag_new">Neues Tag</string>
+    <string name="editor_tag_value">Wert (optional)</string>
+
+    <!-- Validation -->
+    <string name="editor_error_required">Pflichtfeld</string>
+    <string name="editor_error_number">Gib eine Zahl ein</string>
+    <string name="editor_error_min">Muss mindestens %1$s sein</string>
+    <string name="editor_error_max">Darf höchstens %1$s sein</string>
+    <string name="editor_error_url">Gib eine gültige URL für diesen Monitor-Typ ein</string>
+    <string name="editor_error_json">Kein gültiges JSON</string>
+    <string name="editor_error_format">Ungültiges Format</string>
+    <string name="editor_error_status_code" tools:ignore="TypographyDashes">Verwende Codes wie 200 oder Bereiche wie 200-299</string>
+    <string name="editor_error_node_url">Jeder Knoten muss mit http:// oder https:// beginnen</string>
+    <string name="editor_error_no_comma">Darf kein Komma enthalten</string>
+
+    <!-- Problems and dialogs -->
+    <string name="editor_problem_invalid">Bitte prüfe die markierten Felder.</string>
+    <string name="editor_problem_tags">Der Monitor wurde gespeichert, aber seine Tags konnten nicht aktualisiert werden: %1$s</string>
+    <string name="editor_discard_title">Änderungen verwerfen?</string>
+    <string name="editor_discard_message">Deine Änderungen an diesem Monitor gehen verloren.</string>
+    <string name="editor_discard">Verwerfen</string>
+    <string name="editor_short_interval_title">Sehr kurzes Intervall</string>
+    <plurals name="editor_short_interval_message">
+        <item quantity="one">Intervalle unter %1$d Sekunde belasten Server und Ziel zusätzlich. Trotzdem speichern?</item>
+        <item quantity="other">Intervalle unter %1$d Sekunden belasten Server und Ziel zusätzlich. Trotzdem speichern?</item>
+    </plurals>
+    <string name="editor_delete_children">Auch alle Monitore dieser Gruppe löschen</string>
+
+    <!-- Server messages -->
+    <string name="editor_server_interval">Das Prüfintervall muss mindestens 1 Sekunde betragen.</string>
+    <string name="editor_server_retry_interval">Das Wiederholungsintervall muss mindestens 1 Sekunde betragen.</string>
+    <string name="editor_server_status_codes">Die akzeptierten Statuscodes sind ungültig.</string>
+    <string name="editor_server_pm2_name">Der PM2-Prozessname ist erforderlich.</string>
+    <string name="editor_server_service_name">Der Dienstname ist erforderlich.</string>
+    <string name="editor_server_invalid_group">Ein Monitor kann nicht in seine eigene Gruppe oder eine ihrer Untergruppen verschoben werden.</string>
+    <string name="editor_server_permission">Du darfst diesen Monitor nicht ändern.</string>
+    <string name="editor_server_tag_not_found">Das Tag existiert nicht mehr.</string>
+    <string name="editor_server_monitor_not_found">Der Monitor existiert nicht mehr.</string>
+
+    <!-- Tag manager -->
+    <string name="tags_title">Tags</string>
+    <string name="tags_manage">Tags verwalten</string>
+    <string name="tags_new">Neues Tag</string>
+    <string name="tags_edit">Tag bearbeiten</string>
+    <string name="tags_name">Name</string>
+    <string name="tags_empty_title">Noch keine Tags</string>
+    <string name="tags_empty_message">Tags gruppieren und filtern Monitore. Lege eines mit dem Button unten an.</string>
+    <string name="tags_delete_named">%1$s löschen</string>
+    <string name="tags_delete_title">Tag %1$s löschen?</string>
+    <string name="tags_delete_message">Das Tag wird von allen Monitoren entfernt. Das kann nicht rückgängig gemacht werden.</string>
+    <string name="tags_color_grey">Grau</string>
+    <string name="tags_color_red">Rot</string>
+    <string name="tags_color_orange">Orange</string>
+    <string name="tags_color_green">Grün</string>
+    <string name="tags_color_blue">Blau</string>
+    <string name="tags_color_indigo">Indigo</string>
+    <string name="tags_color_purple">Lila</string>
+    <string name="tags_color_pink">Pink</string>
+
+    <!-- Field labels (spec/monitor-types.json field catalogue) -->
+    <string name="editor_field_subtype">Prüfungsart</string>
+    <string name="editor_field_name">Anzeigename</string>
+    <string name="editor_field_manual_status">Status</string>
+    <string name="editor_field_url">URL</string>
+    <string name="editor_field_ws_subprotocol">WebSocket-Subprotokoll</string>
+    <string name="editor_field_headers">Header</string>
+    <string name="editor_field_grpc_url">gRPC-URL</string>
+    <string name="editor_field_push_token">Push-URL</string>
+    <string name="editor_field_keyword">Schlüsselwort</string>
+    <string name="editor_field_invert_keyword">Schlüsselwort umkehren (down, wenn gefunden)</string>
+    <string name="editor_field_remote_browser">Remote-Browser</string>
+    <string name="editor_field_game">Spiel (GameDig-ID)</string>
+    <string name="editor_field_kafka_producer_brokers">Broker</string>
+    <string name="editor_field_kafka_producer_topic">Topic</string>
+    <string name="editor_field_kafka_producer_message">Nachricht</string>
+    <string name="editor_field_kafka_producer_ssl">SSL verwenden</string>
+    <string name="editor_field_kafka_producer_allow_auto_topic_creation">Automatisches Anlegen von Topics erlauben</string>
+    <string name="editor_field_rabbitmq_nodes">Knoten (Management-API-URLs)</string>
+    <string name="editor_field_rabbitmq_username">Benutzername</string>
+    <string name="editor_field_rabbitmq_password">Passwort</string>
+    <string name="editor_field_hostname">Hostname</string>
+    <string name="editor_field_location">Probe-Standort</string>
+    <string name="editor_field_ip_family">IP-Familie</string>
+    <string name="editor_field_dns_resolve_server">Resolver-Server</string>
+    <string name="editor_field_port">Port</string>
+    <string name="editor_field_dns_resolve_type">Eintragstyp</string>
+    <string name="editor_field_protocol">Protokoll</string>
+    <string name="editor_field_gamedig_token">GameDig-Token</string>
+    <string name="editor_field_radius_password">Passwort</string>
+    <string name="editor_field_snmp_oid">OID</string>
+    <string name="editor_field_snmp_version">SNMP-Version</string>
+    <string name="editor_field_snmp_v3_username">SNMPv3-Benutzername</string>
+    <string name="editor_field_smtp_security">Sicherheit</string>
+    <string name="editor_field_ssh_username">SSH-Benutzername</string>
+    <string name="editor_field_ssh_auth_method">Authentifizierung</string>
+    <string name="editor_field_ssh_password">SSH-Passwort</string>
+    <string name="editor_field_ssh_private_key">Privater Schlüssel</string>
+    <string name="editor_field_ssh_passphrase">Schlüssel-Passphrase</string>
+    <string name="editor_field_sftp_path">Zu prüfender Pfad</string>
+    <string name="editor_field_ntp_stratum_threshold">Max. Stratum</string>
+    <string name="editor_field_ntp_time_offset_threshold">Max. Zeitabweichung (ms)</string>
+    <string name="editor_field_ntp_root_dispersion_threshold">Max. Root-Dispersion (ms)</string>
+    <string name="editor_field_json_path">JSON-Abfrage (JSONata)</string>
+    <string name="editor_field_json_path_operator">Bedingung</string>
+    <string name="editor_field_expected_value">Erwarteter Wert</string>
+    <string name="editor_field_docker_container">Container-Name oder -ID</string>
+    <string name="editor_field_docker_host">Docker-Host</string>
+    <string name="editor_field_mqtt_username">MQTT-Benutzername</string>
+    <string name="editor_field_mqtt_password">MQTT-Passwort</string>
+    <string name="editor_field_mqtt_topic">Topic</string>
+    <string name="editor_field_mqtt_websocket_path">WebSocket-Pfad</string>
+    <string name="editor_field_mqtt_check_type">Prüfungsart</string>
+    <string name="editor_field_mqtt_success_message">Erwartete Nachricht</string>
+    <string name="editor_field_radius_username">RADIUS-Benutzername</string>
+    <string name="editor_field_radius_secret">RADIUS-Secret</string>
+    <string name="editor_field_radius_called_station_id">Called-Station-ID</string>
+    <string name="editor_field_radius_calling_station_id">Calling-Station-ID</string>
+    <string name="editor_field_database_connection_string">Verbindungszeichenfolge</string>
+    <string name="editor_field_basic_auth_user">Benutzername</string>
+    <string name="editor_field_basic_auth_pass">Passwort</string>
+    <string name="editor_field_system_service_name">Dienst-/Prozessname</string>
+    <string name="editor_field_database_query">Abfrage</string>
+    <string name="editor_field_conditions">Bedingungen</string>
+    <string name="editor_field_interval">Prüfintervall</string>
+    <string name="editor_field_maxretries">Wiederholungen</string>
+    <string name="editor_field_retry_interval">Wiederholungsintervall</string>
+    <string name="editor_field_retry_only_on_status_code_failure">Nur bei Statuscode-Fehler wiederholen</string>
+    <string name="editor_field_timeout">Zeitlimit der Anfrage</string>
+    <string name="editor_field_resend_interval">Benachrichtigung alle X Down-Prüfungen erneut senden (0 = aus)</string>
+    <string name="editor_field_expiry_notification">Benachrichtigung bei Zertifikatsablauf</string>
+    <string name="editor_field_screenshot_delay">Screenshot-Verzögerung (ms)</string>
+    <string name="editor_field_domain_expiry_notification">Benachrichtigung bei Domain-Ablauf</string>
+    <string name="editor_field_ws_ignore_sec_websocket_accept_header">Sec-WebSocket-Accept-Header ignorieren</string>
+    <string name="editor_field_ignore_tls">TLS/SSL-Fehler ignorieren</string>
+    <string name="editor_field_cache_bust">Cache-Buster (zufälliger Query-Parameter)</string>
+    <string name="editor_field_upside_down">Umgekehrter Modus</string>
+    <string name="editor_field_gamedig_given_port_only">Nur den angegebenen Port verwenden</string>
+    <string name="editor_field_ping_count">Anzahl Pakete</string>
+    <string name="editor_field_ping_numeric">Nur numerische Ausgabe</string>
+    <string name="editor_field_packet_size">Paketgröße</string>
+    <string name="editor_field_ping_per_request_timeout">Zeitlimit pro Ping</string>
+    <string name="editor_field_accepted_statuscodes">Akzeptierte Statuscodes</string>
+    <string name="editor_field_maxredirects">Max. Weiterleitungen</string>
+    <string name="editor_field_save_error_response">Antwort bei Fehlern speichern</string>
+    <string name="editor_field_save_response">Jede Antwort speichern</string>
+    <string name="editor_field_response_max_length">Max. Länge gespeicherter Antworten (Bytes)</string>
+    <string name="editor_field_parent">Monitor-Gruppe</string>
+    <string name="editor_field_description">Beschreibung</string>
+    <string name="editor_field_tags">Tags</string>
+    <string name="editor_field_notification_idlist">Benachrichtigungen</string>
+    <string name="editor_field_auth_method">Authentifizierungsmethode</string>
+    <string name="editor_field_bearer_token">Bearer-Token</string>
+    <string name="editor_field_oauth_auth_method">Client-Authentifizierung</string>
+    <string name="editor_field_oauth_token_url">Token-URL</string>
+    <string name="editor_field_oauth_client_id">Client-ID</string>
+    <string name="editor_field_oauth_client_secret">Client-Secret</string>
+    <string name="editor_field_oauth_scopes">Scopes (durch Leerzeichen getrennt)</string>
+    <string name="editor_field_oauth_audience">Audience</string>
+    <string name="editor_field_tls_cert">Client-Zertifikat (PEM)</string>
+    <string name="editor_field_tls_key">Client-Schlüssel (PEM)</string>
+    <string name="editor_field_tls_ca">CA-Zertifikat (PEM)</string>
+    <string name="editor_field_auth_domain">Domäne</string>
+    <string name="editor_field_auth_workstation">Workstation</string>
+    <string name="editor_field_proxy_id">Proxy</string>
+    <string name="editor_field_kafka_producer_sasl_options">SASL-Authentifizierung</string>
+    <string name="editor_field_method">Methode</string>
+    <string name="editor_field_http_body_encoding">Body-Kodierung</string>
+    <string name="editor_field_body">Body</string>
+    <string name="editor_field_responsecheck">Antwortprüfung</string>
+    <string name="editor_field_grpc_enable_tls">TLS aktivieren</string>
+    <string name="editor_field_grpc_service_name">Dienstname</string>
+    <string name="editor_field_grpc_method">Methode</string>
+    <string name="editor_field_grpc_protobuf">Protobuf-Definition</string>
+    <string name="editor_field_grpc_body">Anfrage-Body (JSON)</string>
+    <string name="editor_field_grpc_metadata">Metadaten (JSON)</string>
+</resources>
