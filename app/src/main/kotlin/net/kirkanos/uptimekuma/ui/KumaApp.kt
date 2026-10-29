@@ -2,6 +2,7 @@ package net.kirkanos.uptimekuma.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Construction
+import androidx.compose.material.icons.outlined.NotificationsActive
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +27,8 @@ import net.kirkanos.uptimekuma.feature.monitors.editor.MonitorTypePickerRoute
 import net.kirkanos.uptimekuma.feature.monitors.editor.TagManagerRoute
 import net.kirkanos.uptimekuma.feature.monitors.editor.monitorEditorGraph
 import net.kirkanos.uptimekuma.feature.monitors.monitorDetailScreen
+import net.kirkanos.uptimekuma.feature.notifications.NotificationListRoute
+import net.kirkanos.uptimekuma.feature.notifications.notificationsGraph
 import net.kirkanos.uptimekuma.feature.onboarding.OnboardingRoute
 import net.kirkanos.uptimekuma.feature.onboarding.onboardingScreen
 import net.kirkanos.uptimekuma.feature.settings.AdministrationEntry
@@ -36,6 +39,7 @@ import net.kirkanos.uptimekuma.feature.statuspage.statusPagesGraph
 import net.kirkanos.uptimekuma.push.ui.MonitorAlertToggle
 import net.kirkanos.uptimekuma.push.ui.PushSetupRoute
 import net.kirkanos.uptimekuma.feature.maintenance.R as MaintenanceR
+import net.kirkanos.uptimekuma.feature.notifications.R as NotificationsR
 import net.kirkanos.uptimekuma.feature.statuspage.R as StatusPageR
 
 /** Push notification setup. [fromOnboarding] = continue to the dashboard when done instead of going back. */
@@ -116,6 +120,12 @@ fun KumaApp(
                         summaryRes = MaintenanceR.string.maintenance_settings_summary,
                     ),
                     AdministrationEntry(
+                        titleRes = NotificationsR.string.notif_title,
+                        icon = Icons.Outlined.NotificationsActive,
+                        onClick = { navController.navigate(NotificationListRoute) },
+                        summaryRes = NotificationsR.string.notif_settings_summary,
+                    ),
+                    AdministrationEntry(
                         titleRes = StatusPageR.string.statuspage_list_title,
                         icon = Icons.Outlined.Public,
                         onClick = { navController.navigate(StatusPageListRoute) },
@@ -126,6 +136,8 @@ fun KumaApp(
         statusPagesGraph(navController)
 
         maintenanceGraph(navController, onMonitorClick = { id -> navController.navigate(MonitorDetailRoute(id)) })
+
+        notificationsGraph(navController)
     }
 }
 

@@ -19,3 +19,13 @@ val copyMonitorSpec by tasks.registering(Sync::class) {
 sourceSets.named("main") {
     resources.srcDir(files(monitorSpecResources).builtBy(copyMonitorSpec))
 }
+
+// Same for the notification provider editor: spec/notification-providers.json -> namespaced classpath resource.
+val notificationSpecResources = layout.buildDirectory.dir("generated/notificationSpec")
+val copyNotificationSpec by tasks.registering(Sync::class) {
+    from(isolated.rootProject.projectDirectory.file("spec/notification-providers.json"))
+    into(notificationSpecResources.map { it.dir("net/kirkanos/uptimekuma/core/domain/notification") })
+}
+sourceSets.named("main") {
+    resources.srcDir(files(notificationSpecResources).builtBy(copyNotificationSpec))
+}
