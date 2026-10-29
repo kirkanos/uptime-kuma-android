@@ -65,4 +65,13 @@ class KumaWebhookNotificationTest {
     fun `keeps the id for updates`() {
         assertEquals(42L, KumaWebhookNotification.build("https://x/up1?up=1", "tk", "Phone", id = 42).id)
     }
+
+    @Test
+    fun `default flag is passed through`() {
+        assertEquals(false, KumaWebhookNotification.build("https://x/up1?up=1", "tk", "Phone").isDefault)
+        assertEquals(
+            true,
+            KumaWebhookNotification.build("https://x/up1?up=1", "tk", "Phone", isDefault = true).isDefault,
+        )
+    }
 }

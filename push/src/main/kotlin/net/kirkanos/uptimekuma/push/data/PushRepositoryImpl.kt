@@ -153,7 +153,9 @@ class PushRepositoryImpl
             }
 
             val existingId = registrationStore.get()?.kumaNotificationId
-            val id = saveKumaNotification(endpoint, token, existingId, applyToAllMonitors)
+            // "All monitors" also means future ones: mark it as Kuma's default notification.
+            val id =
+                saveKumaNotification(endpoint, token, existingId, applyToAllMonitors, isDefault = applyToAllMonitors)
             registrationStore.update { PushRegistration(endpoint, id, distributor) }
         }
 
@@ -163,14 +165,18 @@ class PushRepositoryImpl
             token: String,
             existingId: Long?,
             applyExisting: Boolean,
+            isDefault: Boolean,
         ): Long {
             val name = deviceNameProvider.deviceName()
             return try {
-                notifications.save(KumaWebhookNotification.build(endpoint, token, name, existingId), applyExisting)
+                notifications.save(
+                    KumaWebhookNotification.build(endpoint, token, name, existingId, isDefault),
+                    applyExisting,
+                )
             } catch (e: KumaException) {
                 if (existingId == null || e.error.kind != KumaError.Kind.SERVER_REJECTED) throw e
                 Log.i(TAG, "Kuma notification $existingId is gone; creating a new one")
-                notifications.save(KumaWebhookNotification.build(endpoint, token, name, null), applyExisting)
+                notifications.save(KumaWebhookNotification.build(endpoint, token, name, null, isDefault), applyExisting)
             }
         }
 
@@ -320,7 +326,21 @@ class PushRepositoryImpl
                 val token =
                     withContext(ioDispatcher) { tokenStore.load() }
                         ?: throw PushSetupException(PushSetupException.Reason.NOT_CONFIGURED, "token missing")
-                val newId = saveKumaNotification(registration.endpoint, token, id, applyExisting = false)
+                // Keep the default flag the user chose at setup time (read back from Kuma's list).
+                val wasDefault =
+                    notifications
+                        .observeNotifications()
+                        .first()
+                        .firstOrNull { it.id == id }
+                        ?.isDefault ?: false
+                val newId =
+                    saveKumaNotification(
+                        registration.endpoint,
+                        token,
+                        id,
+                        applyExisting = false,
+                        isDefault = wasDefault,
+                    )
                 if (newId != id) registrationStore.update { it?.copy(kumaNotificationId = newId) }
             }
         }

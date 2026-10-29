@@ -18,18 +18,20 @@ object KumaWebhookNotification {
      * @param ntfyToken access token of the ntfy user allowed to publish to `up*`.
      * @param deviceName shown in Kuma's notification list so the user can identify the device.
      * @param id existing Kuma notification id to update, `null` to create a new one.
+     * @param isDefault Kuma's "Default enabled" flag: preselected for new monitors (web UI and app).
      */
     fun build(
         endpoint: String,
         ntfyToken: String,
         deviceName: String,
         id: Long? = null,
+        isDefault: Boolean = false,
     ): KumaNotification =
         KumaNotification(
             id = id,
             name = notificationName(deviceName),
             type = TYPE,
-            isDefault = false,
+            isDefault = isDefault,
             fields =
                 mapOf(
                     FIELD_URL to endpoint,
