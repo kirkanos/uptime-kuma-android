@@ -49,6 +49,8 @@ First public version.
   unreachable FCM, rejected project values and project changes that need an app restart. The setup
   screen asks for the push method first; switching tears the other method down; the settings card shows
   the active method. Same alert handling for both methods (shared message handler).
+- Step-by-step Firebase guide (`docs/push/firebase-setup.md`): Firebase project, relay, app, first
+  alert, troubleshooting; verified end to end on a Pixel 8 Pro.
 - Two APK flavors: `full` (ntfy or Firebase) and `foss` (ntfy only, no Google library at all).
 - English and German translations, Material 3 with dynamic color and dark mode.
 

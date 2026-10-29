@@ -11,6 +11,9 @@ v1, [README section 2.1](./README.md#21-template-webhookcustombody-888-bytes-ver
 only the URL and the bearer token differ. The app parses the FCM message exactly like a
 UnifiedPush payload.
 
+**Setting it up for the first time? Follow the step-by-step guide [firebase-setup.md](./firebase-setup.md)**
+(Firebase project, relay, app, first alert). This file is the reference behind it.
+
 ## Relay
 
 ### What it does
@@ -348,9 +351,17 @@ creates the new project's token right after the restart and the Kuma notificatio
 `onNewToken` automatically.) Obviously malformed values never reach Firebase, so typos in them do not
 need a restart.
 
-### Not verifiable without a real Firebase project
+### Verified end to end
 
-The unit tests cover parsing, validation, URL building, transport switching, the shared message handler
-and the setup screen state with a fake FCM gateway. Token fetch against Google, delivery through the
-relay, `onNewToken` after rotation and the restart path with a real second project need a real Firebase
-project and relay.
+Unit tests cover parsing, validation, URL building, transport switching, the shared message handler and
+the setup screen state with a fake FCM gateway. With a real Firebase project (2026-10-29: relay built
+from `relay/` on a Mac, dev Kuma 2.5.8 in Docker, `full` debug build on a Pixel 8 Pro, Android 17):
+
+- `google-services.json` with two `client` entries: the import picked the `.debug` entry by package name;
+- *Set up* initialized Firebase, fetched the token and created "Pixel 8 Pro (Firebase)" in Kuma;
+- test notification, then UP and DOWN of a push monitor with the app in the background: relay
+  `forwarded` (89 to 201 ms to FCM), notifications on `test`, `monitor_up`, `monitor_down`. DOWN: Kuma
+  17:13:54.84, relay 17:13:55.00;
+- the relay's fake-token probe answered `410` (Google authentication with the Admin SDK key works).
+
+Not covered yet: `onNewToken` after a real token rotation and the restart path with a second project.

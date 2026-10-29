@@ -66,12 +66,13 @@ alert handling in the app (mutes, quiet hours, history).
 | APK | `full` and `foss` | `full` only |
 
 Setting up one option tears down the other one (its Kuma notification is deleted, UnifiedPush is
-unregistered or the FCM token deleted). Firebase details:
-[docs/push/firebase.md](docs/push/firebase.md). ntfy details: [docs/push/README.md](docs/push/README.md).
+unregistered or the FCM token deleted). Firebase setup:
+[docs/push/firebase-setup.md](docs/push/firebase-setup.md), reference: [docs/push/firebase.md](docs/push/firebase.md). ntfy details: [docs/push/README.md](docs/push/README.md).
 
 ## Setup (ntfy)
 
-For the Firebase option see [docs/push/firebase.md](docs/push/firebase.md#app-setup) instead.
+For the Firebase option follow the step-by-step guide [docs/push/firebase-setup.md](docs/push/firebase-setup.md)
+instead (Firebase project, relay, app).
 
 ### 1. ntfy server
 
