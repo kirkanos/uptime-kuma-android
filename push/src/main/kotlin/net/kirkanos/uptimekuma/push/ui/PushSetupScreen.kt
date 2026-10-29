@@ -2,8 +2,10 @@ package net.kirkanos.uptimekuma.push.ui
 
 import android.Manifest
 import android.content.ActivityNotFoundException
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -64,9 +66,13 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import net.kirkanos.uptimekuma.core.model.FirebaseConfigField
+import net.kirkanos.uptimekuma.core.model.PushTransport
 import net.kirkanos.uptimekuma.core.ui.theme.KumaTheme
 import net.kirkanos.uptimekuma.push.R
 import net.kirkanos.uptimekuma.push.notify.hasPostNotificationsPermission
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 private const val NTFY_FDROID_URL = "https://f-droid.org/packages/io.heckel.ntfy/"
 private const val NTFY_PLAY_URL = "market://details?id=io.heckel.ntfy"
@@ -88,6 +94,17 @@ fun PushSetupRoute(
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             notificationsAllowed = granted || context.notificationsAllowed()
+        }
+    // google-services.json via the system file picker (SAF): no storage permission needed.
+    val importLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                val resolver = context.contentResolver
+                viewModel.importGoogleServices(
+                    read = { resolver.readText(uri) },
+                    packageName = context.packageName,
+                )
+            }
         }
     LifecycleResumeEffect(Unit) {
         viewModel.refresh()
@@ -120,7 +137,15 @@ fun PushSetupRoute(
                 onOpenDistributor = { pkg -> context.openApp(pkg) },
                 onDone = onDone,
                 onSkip = onSkip,
+                onTransportSelected = viewModel::onTransportSelected,
+                onChooseTransport = viewModel::chooseTransport,
+                onRelayUrlChange = viewModel::onRelayUrlChange,
+                onRelayTokenChange = viewModel::onRelayTokenChange,
+                onFirebaseFieldChange = viewModel::onFirebaseFieldChange,
+                onImportGoogleServices = { importLauncher.launch(GOOGLE_SERVICES_MIME_TYPES) },
+                onRestartApp = { context.restartApp() },
             ),
+        packageName = context.packageName,
         modifier = modifier,
     )
 }
@@ -141,14 +166,28 @@ data class PushSetupActions(
     val onOpenDistributor: (String) -> Unit = {},
     val onDone: () -> Unit = {},
     val onSkip: (() -> Unit)? = null,
+    val onTransportSelected: (PushTransport) -> Unit = {},
+    val onChooseTransport: () -> Unit = {},
+    val onRelayUrlChange: (String) -> Unit = {},
+    val onRelayTokenChange: (String) -> Unit = {},
+    val onFirebaseFieldChange: (FirebaseConfigField, String) -> Unit = { _, _ -> },
+    /** Opens the system file picker for a google-services.json. */
+    val onImportGoogleServices: () -> Unit = {},
+    /** Relaunches the app process (Firebase project change). */
+    val onRestartApp: () -> Unit = {},
 )
 
+/**
+ * @param packageName this app's package; the Android app in the user's Firebase project must use exactly this one
+ *   (`net.kirkanos.uptimekuma`, debug builds `net.kirkanos.uptimekuma.debug`).
+ */
 @Composable
 fun PushSetupScreen(
     state: PushSetupUiState,
     notificationsAllowed: Boolean,
     actions: PushSetupActions,
     modifier: Modifier = Modifier,
+    packageName: String = "net.kirkanos.uptimekuma",
 ) {
     Column(
         modifier =
@@ -173,14 +212,48 @@ fun PushSetupScreen(
             }
         }
 
-        state.error?.let { ErrorCard(it) }
+        state.error?.let { ErrorCard(it, actions.onRestartApp) }
 
         when (state.phase) {
-            PushSetupPhase.Loading -> Progress(text = null)
-            PushSetupPhase.InstallDistributor -> InstallDistributorCard(actions)
-            PushSetupPhase.Form -> SetupForm(state, actions)
-            PushSetupPhase.Working -> Progress(text = stringResource(R.string.push_setup_working))
-            PushSetupPhase.Active -> ActiveSection(state, actions)
+            PushSetupPhase.Loading -> {
+                Progress(text = null)
+            }
+
+            PushSetupPhase.ChooseTransport -> {
+                TransportPicker(state, actions.onTransportSelected)
+            }
+
+            PushSetupPhase.InstallDistributor -> {
+                NtfyHeader(state, actions)
+                InstallDistributorCard(actions)
+            }
+
+            PushSetupPhase.Form -> {
+                NtfyHeader(state, actions)
+                SetupForm(state, actions)
+            }
+
+            PushSetupPhase.FirebaseForm -> {
+                TransportHeader(state, actions.onChooseTransport)
+                FirebaseSetupForm(state, packageName, actions)
+            }
+
+            PushSetupPhase.Working -> {
+                Progress(
+                    text =
+                        stringResource(
+                            if (state.transport == PushTransport.FIREBASE) {
+                                R.string.push_setup_working_firebase
+                            } else {
+                                R.string.push_setup_working
+                            },
+                        ),
+                )
+            }
+
+            PushSetupPhase.Active -> {
+                ActiveSection(state, actions)
+            }
         }
 
         val skip = actions.onSkip
@@ -190,8 +263,20 @@ fun PushSetupScreen(
             }
         }
 
-        BatteryHintCard(onOpenUrl = actions.onOpenUrl)
+        if (state.phase != PushSetupPhase.ChooseTransport) {
+            BatteryHintCard(transport = state.activeTransport ?: state.transport, onOpenUrl = actions.onOpenUrl)
+        }
     }
+}
+
+/** Transport header plus the ntfy explanation (in `foss` builds the only description of how push works). */
+@Composable
+private fun NtfyHeader(
+    state: PushSetupUiState,
+    actions: PushSetupActions,
+) {
+    TransportHeader(state, actions.onChooseTransport)
+    Text(text = stringResource(R.string.push_transport_ntfy_text), style = MaterialTheme.typography.bodyMedium)
 }
 
 @Composable
@@ -256,6 +341,18 @@ private fun SetupForm(
             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
         )
     }
+    ApplyToAllRow(state.applyToAll, actions.onApplyToAllChange)
+    Button(onClick = actions.onSetUp, enabled = state.canSubmit, modifier = Modifier.fillMaxWidth()) {
+        Text(stringResource(R.string.push_setup_button))
+    }
+}
+
+/** "Alert for all existing monitors" (also Kuma's default for new monitors). Same for both transports. */
+@Composable
+internal fun ApplyToAllRow(
+    applyToAll: Boolean,
+    onChange: (Boolean) -> Unit,
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.weight(1f)) {
             Text(text = stringResource(R.string.push_apply_all), style = MaterialTheme.typography.bodyLarge)
@@ -265,10 +362,7 @@ private fun SetupForm(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        Switch(checked = state.applyToAll, onCheckedChange = actions.onApplyToAllChange)
-    }
-    Button(onClick = actions.onSetUp, enabled = state.canSubmit, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(R.string.push_setup_button))
+        Switch(checked = applyToAll, onCheckedChange = onChange)
     }
 }
 
@@ -312,10 +406,11 @@ private fun ActiveSection(
     state: PushSetupUiState,
     actions: PushSetupActions,
 ) {
+    val activeTransport = state.activeTransport ?: state.transport
     InfoCard(
         icon = Icons.Outlined.CheckCircle,
         title = stringResource(R.string.push_success_title),
-        text = stringResource(R.string.push_success_text),
+        text = stringResource(R.string.push_success_text_transport, activeTransport.shortLabel()),
     ) {
         when (state.testState) {
             TestState.Idle -> {
@@ -333,7 +428,7 @@ private fun ActiveSection(
         }
     }
     val distributor = state.selectedDistributor ?: state.distributors.firstOrNull()?.packageName
-    if (distributor != null) {
+    if (distributor != null && activeTransport == PushTransport.NTFY) {
         // A distributor registered from the background cannot start its foreground service
         // (Android 12+), so nothing is delivered until the user has opened it once.
         InfoCard(
@@ -356,18 +451,33 @@ private fun ActiveSection(
 }
 
 @Composable
-private fun BatteryHintCard(onOpenUrl: (String) -> Unit) {
+private fun BatteryHintCard(
+    transport: PushTransport,
+    onOpenUrl: (String) -> Unit,
+) {
     InfoCard(
         icon = Icons.Outlined.BatteryAlert,
         title = stringResource(R.string.push_battery_title),
-        text = stringResource(R.string.push_battery_text),
+        text =
+            stringResource(
+                if (transport ==
+                    PushTransport.FIREBASE
+                ) {
+                    R.string.push_battery_text_firebase
+                } else {
+                    R.string.push_battery_text
+                },
+            ),
     ) {
         TextButton(onClick = { onOpenUrl(DONT_KILL_MY_APP_URL) }) { Text(stringResource(R.string.push_battery_link)) }
     }
 }
 
 @Composable
-private fun ErrorCard(error: PushUiError) {
+private fun ErrorCard(
+    error: PushUiError,
+    onRestartApp: () -> Unit,
+) {
     Card(
         colors =
             CardDefaults.cardColors(
@@ -376,7 +486,12 @@ private fun ErrorCard(error: PushUiError) {
             ),
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Text(text = error.text(), modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium)
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(text = error.text(), style = MaterialTheme.typography.bodyMedium)
+            if (error == PushUiError.RestartRequired) {
+                Button(onClick = onRestartApp) { Text(stringResource(R.string.push_restart_button)) }
+            }
+        }
     }
 }
 
@@ -444,6 +559,36 @@ private fun Context.openUrl(url: String) {
     }
 }
 
+/**
+ * Relaunches the app in a fresh process. Needed after a Firebase project change: the SDK cannot re-initialize the
+ * default `FirebaseApp` in-process (`FirebaseApp.delete()` is a hidden API, FCM keeps static state).
+ */
+private fun Context.restartApp() {
+    val launch = packageManager.getLaunchIntentForPackage(packageName) ?: return
+    startActivity(Intent.makeRestartActivityTask(launch.component))
+    Runtime.getRuntime().exit(0)
+}
+
+/** Reads a small text document picked via SAF; refuses anything larger than [GOOGLE_SERVICES_MAX_BYTES]. */
+private fun ContentResolver.readText(uri: Uri): String {
+    val stream = openInputStream(uri) ?: throw IOException("No content for $uri")
+    return stream.use { input ->
+        val out = ByteArrayOutputStream()
+        val buffer = ByteArray(BUFFER_SIZE)
+        while (true) {
+            val n = input.read(buffer)
+            if (n < 0) break
+            if (out.size() + n > GOOGLE_SERVICES_MAX_BYTES) throw IOException("File too large")
+            out.write(buffer, 0, n)
+        }
+        out.toByteArray().decodeToString()
+    }
+}
+
+private val GOOGLE_SERVICES_MIME_TYPES = arrayOf("application/json", "text/*", "application/octet-stream")
+private const val GOOGLE_SERVICES_MAX_BYTES = 1024 * 1024
+private const val BUFFER_SIZE = 8 * 1024
+
 private val previewDistributors =
     listOf(
         DistributorOption("io.heckel.ntfy", "ntfy"),
@@ -504,6 +649,89 @@ private fun PushSetupActivePreview() {
     KumaTheme(dynamicColor = false) {
         PushSetupScreen(
             state = PushSetupUiState(phase = PushSetupPhase.Active, testState = TestState.Sent),
+            notificationsAllowed = true,
+            actions = PushSetupActions(),
+        )
+    }
+}
+
+private val bothTransports = setOf(PushTransport.NTFY, PushTransport.FIREBASE)
+
+@Preview(showBackground = true)
+@Composable
+private fun PushSetupChooseTransportPreview() {
+    KumaTheme(dynamicColor = false) {
+        PushSetupScreen(
+            state =
+                PushSetupUiState(
+                    phase = PushSetupPhase.ChooseTransport,
+                    transports = bothTransports,
+                    transport = PushTransport.FIREBASE,
+                ),
+            notificationsAllowed = true,
+            actions = PushSetupActions(),
+        )
+    }
+}
+
+@Preview(showBackground = true, heightDp = 1600)
+@Composable
+private fun PushSetupFirebaseFormPreview() {
+    KumaTheme(dynamicColor = false) {
+        PushSetupScreen(
+            state =
+                PushSetupUiState(
+                    phase = PushSetupPhase.FirebaseForm,
+                    transports = bothTransports,
+                    transport = PushTransport.FIREBASE,
+                    firebase =
+                        FirebaseFormState(
+                            relayUrl = "http://relay.example.com",
+                            relayToken = "secret",
+                            projectId = "kuma-push-1a2b3",
+                            applicationId = "1:123456789012:android:0123456789abcdef",
+                            apiKey = "AIza-too-short",
+                            senderId = "123456789012",
+                        ),
+                    firebaseImported = true,
+                ),
+            notificationsAllowed = true,
+            actions = PushSetupActions(),
+            packageName = "net.kirkanos.uptimekuma.debug",
+        )
+    }
+}
+
+@Preview(showBackground = true, locale = "de", heightDp = 1400)
+@Composable
+private fun PushSetupFirebaseErrorPreview() {
+    KumaTheme(dynamicColor = false) {
+        PushSetupScreen(
+            state =
+                PushSetupUiState(
+                    phase = PushSetupPhase.FirebaseForm,
+                    transports = bothTransports,
+                    transport = PushTransport.FIREBASE,
+                    error = PushUiError.RestartRequired,
+                ),
+            notificationsAllowed = true,
+            actions = PushSetupActions(),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PushSetupFirebaseActivePreview() {
+    KumaTheme(dynamicColor = false) {
+        PushSetupScreen(
+            state =
+                PushSetupUiState(
+                    phase = PushSetupPhase.Active,
+                    transports = bothTransports,
+                    transport = PushTransport.FIREBASE,
+                    activeTransport = PushTransport.FIREBASE,
+                ),
             notificationsAllowed = true,
             actions = PushSetupActions(),
         )

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.Optional
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PushRepositoryImplTest {
@@ -37,6 +38,9 @@ class PushRepositoryImplTest {
             scheduler = scheduler,
             deviceNameProvider = { "Pixel 8" },
             ioDispatcher = UnconfinedTestDispatcher(testScheduler),
+            firebase = Optional.empty(),
+            firebaseSettings = FakeFirebaseSettingsStore(),
+            relayTokenStore = FakeTokenStore(),
         )
 
     private fun PushRepositoryImpl.answerRegisterWith(url: String) {
@@ -49,7 +53,7 @@ class PushRepositoryImplTest {
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
 
-            repo.setUp(ntfyToken = " tk_secret ", applyToAllMonitors = true)
+            repo.setUp(ntfy(" tk_secret "), applyToAllMonitors = true)
 
             assertEquals(NTFY, gateway.saved)
             assertEquals(1, gateway.registerCount)
@@ -74,7 +78,7 @@ class PushRepositoryImplTest {
         runTest {
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
-            repo.setUp("tk", applyToAllMonitors = false)
+            repo.setUp(ntfy("tk"), applyToAllMonitors = false)
             assertEquals(false, kuma.saveCalls.single().second)
         }
 
@@ -84,7 +88,7 @@ class PushRepositoryImplTest {
             gateway.installed = listOf(NTFY, OTHER)
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
-            repo.setUp("tk", applyToAllMonitors = true, distributor = OTHER)
+            repo.setUp(ntfy("tk", OTHER), applyToAllMonitors = true)
             assertEquals(OTHER, gateway.saved)
             assertEquals(OTHER, store.value.value?.distributor)
         }
@@ -94,7 +98,7 @@ class PushRepositoryImplTest {
         runTest {
             gateway.installed = emptyList()
             val repo = repository()
-            val e = assertThrows<PushSetupException> { repo.setUp("tk", true) }
+            val e = assertThrows<PushSetupException> { repo.setUp(ntfy("tk"), true) }
             assertEquals(PushSetupException.Reason.NO_DISTRIBUTOR, e.reason)
             assertEquals(PushSetupState.Error("NO_DISTRIBUTOR"), repo.observeState().first())
             assertTrue(kuma.saveCalls.isEmpty())
@@ -104,7 +108,7 @@ class PushRepositoryImplTest {
     fun `setUp with blank token fails before touching anything`() =
         runTest {
             val repo = repository()
-            val e = assertThrows<PushSetupException> { repo.setUp("  ", true) }
+            val e = assertThrows<PushSetupException> { repo.setUp(ntfy("  "), true) }
             assertEquals(PushSetupException.Reason.MISSING_TOKEN, e.reason)
             assertEquals(0, gateway.registerCount)
         }
@@ -114,7 +118,7 @@ class PushRepositoryImplTest {
         runTest {
             val repo = repository()
             var failure: Throwable? = null
-            val job = launch { failure = runCatching { repo.setUp("tk", true) }.exceptionOrNull() }
+            val job = launch { failure = runCatching { repo.setUp(ntfy("tk"), true) }.exceptionOrNull() }
             advanceTimeBy(PushRepositoryImpl.ENDPOINT_TIMEOUT_MILLIS - 1)
             assertNull(failure)
             assertEquals(PushSetupState.Registering, repo.observeState().first())
@@ -130,7 +134,7 @@ class PushRepositoryImplTest {
             val repo = repository()
             repo.onServiceEvent(PushServiceEvent.NewEndpoint("https://stale/upOLD?up=1"))
             repo.answerRegisterWith(ENDPOINT)
-            repo.setUp("tk", true)
+            repo.setUp(ntfy("tk"), true)
             assertEquals(ENDPOINT, store.value.value?.endpoint)
         }
 
@@ -142,7 +146,7 @@ class PushRepositoryImplTest {
                 repo.onServiceEvent(PushServiceEvent.Unregistered)
                 repo.onServiceEvent(PushServiceEvent.NewEndpoint(ENDPOINT))
             }
-            repo.setUp("tk", true)
+            repo.setUp(ntfy("tk"), true)
             assertEquals(ENDPOINT, store.value.value?.endpoint)
         }
 
@@ -151,7 +155,7 @@ class PushRepositoryImplTest {
         runTest {
             val repo = repository()
             gateway.onRegister = { repo.onServiceEvent(PushServiceEvent.RegistrationFailed("ACTION_REQUIRED")) }
-            val e = assertThrows<PushSetupException> { repo.setUp("tk", true) }
+            val e = assertThrows<PushSetupException> { repo.setUp(ntfy("tk"), true) }
             assertEquals(PushSetupException.Reason.ACTION_REQUIRED, e.reason)
         }
 
@@ -161,7 +165,7 @@ class PushRepositoryImplTest {
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
             kuma.failure = KumaException(KumaError(KumaError.Kind.NETWORK))
-            assertThrows<KumaException> { repo.setUp("tk", true) }
+            assertThrows<KumaException> { repo.setUp(ntfy("tk"), true) }
             assertEquals(PushSetupState.Error("KUMA_NETWORK"), repo.observeState().first())
         }
 
@@ -170,9 +174,9 @@ class PushRepositoryImplTest {
         runTest {
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
-            repo.setUp("tk", true)
+            repo.setUp(ntfy("tk"), true)
             repo.answerRegisterWith(ENDPOINT_2)
-            repo.setUp("tk2", false)
+            repo.setUp(ntfy("tk2"), false)
 
             assertEquals(listOf(null, 100L), kuma.saveCalls.map { it.first.id })
             assertEquals(PushRegistration(ENDPOINT_2, 100L, NTFY), store.value.value)
@@ -184,7 +188,7 @@ class PushRepositoryImplTest {
             store.value.value = PushRegistration(ENDPOINT, 55L, NTFY)
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
-            repo.setUp("tk", true)
+            repo.setUp(ntfy("tk"), true)
             assertEquals(listOf(55L, null), kuma.saveCalls.map { it.first.id })
             assertEquals(100L, store.value.value?.kumaNotificationId)
         }
@@ -194,7 +198,7 @@ class PushRepositoryImplTest {
         runTest {
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
-            repo.setUp("tk", true)
+            repo.setUp(ntfy("tk"), true)
 
             repo.tearDown()
 
@@ -231,7 +235,7 @@ class PushRepositoryImplTest {
         runTest {
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
-            repo.setUp("tk", true)
+            repo.setUp(ntfy("tk"), true)
 
             repo.sendTest()
 
@@ -277,7 +281,7 @@ class PushRepositoryImplTest {
         runTest {
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
-            repo.setUp("tk", true)
+            repo.setUp(ntfy("tk"), true)
             repo.handleNewEndpoint(ENDPOINT_2)
 
             repo.updateKumaEndpoint()
@@ -293,7 +297,7 @@ class PushRepositoryImplTest {
         runTest {
             val repo = repository()
             repo.answerRegisterWith(ENDPOINT)
-            repo.setUp("tk", true)
+            repo.setUp(ntfy("tk"), true)
 
             repo.handleUnregistered()
 

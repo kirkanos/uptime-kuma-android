@@ -41,6 +41,15 @@ First public version.
   history and database size, server version and update information.
 - Settings screen with notifications, administration entries and about.
 - Push setup can be postponed during onboarding ("Set up later").
+- Second push option "Firebase (own project)" (`full` APK): alerts through a self-hosted stateless
+  relay and Firebase Cloud Messaging of the user's own Firebase project, without a permanent
+  notification. The four Firebase values are entered or imported from `google-services.json` (system
+  file picker), nothing Firebase-specific is compiled in, Firebase is initialized at runtime only once
+  configured (no auto-init, no Analytics). Clear errors for missing/outdated Google Play services,
+  unreachable FCM, rejected project values and project changes that need an app restart. The setup
+  screen asks for the push method first; switching tears the other method down; the settings card shows
+  the active method. Same alert handling for both methods (shared message handler).
+- Two APK flavors: `full` (ntfy or Firebase) and `foss` (ntfy only, no Google library at all).
 - English and German translations, Material 3 with dynamic color and dark mode.
 
 ### Performance and robustness
@@ -68,8 +77,10 @@ First public version.
 ### Infrastructure
 
 - CI: lint, detekt, ktlint, unit tests, translation check, minified release build signed with a
-  throwaway key, integration tests against Uptime Kuma 2.5.8 and 2.4.0 containers.
-- Release workflow builds the signed APK for `vX.Y.Z` tags (tag must match `VERSION_NAME`) and
-  publishes it with a SHA-256 checksum and the R8 mapping file.
+  throwaway key, integration tests against Uptime Kuma 2.5.8 and 2.4.0 containers. Both flavors are
+  built, linted and tested; CI fails if the `foss` APK contains a Firebase or Play services class.
+- Release workflow builds the signed APKs for `vX.Y.Z` tags (tag must match `VERSION_NAME`) and
+  publishes `uptime-kuma-android-<version>.apk` (`full`) and `uptime-kuma-android-<version>-foss.apk`,
+  each with a SHA-256 checksum and the R8 mapping file.
 
 [Unreleased]: https://keepachangelog.com/en/1.1.0/

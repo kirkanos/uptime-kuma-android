@@ -39,12 +39,16 @@ Generate (device or emulator with API 33+, or rooted API 28+; dev Kuma running a
 
 ```bash
 adb reverse tcp:3001 tcp:3001
-./gradlew :app:generateReleaseBaselineProfile -PsignReleaseWithDebugKey=true \
+./gradlew :app:generateBaselineProfile -PsignReleaseWithDebugKey=true \
   -Pandroid.testInstrumentationRunnerArguments.kumaUrl=http://localhost:3001 \
   -Pandroid.testInstrumentationRunnerArguments.kumaUser=admin \
   -Pandroid.testInstrumentationRunnerArguments.kumaPassword='devpassword123!'
-git add app/src/release/generated/baselineProfiles/
+git add app/src/main/generated/baselineProfiles/
 ```
+
+The profile is collected from the `full` flavor (`missingDimensionStrategy("distribution", "full")` in
+`:baselineprofile`) and merged into `src/main` (`baselineProfile.mergeIntoMain = true`), so the `foss`
+APK ships the same profile; rules for Firebase classes that `foss` does not contain are ignored.
 
 The journey logs in through the onboarding UI only when the app is not logged in yet (the instrumented
 APK is reinstalled per run), then restarts the process so the profiled start is the normal one.

@@ -101,3 +101,24 @@ token there. Non-secret config lives in the `kuma_settings` DataStore. Both are 
 - `./gradlew :core:kuma-client:integrationTest` and `./gradlew :core:data:testDebugUnitTest -Pintegration`: talk to the
   dev Kuma from `infra/docker-compose.dev.yml` (seeded with `infra/kuma-seed`). Override with
   `KUMA_URL`/`KUMA_USER`/`KUMA_PASSWORD`.
+
+## Push
+
+`PushRepository` (`:core:domain`) is implemented by `PushRepositoryImpl` in `:push` and supports two transports
+(`PushTransport`), one active at a time, selected with `setUp(PushTransportConfig, applyToAllMonitors)`:
+
+| Transport | Device side | Kuma notification | Module |
+|---|---|---|---|
+| `NTFY` | UnifiedPush distributor (`DistributorGateway`), `KumaPushService` | `webhook` to the UnifiedPush endpoint, "<device> (UnifiedPush)" | `:push` |
+| `FIREBASE` | `FirebaseTransport` (runtime `FirebaseApp` init, FCM token), `KumaFirebaseMessagingService` | `webhook` to `<relay>/v1/fcm/<token>`, "<device> (Firebase)" | `:push-fcm` (`full` flavor only) |
+
+- Both webhooks send the same body (`WebhookTemplate`); both services hand incoming messages to
+  `PushMessageHandler` (parser -> `AlertNotifier` -> expedited `SyncWorker`).
+- `:push` declares `FirebaseTransport` with `@BindsOptionalOf`; `:push-fcm` binds it. The `foss` flavor does not
+  depend on `:push-fcm`, so the optional is empty and `availableTransports()` is `{NTFY}`.
+- Switching transports sets up the new one first (device registration, then Kuma notification) and only then
+  deletes the previous Kuma notification and unregisters UnifiedPush / deletes the FCM token, so a failed setup
+  keeps the old transport working.
+- Endpoint changes (new UnifiedPush endpoint, rotated FCM token) are stored in `PushRegistration.endpoint` and
+  written to Kuma by `EndpointUpdateWorker`.
+- Details: [push/README.md](push/README.md) (ntfy), [push/firebase.md](push/firebase.md) (Firebase).

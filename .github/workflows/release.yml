@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   release:
-    name: Build signed APK and publish GitHub release
+    name: Build signed APKs (full + foss) and publish GitHub release
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
@@ -54,25 +54,35 @@ jobs:
           fi
           printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_FILE"
 
-      - name: Build release APK
+      - name: Build release APKs (full + foss)
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew assembleRelease assembleFossDebug --stacktrace
 
-      - name: Rename APK and compute checksum
+      - name: foss APK must not contain Firebase / Google Play services classes
+        # Checked on the unminified foss debug build (same dependencies, no R8 renaming).
+        run: python3 scripts/check-foss-apk.py app/build/outputs/apk/foss/debug/app-foss-debug.apk
+
+      - name: Rename APKs and compute checksums
         id: apk
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          APK="uptime-kuma-android-${VERSION}.apk"
-          mv app/build/outputs/apk/release/app-release.apk "$APK"
-          # R8 mapping to de-obfuscate stack traces users report.
-          cp app/build/outputs/mapping/release/mapping.txt "uptime-kuma-android-${VERSION}-mapping.txt"
-          sha256sum "$APK" > "$APK.sha256"
-          cat "$APK.sha256"
-          echo "apk=$APK" >> "$GITHUB_OUTPUT"
+          FULL="uptime-kuma-android-${VERSION}.apk"
+          FOSS="uptime-kuma-android-${VERSION}-foss.apk"
+          mv app/build/outputs/apk/full/release/app-full-release.apk "$FULL"
+          mv app/build/outputs/apk/foss/release/app-foss-release.apk "$FOSS"
+          # R8 mappings to de-obfuscate stack traces users report.
+          cp app/build/outputs/mapping/fullRelease/mapping.txt "uptime-kuma-android-${VERSION}-mapping.txt"
+          cp app/build/outputs/mapping/fossRelease/mapping.txt "uptime-kuma-android-${VERSION}-foss-mapping.txt"
+          sha256sum "$FULL" > "$FULL.sha256"
+          sha256sum "$FOSS" > "$FOSS.sha256"
+          cat "$FULL.sha256" "$FOSS.sha256"
+          echo "full=$FULL" >> "$GITHUB_OUTPUT"
+          echo "foss=$FOSS" >> "$GITHUB_OUTPUT"
           echo "mapping=uptime-kuma-android-${VERSION}-mapping.txt" >> "$GITHUB_OUTPUT"
+          echo "foss_mapping=uptime-kuma-android-${VERSION}-foss-mapping.txt" >> "$GITHUB_OUTPUT"
 
       - name: Remove keystore
         if: always()
@@ -85,6 +95,9 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
-            ${{ steps.apk.outputs.apk }}
-            ${{ steps.apk.outputs.apk }}.sha256
+            ${{ steps.apk.outputs.full }}
+            ${{ steps.apk.outputs.full }}.sha256
+            ${{ steps.apk.outputs.foss }}
+            ${{ steps.apk.outputs.foss }}.sha256
             ${{ steps.apk.outputs.mapping }}
+            ${{ steps.apk.outputs.foss_mapping }}

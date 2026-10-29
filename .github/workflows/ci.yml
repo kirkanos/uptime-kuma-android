@@ -38,15 +38,26 @@ jobs:
       - name: Check regex literals for Android (ICU) compatibility
         run: python3 scripts/check-android-regex.py
 
-      - name: ktlint, detekt, lint, build debug APK, unit tests
-        run: ./gradlew ktlintCheck detekt lintDebug assembleDebug testDebugUnitTest --stacktrace
+      # Library modules have lintDebug / testDebugUnitTest; :app has one variant per flavor (full, foss).
+      - name: ktlint, detekt, lint, build debug APKs (full + foss), unit tests
+        run: >-
+          ./gradlew ktlintCheck detekt
+          lintDebug lintFullDebug lintFossDebug
+          assembleFullDebug assembleFossDebug
+          testDebugUnitTest testFullDebugUnitTest testFossDebugUnitTest
+          --stacktrace
 
-      - name: Upload debug APK
+      - name: foss APK must not contain Firebase / Google Play services classes
+        run: python3 scripts/check-foss-apk.py app/build/outputs/apk/foss/debug/app-foss-debug.apk
+
+      - name: Upload debug APKs
         if: success()
         uses: actions/upload-artifact@v5
         with:
           name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            app/build/outputs/apk/full/debug/app-full-debug.apk
+            app/build/outputs/apk/foss/debug/app-foss-debug.apk
           if-no-files-found: error
 
       - name: Upload test reports
@@ -80,24 +91,28 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
-      - name: assembleRelease (R8 full mode) and compile the baseline profile module
+      - name: assembleRelease (R8 full mode, both flavors) and compile the baseline profile module
         run: ./gradlew assembleRelease :baselineprofile:assemble -PsignReleaseWithDebugKey=true --stacktrace
 
-      - name: APK size
+      - name: APK sizes
         run: |
-          APK=app/build/outputs/apk/release/app-release.apk
-          BYTES=$(stat -c %s "$APK")
-          echo "Release APK: $BYTES bytes ($((BYTES / 1024)) KiB)" | tee -a "$GITHUB_STEP_SUMMARY"
+          for FLAVOR in full foss; do
+            APK=app/build/outputs/apk/$FLAVOR/release/app-$FLAVOR-release.apk
+            BYTES=$(stat -c %s "$APK")
+            echo "Release APK ($FLAVOR): $BYTES bytes ($((BYTES / 1024)) KiB)" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
 
-      - name: Upload release APK and R8 mapping
+      - name: Upload release APKs and R8 mappings
         uses: actions/upload-artifact@v5
         with:
           name: app-release-debug-signed
           path: |
-            app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/mapping/release/mapping.txt
-            app/build/outputs/mapping/release/usage.txt
-            app/build/outputs/mapping/release/configuration.txt
+            app/build/outputs/apk/full/release/app-full-release.apk
+            app/build/outputs/apk/foss/release/app-foss-release.apk
+            app/build/outputs/mapping/fullRelease/mapping.txt
+            app/build/outputs/mapping/fullRelease/usage.txt
+            app/build/outputs/mapping/fullRelease/configuration.txt
+            app/build/outputs/mapping/fossRelease/mapping.txt
           if-no-files-found: error
           retention-days: 14
 

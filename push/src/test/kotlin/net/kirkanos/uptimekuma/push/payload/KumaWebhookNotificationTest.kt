@@ -62,6 +62,32 @@ class KumaWebhookNotificationTest {
     }
 
     @Test
+    fun `relay variant posts the same body to the relay with the relay token`() {
+        val ntfy = KumaWebhookNotification.build("https://x/up1?up=1", "tk", "Pixel 8", id = 3, isDefault = true)
+        val relay =
+            KumaWebhookNotification.buildRelay(
+                webhookUrl = "https://relay.example.com/v1/fcm/tok:en",
+                relayToken = " relay_secret ",
+                deviceName = "Pixel 8",
+                id = 3,
+                isDefault = true,
+            )
+        assertEquals("Pixel 8 (Firebase)", relay.name)
+        assertEquals(3L, relay.id)
+        assertEquals(true, relay.isDefault)
+        assertEquals("https://relay.example.com/v1/fcm/tok:en", relay.fields["webhookURL"])
+        assertEquals(
+            "{\"Authorization\":\"Bearer relay_secret\",\"Content-Type\":\"application/json\"}",
+            relay.fields["webhookAdditionalHeaders"],
+        )
+        // Everything else is identical, so one parser handles both transports.
+        val sameKeys = listOf("httpMethod", "webhookContentType", "webhookCustomBody")
+        assertEquals(sameKeys.map { ntfy.fields[it] }, sameKeys.map { relay.fields[it] })
+        assertEquals(ntfy.type, relay.type)
+        assertEquals("Android (Firebase)", KumaWebhookNotification.relayNotificationName(" "))
+    }
+
+    @Test
     fun `keeps the id for updates`() {
         assertEquals(42L, KumaWebhookNotification.build("https://x/up1?up=1", "tk", "Phone", id = 42).id)
     }

@@ -35,7 +35,7 @@
 
     <!-- Setup screen -->
     <string name="push_setup_title">Push notifications</string>
-    <string name="push_setup_intro">Get alerts instantly, even when the app is closed. Uptime Kuma sends them through your own ntfy server to the ntfy app, which passes them to this app via UnifiedPush. No Google services involved.</string>
+    <string name="push_setup_intro">Get alerts instantly, even when the app is closed. Uptime Kuma sends them to this device through a service you run yourself.</string>
     <string name="push_install_title">Install ntfy</string>
     <string name="push_install_text">Push delivery needs the ntfy app as UnifiedPush distributor.</string>
     <string name="push_install_steps">After installing:\n1. In the ntfy app, add your ntfy server and set it as default server.\n2. Log in with the read-only user (Settings → Manage users).\n3. Come back here.</string>
@@ -106,4 +106,61 @@
     <string name="push_mute_24h">For 24 hours</string>
     <string name="push_mute_indefinitely">Until unmuted</string>
     <string name="push_setup_later">Set up later</string>
+
+    <!-- Transport choice -->
+    <string name="push_transport_title">How should alerts reach this device?</string>
+    <string name="push_transport_ntfy">ntfy (UnifiedPush)</string>
+    <string name="push_transport_ntfy_text">Through your own ntfy server and the ntfy app, which passes alerts to this app via UnifiedPush. No Google services involved. The ntfy app keeps a permanent notification; you can hide it by turning off its notification channel.</string>
+    <string name="push_transport_firebase">Firebase (own project)</string>
+    <string name="push_transport_firebase_text">Through a small relay you host and Firebase Cloud Messaging of your own free Firebase project. Best delivery and battery life, no permanent notification. Needs Google Play services.</string>
+    <string name="push_transport_change">Change push method</string>
+    <string name="push_transport_short_ntfy">ntfy</string>
+    <string name="push_transport_short_firebase">Firebase</string>
+
+    <!-- Firebase setup -->
+    <string name="push_relay_title">Relay</string>
+    <string name="push_relay_help">Uptime Kuma posts alerts to your relay, which forwards them to Firebase. See docs/push/firebase.md for setting it up.</string>
+    <string name="push_relay_url_label">Relay URL</string>
+    <string name="push_relay_url_invalid">Enter an https:// URL without query, e.g. https://relay.example.com</string>
+    <string name="push_relay_url_insecure">http:// is unencrypted: the relay token and your alerts can be read on the way. Use https:// unless the relay is on your local network.</string>
+    <string name="push_relay_token_label">Relay token</string>
+    <string name="push_relay_token_help">The RELAY_TOKEN configured on the relay.</string>
+    <string name="push_firebase_title">Firebase project</string>
+    <string name="push_firebase_help">Create a free Firebase project, add an Android app with this package name and download its google-services.json. Import the file or copy the four values.</string>
+    <string name="push_firebase_import">Import google-services.json</string>
+    <string name="push_firebase_imported">Values imported from google-services.json.</string>
+    <string name="push_firebase_project_id">Project ID</string>
+    <string name="push_firebase_project_id_hint">project_id, e.g. kuma-push-1a2b3</string>
+    <string name="push_firebase_app_id">App ID</string>
+    <string name="push_firebase_app_id_hint">mobilesdk_app_id, e.g. 1:123456789012:android:0a1b…</string>
+    <string name="push_firebase_api_key">API key</string>
+    <string name="push_firebase_api_key_hint">current_key, 39 characters starting with AIza</string>
+    <string name="push_firebase_sender_id">Sender ID</string>
+    <string name="push_firebase_sender_id_hint">project_number, digits only</string>
+    <string name="push_firebase_invalid_value">Invalid value</string>
+    <string name="push_setup_working_firebase">Registering with Firebase and Uptime Kuma…</string>
+    <string name="push_success_text_transport">Uptime Kuma now sends alerts to this device via %1$s.</string>
+    <string name="push_restart_button">Restart app</string>
+    <string name="push_battery_text_firebase">Alerts are delivered by Google Play services as high-priority messages, even in battery saver. If they arrive late, check that this app is not restricted in the battery settings.</string>
+
+    <!-- Status card -->
+    <string name="push_status_active_transport">Active via %1$s</string>
+
+    <!-- Firebase errors -->
+    <string name="push_error_firebase_unavailable">This version of the app has no Firebase support. Use ntfy, or install the version from GitHub releases.</string>
+    <string name="push_error_relay_url_invalid">Enter the relay URL (https://…).</string>
+    <string name="push_error_missing_relay_token">Enter the relay token.</string>
+    <string name="push_error_firebase_config_invalid">These Firebase values are invalid: %1$s. Import google-services.json or check the values in the Firebase console.</string>
+    <string name="push_error_firebase_config_invalid_plain">The Firebase values are invalid. Import google-services.json or check the values in the Firebase console.</string>
+    <string name="push_error_play_services_missing">Google Play services are not available on this device. Use ntfy instead.</string>
+    <string name="push_error_play_services_update">Google Play services need to be updated or enabled first. Update them in the Play Store and try again.</string>
+    <string name="push_error_fcm_unavailable">Firebase Cloud Messaging is not reachable right now. Check your connection and try again.</string>
+    <string name="push_error_fcm_config_rejected">Firebase rejected the project values. Check API key, app ID, project ID and sender ID, and that the Android app in Firebase uses this app\'s package name.</string>
+    <string name="push_error_fcm_timeout">Firebase did not hand out a token in time. Check your connection and try again.</string>
+    <string name="push_error_fcm_failed">Firebase registration failed: %1$s</string>
+    <string name="push_error_restart_required">Firebase is still running with the previous project values. The new values are saved; restart the app, then tap Set up again.</string>
+    <string name="push_error_google_services_no_match">This google-services.json has no Android app with the package name %1$s (found: %2$s). Add an Android app with exactly this package name in Firebase and download the file again.</string>
+    <string name="push_error_google_services_no_match_none">This google-services.json has no Android app with the package name %1$s. Add one in Firebase and download the file again.</string>
+    <string name="push_error_google_services_invalid">This is not a usable google-services.json (missing: %1$s).</string>
+    <string name="push_error_google_services_unreadable">The file could not be read.</string>
 </resources>
