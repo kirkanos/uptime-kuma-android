@@ -1,0 +1,70 @@
+# Uptime Kuma FCM relay, next to Uptime Kuma, behind Traefik. See docs/push/firebase.md.
+#
+# Required .env variables:
+#   SERVICE          stack prefix, same as the Kuma service uses
+#   FCM_RELAY_HOST   public host name of the relay, e.g. fcm-relay.example.com
+#   RELAY_TOKEN      shared secret Kuma sends as "Authorization: Bearer ...";
+#                    generate with: openssl rand -hex 32   (min. 32 characters)
+#
+# The service account key (Firebase console -> Project settings -> Service accounts ->
+# Generate new private key) lives next to this file and must be readable by the container user
+# (uid 65532, distroless "nonroot"):
+#   install -d -m 700 ./fcm-relay
+#   install -m 400 -o 65532 -g 65532 ~/Downloads/<project>-firebase-adminsdk-*.json ./fcm-relay/service-account.json
+
+services:
+  fcm-relay:
+    image: ghcr.io/kirkanos/uptime-kuma-fcm-relay:latest
+    container_name: ${SERVICE}-fcm-relay
+    restart: unless-stopped
+    environment:
+      FCM_SERVICE_ACCOUNT_FILE: /secrets/service-account.json
+      # FCM_PROJECT_ID: my-project   # only if it differs from project_id in the key file
+      RELAY_TOKEN: ${RELAY_TOKEN:?set RELAY_TOKEN in .env (openssl rand -hex 32)}
+      LISTEN_ADDR: ":8080"
+      # FCM rejects data payloads above 4096 bytes; Kuma's body is ~400 bytes.
+      MAX_BODY_BYTES: "4096"
+      LOG_LEVEL: info
+      # Per-client token bucket (protects your FCM quota from a misconfigured Kuma).
+      RATE_LIMIT_PER_MINUTE: "60"
+      RATE_LIMIT_BURST: "30"
+      # Behind Traefik every request comes from Traefik's IP; key the rate limit on the address
+      # Traefik appends to X-Forwarded-For instead. Set to false if the port is exposed directly.
+      TRUST_FORWARDED_FOR: "true"
+    volumes:
+      - ./fcm-relay/service-account.json:/secrets/service-account.json:ro
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - traefik-network
+    # List syntax on purpose: compose interpolates ${VAR} only in values, never in mapping keys.
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-network"
+      # HTTPS router
+      - "traefik.http.routers.${SERVICE}-fcm-relay.rule=Host(`${FCM_RELAY_HOST}`)"
+      - "traefik.http.routers.${SERVICE}-fcm-relay.entrypoints=https"
+      - "traefik.http.routers.${SERVICE}-fcm-relay.tls=true"
+      - "traefik.http.routers.${SERVICE}-fcm-relay.tls.certresolver=default"
+      - "traefik.http.routers.${SERVICE}-fcm-relay.service=${SERVICE}-fcm-relay"
+      # Plain HTTP router: redirect only. Configure Kuma with the https:// URL; a redirected POST
+      # is not something to rely on.
+      - "traefik.http.routers.${SERVICE}-fcm-relay-http.rule=Host(`${FCM_RELAY_HOST}`)"
+      - "traefik.http.routers.${SERVICE}-fcm-relay-http.entrypoints=http"
+      - "traefik.http.routers.${SERVICE}-fcm-relay-http.middlewares=${SERVICE}-fcm-relay-https"
+      - "traefik.http.middlewares.${SERVICE}-fcm-relay-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.${SERVICE}-fcm-relay-https.redirectscheme.permanent=true"
+      - "traefik.http.services.${SERVICE}-fcm-relay.loadbalancer.server.port=8080"
+    healthcheck:
+      # Distroless image: no shell, no curl. The binary GETs http://127.0.0.1:8080/healthz itself.
+      test: ["CMD", "/relay", "healthcheck"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+networks:
+  traefik-network:
+    external: true
