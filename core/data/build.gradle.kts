@@ -62,4 +62,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     testImplementation(projects.core.testing)
+    // Real Room on the JVM (bundled SQLite) for query/performance tests of the cache.
+    testImplementation(libs.androidx.sqlite.bundled.jvm)
 }

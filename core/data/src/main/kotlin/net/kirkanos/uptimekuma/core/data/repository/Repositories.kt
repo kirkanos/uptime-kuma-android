@@ -1,14 +1,10 @@
 package net.kirkanos.uptimekuma.core.data.repository
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import net.kirkanos.uptimekuma.core.data.cache.KumaCache
-import net.kirkanos.uptimekuma.core.data.cache.OverviewBuilder
+import net.kirkanos.uptimekuma.core.data.cache.MonitorOverviewSource
 import net.kirkanos.uptimekuma.core.data.cache.toModel
 import net.kirkanos.uptimekuma.core.data.connection.KumaConnectionManager
 import net.kirkanos.uptimekuma.core.data.db.KumaDatabase
@@ -69,20 +65,10 @@ internal class RoomMonitorRepository
         private val db: KumaDatabase,
         private val cache: KumaCache,
         private val manager: KumaConnectionManager,
+        private val overviewSource: MonitorOverviewSource,
     ) : MonitorRepository {
-        @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-        private val overviews: Flow<List<MonitorOverview>> by lazy {
-            val monitorsWithTags = combine(db.monitorDao().observeAll(), db.monitorDao().observeAllTags(), ::Pair)
-            combine(
-                monitorsWithTags,
-                db.heartbeatDao().observeAll(),
-                db.statsDao().observeUptime(),
-                db.statsDao().observeCerts(),
-                db.maintenanceDao().observeIds(),
-            ) { (monitors, tags), beats, uptime, certs, maintenance ->
-                OverviewBuilder.build(monitors, tags, beats, uptime, certs, maintenance.toSet())
-            }.conflate().distinctUntilChanged()
-        }
+        /** Shared, throttled and limited to the newest beats per monitor, see [MonitorOverviewSource]. */
+        private val overviews: Flow<List<MonitorOverview>> get() = overviewSource.overviews
 
         override fun observeMonitors(): Flow<List<MonitorOverview>> = overviews
 

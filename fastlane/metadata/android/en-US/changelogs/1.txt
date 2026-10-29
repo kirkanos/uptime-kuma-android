@@ -1,0 +1,1 @@
+First release: live dashboard and monitor details, monitor editor for all types, push alerts via ntfy/UnifiedPush with per-monitor mute and quiet hours, maintenance windows, status pages, widget and Quick Settings tile. Requires Uptime Kuma 2.x.

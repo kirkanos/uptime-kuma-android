@@ -179,6 +179,32 @@ class KumaClientIntegrationTest {
         val unconnected = KumaClient(url)
         val error = assertThrows<KumaException> { runBlocking { unconnected.getTags() } }.error
         assertEquals(KumaError.Kind.NETWORK, error.kind)
+        unconnected.reconnectNow() // never connected: no-op, must not open a socket
+        assertEquals(KumaClientState.Idle, unconnected.state.value)
         unconnected.close()
     }
+
+    @Test
+    @Order(8)
+    fun `reconnectNow opens a fresh server socket that needs a token login again`() =
+        runBlocking<Unit> {
+            val second = KumaClient(url)
+            try {
+                second.connect()
+                second.awaitReady(20_000)
+                second.loginByToken(token)
+                second.getTags()
+
+                second.reconnectNow()
+                // A new transport is a new, unauthenticated server socket: Ready again, then login by token.
+                val ready = withTimeout(20_000) { second.state.first { it is KumaClientState.Ready } }
+                assertFalse((ready as KumaClientState.Ready).autoLogin)
+                val error = assertThrows<KumaException> { runBlocking { second.getTags() } }.error
+                assertEquals(KumaError.Kind.UNAUTHORIZED, error.kind)
+                second.loginByToken(token)
+                assertTrue(second.getTags().isNotEmpty())
+            } finally {
+                second.close()
+            }
+        }
 }

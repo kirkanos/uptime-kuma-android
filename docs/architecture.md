@@ -21,9 +21,16 @@ setForeground(true) ──> open socket ──> server: info (partial) + loginRe
                                               └─ ok:false -> token cleared, state LoginRequired, socket closed
 setForeground(false) ─> socket closed after 30 s grace (cancelled by returning to foreground)
 connection lost ──────> Socket.IO reconnects with backoff (1 s .. 30 s); every reconnect re-runs loginByToken
+network changed ──────> (foreground only) reconnectNow(): new transport right away, then loginByToken
 refresh event ────────> token cleared, LoginRequired
 ```
 
+- Network changes: while in foreground the manager listens to the default network
+  (`NetworkMonitor`, `ConnectivityManager.registerDefaultNetworkCallback`, unregistered in background).
+  A new default network (back online, Wi-Fi to mobile and back) triggers `KumaApi.reconnectNow()`, which
+  drops the dead transport instead of waiting for the backoff (up to 30 s) or the ping timeout. A new
+  transport (`Connecting`) and a failed connect (`ConnectFailed`) both reset the session's
+  authentication, so one-off calls wait for the token login instead of using a stale session.
 - `ConnectionState`: `NotConfigured` (no server) -> `Connecting` -> `Connected(info)`; `Failed(NETWORK)` while
   connection attempts fail (Socket.IO keeps retrying); `Failed(UNSUPPORTED_SERVER)` when the post-login `info.version`
   is not `2.x` (other 2.x minors only log a warning); `Disconnected` after background close.
@@ -56,7 +63,10 @@ foreign session leaks into the cache and the Socket.IO thread is never blocked.
 | `notifications` | `notificationList` | raw `config` JSON kept; parsed into `KumaNotification.fields` on read |
 | `maintenance_monitors` | `MonitorJSON.maintenance` flags, then `maintenanceList` | `maintenanceList` has no monitor ids, so every `under-maintenance` entry is resolved with `getMonitorMaintenance`; children of a covered group count as covered. Status-3 heartbeats show maintenance regardless |
 
-`observeMonitors()` joins all tables into `MonitorOverview` (last 100 beats, status of the newest beat), sorted like
+`observeMonitors()` joins all tables into `MonitorOverview` (last 100 beats, status of the newest beat) in
+`MonitorOverviewSource`: one shared pipeline for all screens, only the newest 100 beats per monitor are read
+(`HeartbeatDao.observeLatest`), table flows are throttled with back pressure and the join runs at most every
+250 ms (numbers in [performance.md](performance.md)). Sorted like
 Kuma's `monitorList`: **weight descending, then name (case-insensitive), then id**. The list is flat; group children
 follow the same rule and carry `parentId`, so the UI can nest them.
 

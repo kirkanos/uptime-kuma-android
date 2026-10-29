@@ -103,6 +103,20 @@ function baseMonitor(overrides = {}) {
     };
 }
 
+/**
+ * Kuma < 2.5 stores every key of the `add` payload as a column and fails with SQLITE_ERROR on fields
+ * it does not know yet. Drop the 2.5-only ones there (checked against 2.4.0 in CI).
+ */
+const FIELDS_SINCE_2_5 = ["ntpStratumThreshold", "ntpTimeOffsetThreshold", "ntpRootDispersionThreshold", "sshAuthMethod"];
+
+function forServerVersion(monitor) {
+    const [major, minor] = String(state.info?.version ?? "2.5").split(".").map(Number);
+    if (major > 2 || (major === 2 && minor >= 5)) return monitor;
+    const copy = { ...monitor };
+    FIELDS_SINCE_2_5.forEach((key) => delete copy[key]);
+    return copy;
+}
+
 function findMonitorByName(name) {
     return Object.values(state.monitorList ?? {}).find((m) => m.name === name) ?? null;
 }
@@ -121,7 +135,7 @@ async function ensureMonitor(spec) {
         log(`= monitor "${spec.name}" exists (id ${existing.id})`);
         return existing.id;
     }
-    const res = await ack(socket, "add", baseMonitor(spec));
+    const res = await ack(socket, "add", forServerVersion(baseMonitor(spec)));
     if (!res?.ok) {
         throw new Error(`add "${spec.name}" failed: ${res?.msg}`);
     }

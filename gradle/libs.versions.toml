@@ -24,11 +24,16 @@ androidxLifecycle = "2.11.0"
 androidxNavigation = "2.10.2"
 androidxHilt = "1.4.0"              # hilt-navigation-compose, hilt-work
 androidxRoom = "2.8.5"
+androidxSqlite = "2.6.2"            # same as Room's androidx.sqlite; bundled JVM driver for Room in JVM unit tests
 androidxWork = "2.12.0"
 androidxGlance = "1.2.0"
 androidxDatastore = "1.3.0"
 androidxSplashscreen = "1.2.0"
 androidxTestExt = "1.3.0"
+androidxTestRunner = "1.7.0"
+androidxBenchmark = "1.5.0"          # Macrobenchmark + androidx.baselineprofile Gradle plugin
+androidxProfileinstaller = "1.4.1"
+androidxUiautomator = "2.4.0"
 androidxEspresso = "3.7.0"
 composeBom = "2026.09.00"
 composeMaterialIconsExtended = "1.7.8"   # icons are versioned independently of the BOM since 1.7.x
@@ -104,6 +109,7 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
 androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "androidxRoom" }
+androidx-sqlite-bundled-jvm = { group = "androidx.sqlite", name = "sqlite-bundled-jvm", version.ref = "androidxSqlite" }
 
 # WorkManager
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
@@ -142,6 +148,10 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExt" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidxBenchmark" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "androidxProfileinstaller" }
+androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "androidxUiautomator" }
 
 [bundles]
 compose = [
@@ -162,6 +172,8 @@ unit-test = [
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+android-test = { id = "com.android.test", version.ref = "agp" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidxBenchmark" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

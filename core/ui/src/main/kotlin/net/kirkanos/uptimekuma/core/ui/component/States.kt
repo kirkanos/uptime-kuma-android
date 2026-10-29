@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,7 +63,8 @@ fun EmptyState(
         )
         Text(
             text = title,
-            modifier = Modifier.padding(top = 16.dp),
+            // Heading, so TalkBack users can jump to it with the headings navigation.
+            modifier = Modifier.padding(top = 16.dp).semantics { heading() },
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
         )

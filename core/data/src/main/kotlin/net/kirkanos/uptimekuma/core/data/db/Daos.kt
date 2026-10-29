@@ -55,6 +55,28 @@ interface HeartbeatDao {
     @Query("SELECT * FROM heartbeats ORDER BY monitorId, timeMillis")
     fun observeAll(): Flow<List<HeartbeatEntity>>
 
+    /**
+     * The newest [perMonitor] beats of every cached monitor, oldest first per monitor. The ring buffer
+     * keeps up to 150 + 500 important beats per monitor, but lists only show the last 100: with 500
+     * monitors this reads ~50k instead of up to ~325k rows on every change.
+     *
+     * Plan: `CROSS JOIN` pins the loop order (SQLite does not reorder it): for each monitor one cutoff
+     * lookup and one range search on the `(monitorId, timeMillis)` primary key, already in output order.
+     * A plain JOIN lets SQLite scan all heartbeats and evaluate the cutoff per row (~4x slower), a
+     * `ROW_NUMBER()` window needs two temp B-trees (~2x slower).
+     */
+    @Query(
+        """
+        SELECT h.* FROM monitors m CROSS JOIN heartbeats h
+        WHERE h.monitorId = m.id
+          AND h.timeMillis >= COALESCE(
+            (SELECT timeMillis FROM heartbeats WHERE monitorId = m.id
+             ORDER BY timeMillis DESC LIMIT 1 OFFSET :perMonitor - 1), 0)
+        ORDER BY m.id, h.timeMillis
+        """,
+    )
+    fun observeLatest(perMonitor: Int): Flow<List<HeartbeatEntity>>
+
     @Upsert
     suspend fun upsert(beats: List<HeartbeatEntity>)
 
