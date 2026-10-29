@@ -1,6 +1,7 @@
 package net.kirkanos.uptimekuma.ui
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +16,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
+import net.kirkanos.uptimekuma.feature.maintenance.MaintenanceListRoute
+import net.kirkanos.uptimekuma.feature.maintenance.maintenanceGraph
 import net.kirkanos.uptimekuma.feature.monitors.DashboardRoute
 import net.kirkanos.uptimekuma.feature.monitors.MonitorDetailRoute
 import net.kirkanos.uptimekuma.feature.monitors.dashboardScreen
@@ -27,6 +30,7 @@ import net.kirkanos.uptimekuma.feature.settings.settingsGraph
 import net.kirkanos.uptimekuma.feature.statuspage.StatusPageListRoute
 import net.kirkanos.uptimekuma.feature.statuspage.statusPagesGraph
 import net.kirkanos.uptimekuma.push.ui.PushSetupRoute
+import net.kirkanos.uptimekuma.feature.maintenance.R as MaintenanceR
 import net.kirkanos.uptimekuma.feature.statuspage.R as StatusPageR
 
 /** Push notification setup. [fromOnboarding] = continue to the dashboard when done instead of going back. */
@@ -93,6 +97,12 @@ fun KumaApp(
             administrationEntries =
                 listOf(
                     AdministrationEntry(
+                        titleRes = MaintenanceR.string.maintenance_title,
+                        icon = Icons.Outlined.Construction,
+                        onClick = { navController.navigate(MaintenanceListRoute) },
+                        summaryRes = MaintenanceR.string.maintenance_settings_summary,
+                    ),
+                    AdministrationEntry(
                         titleRes = StatusPageR.string.statuspage_list_title,
                         icon = Icons.Outlined.Public,
                         onClick = { navController.navigate(StatusPageListRoute) },
@@ -101,6 +111,8 @@ fun KumaApp(
         )
 
         statusPagesGraph(navController)
+
+        maintenanceGraph(navController, onMonitorClick = { id -> navController.navigate(MonitorDetailRoute(id)) })
     }
 }
 

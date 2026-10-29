@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="maintenance_title">Maintenance</string>
+    <string name="maintenance_settings_summary">Plan maintenance windows that pause alerts</string>
+    <string name="maintenance_back">Back</string>
+    <string name="maintenance_add">Schedule maintenance</string>
+    <string name="maintenance_refresh">Refresh</string>
+    <string name="maintenance_more">More options</string>
+    <string name="maintenance_empty_title">No maintenance</string>
+    <string name="maintenance_empty_message">Maintenance windows put the affected monitors into maintenance status, so they do not alert.</string>
+    <string name="maintenance_not_found">Maintenance not found</string>
+
+    <!-- Groups and status -->
+    <string name="maintenance_group_active">Active now</string>
+    <string name="maintenance_group_scheduled">Scheduled</string>
+    <string name="maintenance_group_paused">Paused</string>
+    <string name="maintenance_group_ended">Ended</string>
+    <string name="maintenance_group_unknown">Unknown</string>
+    <string name="maintenance_status_under">Under maintenance</string>
+    <string name="maintenance_status_scheduled">Scheduled</string>
+    <string name="maintenance_status_inactive">Paused</string>
+    <string name="maintenance_status_ended">Ended</string>
+    <string name="maintenance_status_unknown">Unknown</string>
+    <string name="maintenance_status_description">Status: %1$s</string>
+
+    <!-- Windows -->
+    <string name="maintenance_window">%1$s – %2$s</string>
+    <string name="maintenance_window_running">Running until %1$s</string>
+    <string name="maintenance_window_next">Next: %1$s – %2$s</string>
+    <string name="maintenance_window_manual">Manual – active until paused</string>
+    <string name="maintenance_window_none">No upcoming window</string>
+    <string name="maintenance_timezone_offset">UTC%1$s %2$s</string>
+
+    <!-- Actions -->
+    <string name="maintenance_pause">Pause</string>
+    <string name="maintenance_resume">Resume</string>
+    <string name="maintenance_edit">Edit</string>
+    <string name="maintenance_clone">Clone</string>
+    <string name="maintenance_delete">Delete</string>
+    <string name="maintenance_cancel">Cancel</string>
+    <string name="maintenance_ok">OK</string>
+    <string name="maintenance_pause_title">Pause maintenance?</string>
+    <string name="maintenance_pause_message">“%1$s” stops affecting its monitors until you resume it.</string>
+    <string name="maintenance_delete_title">Delete maintenance?</string>
+    <string name="maintenance_delete_message">“%1$s” will be deleted permanently.</string>
+    <string name="maintenance_done_paused">Maintenance paused</string>
+    <string name="maintenance_done_resumed">Maintenance resumed</string>
+    <string name="maintenance_done_deleted">Maintenance deleted</string>
+    <string name="maintenance_pause_named">Pause %1$s</string>
+    <string name="maintenance_resume_named">Resume %1$s</string>
+
+    <!-- Detail -->
+    <string name="maintenance_section_schedule">Schedule</string>
+    <string name="maintenance_section_description">Description</string>
+    <string name="maintenance_section_monitors">Affected monitors</string>
+    <string name="maintenance_section_status_pages">Status pages</string>
+    <string name="maintenance_section_windows">Windows</string>
+    <string name="maintenance_no_monitors">No monitors affected</string>
+    <string name="maintenance_no_status_pages">Not shown on any status page</string>
+    <string name="maintenance_monitor_unknown">Monitor #%1$d</string>
+    <string name="maintenance_links_error">Affected monitors and status pages could not be loaded.</string>
+    <string name="maintenance_retry">Retry</string>
+    <string name="maintenance_open_monitor">Open monitor %1$s</string>
+
+    <!-- Schedule summaries -->
+    <string name="maintenance_schedule_manual">Active manually until paused</string>
+    <string name="maintenance_schedule_single">Once, from %1$s to %2$s</string>
+    <string name="maintenance_schedule_single_unset">Once (start or end not set)</string>
+    <string name="maintenance_schedule_cron">Cron “%1$s”, lasting %2$s</string>
+    <string name="maintenance_schedule_cron_described">%1$s (cron “%2$s”), lasting %3$s</string>
+    <plurals name="maintenance_schedule_interval">
+        <item quantity="one">Every day from %2$s to %3$s</item>
+        <item quantity="other">Every %1$d days from %2$s to %3$s</item>
+    </plurals>
+    <string name="maintenance_schedule_weekday">Every %1$s from %2$s to %3$s</string>
+    <string name="maintenance_schedule_day_of_month">On %1$s of each month from %2$s to %3$s</string>
+    <string name="maintenance_schedule_day_list">day %1$s</string>
+    <string name="maintenance_schedule_day_number">%1$d</string>
+    <string name="maintenance_schedule_last_day">the last day</string>
+    <string name="maintenance_schedule_and">%1$s and %2$s</string>
+    <string name="maintenance_schedule_no_days">no days selected</string>
+    <string name="maintenance_effective_range">Effective %1$s – %2$s</string>
+    <string name="maintenance_effective_from">Effective from %1$s</string>
+    <string name="maintenance_effective_until">Effective until %1$s</string>
+    <string name="maintenance_cron_daily">Every day at %1$s</string>
+    <string name="maintenance_cron_weekly">At %1$s on %2$s</string>
+    <string name="maintenance_cron_monthly">At %1$s on %2$s of the month</string>
+    <plurals name="maintenance_minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <string name="maintenance_timezone_line">Time zone: %1$s</string>
+
+    <!-- Editor -->
+    <string name="maintenance_edit_new">Schedule maintenance</string>
+    <string name="maintenance_edit_existing">Edit maintenance</string>
+    <string name="maintenance_edit_clone">Clone maintenance</string>
+    <string name="maintenance_clone_of">Clone of %1$s</string>
+    <string name="maintenance_save">Save</string>
+    <string name="maintenance_saving">Saving…</string>
+    <string name="maintenance_field_title">Title</string>
+    <string name="maintenance_field_description">Description</string>
+    <string name="maintenance_description_hint">Markdown supported</string>
+    <string name="maintenance_monitors_hint">Monitors in maintenance do not send alerts and show the maintenance status.</string>
+    <string name="maintenance_pick_monitors">Pick monitors</string>
+    <plurals name="maintenance_monitors_selected">
+        <item quantity="one">%d monitor selected</item>
+        <item quantity="other">%d monitors selected</item>
+    </plurals>
+    <string name="maintenance_status_pages_hint">Show the maintenance on these status pages.</string>
+    <string name="maintenance_all_status_pages">All status pages</string>
+    <string name="maintenance_no_status_pages_available">There are no status pages yet.</string>
+    <string name="maintenance_section_date_time">Date and time</string>
+    <string name="maintenance_field_strategy">Strategy</string>
+    <string name="maintenance_strategy_manual">Active / inactive manually</string>
+    <string name="maintenance_strategy_single">Single maintenance window</string>
+    <string name="maintenance_strategy_cron">Cron expression</string>
+    <string name="maintenance_strategy_interval">Recurring – interval</string>
+    <string name="maintenance_strategy_weekday">Recurring – day of week</string>
+    <string name="maintenance_strategy_day_of_month">Recurring – day of month</string>
+    <string name="maintenance_manual_hint">The maintenance is active as soon as it is saved and stays active until you pause it.</string>
+    <string name="maintenance_field_cron">Cron expression</string>
+    <string name="maintenance_cron_hint">Fields: minute, hour, day of month, month, day of week – e.g. 30 3 * * *</string>
+    <string name="maintenance_field_duration">Duration (minutes)</string>
+    <string name="maintenance_field_interval">Interval (days)</string>
+    <string name="maintenance_field_weekdays">Day of week</string>
+    <string name="maintenance_field_days">Day of month</string>
+    <string name="maintenance_last_day">Last day of month</string>
+    <string name="maintenance_field_time_window">Maintenance time window of a day</string>
+    <string name="maintenance_start_time">Start time</string>
+    <string name="maintenance_end_time">End time</string>
+    <string name="maintenance_next_day">Ends on the next day</string>
+    <string name="maintenance_field_timezone">Time zone</string>
+    <string name="maintenance_tz_same_as_server">Same as server time zone</string>
+    <string name="maintenance_tz_same_as_server_named">Same as server time zone (%1$s)</string>
+    <string name="maintenance_tz_search">Search time zones</string>
+    <string name="maintenance_tz_entry">(UTC%1$s) %2$s</string>
+    <string name="maintenance_field_date_range">Effective date range (optional)</string>
+    <string name="maintenance_start_date_time">Start date and time</string>
+    <string name="maintenance_end_date_time">End date and time</string>
+    <string name="maintenance_not_set">Not set</string>
+    <string name="maintenance_clear">Clear</string>
+    <string name="maintenance_change">Change</string>
+    <string name="maintenance_quick_duration_hint">Sets the end time based on the start time</string>
+    <string name="maintenance_quick_minutes">%d min</string>
+    <string name="maintenance_quick_hours">%d h</string>
+    <string name="maintenance_next">Next</string>
+    <string name="maintenance_search_monitors">Search monitors</string>
+    <string name="maintenance_select_all">Select all</string>
+    <string name="maintenance_deselect_all">Deselect all</string>
+    <string name="maintenance_done">Done</string>
+    <string name="maintenance_no_monitors_match">No matching monitors</string>
+    <string name="maintenance_monitor_paused">paused</string>
+    <string name="maintenance_remove_monitor">Remove %1$s</string>
+
+    <!-- Validation -->
+    <string name="maintenance_error_title_required">Enter a title</string>
+    <string name="maintenance_error_title_too_long">At most 150 characters</string>
+    <string name="maintenance_error_start_required">Pick a start date and time</string>
+    <string name="maintenance_error_end_required">Pick an end date and time</string>
+    <string name="maintenance_error_end_before_start">The end must be after the start</string>
+    <string name="maintenance_error_cron">Not a valid cron expression</string>
+    <string name="maintenance_error_duration">Enter at least 1 minute</string>
+    <string name="maintenance_error_interval">Enter 1 to 3650 days</string>
+    <string name="maintenance_error_weekdays">Pick at least one day of the week</string>
+    <string name="maintenance_error_days">Pick at least one day of the month</string>
+    <string name="maintenance_error_targets">Select at least one monitor or status page</string>
+    <string name="maintenance_error_fix_fields">Please fix the highlighted fields</string>
+    <string name="maintenance_confirm_no_monitors_title">No monitors selected</string>
+    <string name="maintenance_confirm_no_monitors_message">No monitors are selected. Save anyway and only show the maintenance on the status pages?</string>
+    <string name="maintenance_save_anyway">Save anyway</string>
+    <string name="maintenance_link_error">The maintenance was saved, but linking monitors or status pages failed: %1$s</string>
+</resources>
