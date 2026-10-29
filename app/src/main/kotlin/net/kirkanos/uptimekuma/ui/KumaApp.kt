@@ -33,6 +33,7 @@ import net.kirkanos.uptimekuma.feature.settings.SettingsRoute
 import net.kirkanos.uptimekuma.feature.settings.settingsGraph
 import net.kirkanos.uptimekuma.feature.statuspage.StatusPageListRoute
 import net.kirkanos.uptimekuma.feature.statuspage.statusPagesGraph
+import net.kirkanos.uptimekuma.push.ui.MonitorAlertToggle
 import net.kirkanos.uptimekuma.push.ui.PushSetupRoute
 import net.kirkanos.uptimekuma.feature.maintenance.R as MaintenanceR
 import net.kirkanos.uptimekuma.feature.statuspage.R as StatusPageR
@@ -98,6 +99,7 @@ fun KumaApp(
             onBack = { navController.popBackStack() },
             onEdit = { id -> navController.navigate(MonitorEditorRoute(monitorId = id)) },
             onClone = { id -> navController.navigate(MonitorEditorRoute(cloneOf = id)) },
+            alertSettings = { id -> MonitorAlertToggle(monitorId = id) },
         )
         monitorEditorGraph(navController)
 

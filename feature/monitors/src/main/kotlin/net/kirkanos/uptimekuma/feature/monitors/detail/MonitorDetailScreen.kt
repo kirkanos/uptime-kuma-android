@@ -98,6 +98,7 @@ import net.kirkanos.uptimekuma.core.ui.format.relativeTimeText
 import net.kirkanos.uptimekuma.core.ui.format.rememberCurrentTimeMillis
 import net.kirkanos.uptimekuma.core.ui.theme.KumaTheme
 import net.kirkanos.uptimekuma.core.ui.theme.statusColors
+import net.kirkanos.uptimekuma.feature.monitors.LocalMonitorAlertSettings
 import net.kirkanos.uptimekuma.feature.monitors.PreviewData
 import net.kirkanos.uptimekuma.feature.monitors.R
 import net.kirkanos.uptimekuma.feature.monitors.isWebUrl
@@ -362,6 +363,7 @@ private fun DetailContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item(key = "header") { Header(overview, nowMillis) }
+        item(key = "alerts") { LocalMonitorAlertSettings.current(overview.monitor.id) }
         item(key = "beats") { BeatsCard(overview) }
         item(key = "stats") { StatsGrid(overview) }
         item(key = "chart") {
