@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import net.kirkanos.uptimekuma.core.model.PushRegistration
+import net.kirkanos.uptimekuma.core.model.PushTransport
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,6 +48,7 @@ internal class DataStorePushRegistrationStore
                     prefs[KEY_ENDPOINT] = next.endpoint
                     next.kumaNotificationId?.let { prefs[KEY_NOTIFICATION_ID] = it }
                     next.distributor?.let { prefs[KEY_DISTRIBUTOR] = it }
+                    prefs[KEY_TRANSPORT] = next.transport.name
                 }
             }
         }
@@ -57,6 +59,9 @@ internal class DataStorePushRegistrationStore
                 endpoint = endpoint,
                 kumaNotificationId = this[KEY_NOTIFICATION_ID],
                 distributor = this[KEY_DISTRIBUTOR],
+                // Absent in registrations stored before the Firebase transport existed: those are ntfy ones.
+                transport =
+                    PushTransport.entries.firstOrNull { it.name == this[KEY_TRANSPORT] } ?: PushTransport.NTFY,
             )
         }
 
@@ -64,5 +69,6 @@ internal class DataStorePushRegistrationStore
             val KEY_ENDPOINT = stringPreferencesKey("endpoint")
             val KEY_NOTIFICATION_ID = longPreferencesKey("kuma_notification_id")
             val KEY_DISTRIBUTOR = stringPreferencesKey("distributor")
+            val KEY_TRANSPORT = stringPreferencesKey("transport")
         }
     }

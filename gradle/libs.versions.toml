@@ -47,6 +47,9 @@ kotlinxDatetime = "0.8.0"
 okhttp = "5.5.1"
 socketIo = "2.1.2"                  # io.socket:socket.io-client, compatible with Socket.IO server v3/v4 (Uptime Kuma)
 unifiedpush = "3.3.5"
+# Firebase transport (:push-fcm, `full` flavor only). BoM 35.1.0 -> firebase-messaging 26.0.1 (2026-10-21).
+firebaseBom = "35.1.0"
+playServicesBase = "18.11.1"        # GoogleApiAvailability (firebase-messaging has it only at runtime scope)
 
 # --- UI extras -------------------------------------------------------------
 vico = "3.3.1"
@@ -132,6 +135,9 @@ okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-i
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver3", version.ref = "okhttp" }
 socketio-client = { group = "io.socket", name = "socket.io-client", version.ref = "socketIo" }
 unifiedpush-connector = { group = "org.unifiedpush.android", name = "connector", version.ref = "unifiedpush" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "playServicesBase" }
 
 # Charts
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }

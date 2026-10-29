@@ -2,7 +2,7 @@
  * Baseline profile generator + startup macrobenchmark for :app. Needs a device (API 33+ or rooted 28+)
  * and a reachable Uptime Kuma server, see docs/performance.md:
  *
- *   ./gradlew :app:generateReleaseBaselineProfile -PsignReleaseWithDebugKey=true \
+ *   ./gradlew :app:generateBaselineProfile -PsignReleaseWithDebugKey=true \
  *       -Pandroid.testInstrumentationRunnerArguments.kumaUrl=http://localhost:3001 \
  *       -Pandroid.testInstrumentationRunnerArguments.kumaUser=admin \
  *       -Pandroid.testInstrumentationRunnerArguments.kumaPassword=...
@@ -33,6 +33,9 @@ android {
                 .get()
                 .toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // :app has the flavor dimension "distribution"; profiles are generated against `full`. The app merges
+        // them into src/main (baselineProfile.mergeIntoMain), so `foss` ships the same profile.
+        missingDimensionStrategy("distribution", "full")
     }
 
     compileOptions {

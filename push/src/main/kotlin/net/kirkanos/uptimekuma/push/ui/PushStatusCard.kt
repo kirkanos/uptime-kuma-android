@@ -29,9 +29,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import net.kirkanos.uptimekuma.core.domain.PushRepository
 import net.kirkanos.uptimekuma.core.domain.PushSetupState
+import net.kirkanos.uptimekuma.core.model.PushTransport
 import net.kirkanos.uptimekuma.core.ui.theme.KumaTheme
 import net.kirkanos.uptimekuma.push.R
 import javax.inject.Inject
@@ -47,6 +49,13 @@ class PushStatusViewModel
                 .observeState()
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), null)
 
+        /** Transport of the active setup; shown only when the build offers more than one. */
+        val transport: StateFlow<PushTransport?> =
+            repository
+                .observeTransport()
+                .map { it?.takeIf { repository.availableTransports().size > 1 } }
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), null)
+
         private companion object {
             const val STOP_TIMEOUT_MILLIS = 5_000L
         }
@@ -60,14 +69,17 @@ fun PushStatusCard(
     viewModel: PushStatusViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    PushStatusCardContent(state = state, onManageClick = onManageClick, modifier = modifier)
+    val transport by viewModel.transport.collectAsStateWithLifecycle()
+    PushStatusCardContent(state = state, onManageClick = onManageClick, modifier = modifier, transport = transport)
 }
 
+/** @param transport active transport, named in the status when not `null`. */
 @Composable
 fun PushStatusCardContent(
     state: PushSetupState?,
     onManageClick: () -> Unit,
     modifier: Modifier = Modifier,
+    transport: PushTransport? = null,
 ) {
     val active = state == PushSetupState.Active
     val icon =
@@ -78,12 +90,33 @@ fun PushStatusCardContent(
         }
     val statusText =
         when (state) {
-            null -> ""
-            PushSetupState.Active -> stringResource(R.string.push_status_active)
-            PushSetupState.NoDistributor -> stringResource(R.string.push_status_no_distributor)
-            PushSetupState.NotConfigured -> stringResource(R.string.push_status_not_configured)
-            PushSetupState.Registering -> stringResource(R.string.push_status_registering)
-            is PushSetupState.Error -> PushUiError.fromCode(state.message).text()
+            null -> {
+                ""
+            }
+
+            PushSetupState.Active -> {
+                if (transport == null) {
+                    stringResource(R.string.push_status_active)
+                } else {
+                    stringResource(R.string.push_status_active_transport, transport.shortLabel())
+                }
+            }
+
+            PushSetupState.NoDistributor -> {
+                stringResource(R.string.push_status_no_distributor)
+            }
+
+            PushSetupState.NotConfigured -> {
+                stringResource(R.string.push_status_not_configured)
+            }
+
+            PushSetupState.Registering -> {
+                stringResource(R.string.push_status_registering)
+            }
+
+            is PushSetupState.Error -> {
+                PushUiError.fromCode(state.message).text()
+            }
         }
     Card(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -121,6 +154,14 @@ private fun iconTint(active: Boolean) =
 private fun PushStatusCardActivePreview() {
     KumaTheme(dynamicColor = false) {
         PushStatusCardContent(state = PushSetupState.Active, onManageClick = {})
+    }
+}
+
+@Preview
+@Composable
+private fun PushStatusCardFirebasePreview() {
+    KumaTheme(dynamicColor = false) {
+        PushStatusCardContent(state = PushSetupState.Active, onManageClick = {}, transport = PushTransport.FIREBASE)
     }
 }
 

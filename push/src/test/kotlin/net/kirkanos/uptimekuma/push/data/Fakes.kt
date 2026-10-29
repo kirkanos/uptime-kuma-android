@@ -3,10 +3,16 @@ package net.kirkanos.uptimekuma.push.data
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import net.kirkanos.uptimekuma.core.domain.KumaNotificationRepository
+import net.kirkanos.uptimekuma.core.domain.PushTransportConfig
+import net.kirkanos.uptimekuma.core.model.FirebaseConfig
 import net.kirkanos.uptimekuma.core.model.KumaError
 import net.kirkanos.uptimekuma.core.model.KumaException
 import net.kirkanos.uptimekuma.core.model.KumaNotification
 import net.kirkanos.uptimekuma.core.model.PushRegistration
+import net.kirkanos.uptimekuma.push.firebase.FirebaseInitResult
+import net.kirkanos.uptimekuma.push.firebase.FirebaseSettings
+import net.kirkanos.uptimekuma.push.firebase.FirebaseSettingsStore
+import net.kirkanos.uptimekuma.push.firebase.FirebaseTransport
 import net.kirkanos.uptimekuma.push.work.PushWorkScheduler
 
 class FakeKumaNotificationRepository : KumaNotificationRepository {
@@ -107,6 +113,53 @@ class FakeTokenStore(
 
     override fun clear() {
         token = null
+    }
+}
+
+fun ntfy(
+    token: String,
+    distributor: String? = null,
+): PushTransportConfig.Ntfy = PushTransportConfig.Ntfy(token, distributor)
+
+class FakeFirebaseSettingsStore(
+    var settings: FirebaseSettings? = null,
+) : FirebaseSettingsStore {
+    override fun load(): FirebaseSettings? = settings
+
+    override fun save(settings: FirebaseSettings) {
+        this.settings = settings
+    }
+}
+
+/** Stands in for the Firebase SDK (`:push-fcm`): no Android, no Play services. */
+class FakeFirebaseTransport(
+    var token: String = "fcm-token-1",
+) : FirebaseTransport {
+    var initResult = FirebaseInitResult.READY
+    var tokenFailure: PushSetupException? = null
+    val initialized = mutableListOf<FirebaseConfig>()
+    var fetchCount = 0
+    var deleteCount = 0
+    var autoInit: Boolean? = null
+
+    override fun initialize(config: FirebaseConfig): FirebaseInitResult {
+        initialized += config
+        return initResult
+    }
+
+    override suspend fun fetchToken(): String {
+        fetchCount++
+        tokenFailure?.let { throw it }
+        return token
+    }
+
+    override suspend fun deleteToken() {
+        deleteCount++
+        autoInit = false
+    }
+
+    override fun setAutoInitEnabled(enabled: Boolean) {
+        autoInit = enabled
     }
 }
 

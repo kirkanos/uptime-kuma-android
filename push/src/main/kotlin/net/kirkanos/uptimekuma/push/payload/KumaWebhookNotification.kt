@@ -3,8 +3,13 @@ package net.kirkanos.uptimekuma.push.payload
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import net.kirkanos.uptimekuma.core.model.KumaNotification
+import net.kirkanos.uptimekuma.core.model.PushTransport
 
-/** Builds the Kuma `webhook` notification that posts schema-v1 JSON to this device's UnifiedPush endpoint. */
+/**
+ * Builds the Kuma `webhook` notification that posts schema-v1 JSON ([WebhookTemplate]) to this device's push
+ * endpoint: the UnifiedPush endpoint ([build]) or the FCM relay ([buildRelay]). Both variants send the very same
+ * body and a bearer token, so the app parses what arrives with one parser.
+ */
 object KumaWebhookNotification {
     const val TYPE: String = "webhook"
     const val FIELD_URL: String = "webhookURL"
@@ -26,29 +31,66 @@ object KumaWebhookNotification {
         deviceName: String,
         id: Long? = null,
         isDefault: Boolean = false,
+    ): KumaNotification = notification(endpoint, ntfyToken, notificationName(deviceName), id, isDefault)
+
+    /**
+     * Variant for the Firebase transport.
+     *
+     * @param webhookUrl `<relay>/v1/fcm/<FCM token>` (see `RelayUrl.webhookUrl`).
+     * @param relayToken the relay's `RELAY_TOKEN`, sent as bearer token.
+     */
+    fun buildRelay(
+        webhookUrl: String,
+        relayToken: String,
+        deviceName: String,
+        id: Long? = null,
+        isDefault: Boolean = false,
+    ): KumaNotification = notification(webhookUrl, relayToken, relayNotificationName(deviceName), id, isDefault)
+
+    /** Dispatches on [transport]; the URL and token are the transport-specific ones. */
+    fun build(
+        transport: PushTransport,
+        url: String,
+        token: String,
+        deviceName: String,
+        id: Long?,
+        isDefault: Boolean,
     ): KumaNotification =
-        KumaNotification(
-            id = id,
-            name = notificationName(deviceName),
-            type = TYPE,
-            isDefault = isDefault,
-            fields =
-                mapOf(
-                    FIELD_URL to endpoint,
-                    FIELD_METHOD to "post",
-                    FIELD_CONTENT_TYPE to "custom",
-                    FIELD_CUSTOM_BODY to WebhookTemplate.BODY,
-                    FIELD_HEADERS to headersJson(ntfyToken),
-                ),
-        )
+        when (transport) {
+            PushTransport.NTFY -> build(url, token, deviceName, id, isDefault)
+            PushTransport.FIREBASE -> buildRelay(url, token, deviceName, id, isDefault)
+        }
 
     fun notificationName(deviceName: String): String = "${deviceName.ifBlank { "Android" }} (UnifiedPush)"
 
+    fun relayNotificationName(deviceName: String): String = "${deviceName.ifBlank { "Android" }} (Firebase)"
+
+    private fun notification(
+        url: String,
+        token: String,
+        name: String,
+        id: Long?,
+        isDefault: Boolean,
+    ) = KumaNotification(
+        id = id,
+        name = name,
+        type = TYPE,
+        isDefault = isDefault,
+        fields =
+            mapOf(
+                FIELD_URL to url,
+                FIELD_METHOD to "post",
+                FIELD_CONTENT_TYPE to "custom",
+                FIELD_CUSTOM_BODY to WebhookTemplate.BODY,
+                FIELD_HEADERS to headersJson(token),
+            ),
+    )
+
     /** Kuma expects the additional headers as a JSON *string*, which it `JSON.parse`s itself. */
-    internal fun headersJson(ntfyToken: String): String =
+    internal fun headersJson(token: String): String =
         JsonObject(
             mapOf(
-                "Authorization" to JsonPrimitive("Bearer ${ntfyToken.trim()}"),
+                "Authorization" to JsonPrimitive("Bearer ${token.trim()}"),
                 "Content-Type" to JsonPrimitive("application/json"),
             ),
         ).toString()

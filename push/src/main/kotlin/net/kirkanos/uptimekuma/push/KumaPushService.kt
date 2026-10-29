@@ -7,9 +7,6 @@ import kotlinx.coroutines.launch
 import net.kirkanos.uptimekuma.push.data.PushRepositoryImpl
 import net.kirkanos.uptimekuma.push.data.PushServiceEvent
 import net.kirkanos.uptimekuma.push.di.PushScope
-import net.kirkanos.uptimekuma.push.notify.AlertNotifier
-import net.kirkanos.uptimekuma.push.payload.PushPayloadParser
-import net.kirkanos.uptimekuma.push.work.PushWorkScheduler
 import org.unifiedpush.android.connector.FailedReason
 import org.unifiedpush.android.connector.PushService
 import org.unifiedpush.android.connector.data.PushEndpoint
@@ -27,9 +24,7 @@ import javax.inject.Inject
 class KumaPushService : PushService() {
     @Inject lateinit var repository: PushRepositoryImpl
 
-    @Inject lateinit var notifier: AlertNotifier
-
-    @Inject lateinit var scheduler: PushWorkScheduler
+    @Inject lateinit var messageHandler: PushMessageHandler
 
     @Inject
     @PushScope
@@ -48,13 +43,7 @@ class KumaPushService : PushService() {
         message: PushMessage,
         instance: String,
     ) {
-        val event = PushPayloadParser.parse(message.content)
-        try {
-            notifier.show(event)
-        } catch (e: RuntimeException) {
-            Log.e(TAG, "Showing push alert failed", e)
-        }
-        if (event.monitorId != null) scheduler.enqueueSync()
+        messageHandler.handle(message.content)
     }
 
     override fun onRegistrationFailed(

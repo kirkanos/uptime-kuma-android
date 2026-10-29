@@ -2,12 +2,15 @@ package net.kirkanos.uptimekuma.core.testing
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import net.kirkanos.uptimekuma.core.domain.KumaNotificationRepository
 import net.kirkanos.uptimekuma.core.domain.PushRepository
 import net.kirkanos.uptimekuma.core.domain.PushSetupState
+import net.kirkanos.uptimekuma.core.domain.PushTransportConfig
 import net.kirkanos.uptimekuma.core.model.KumaException
 import net.kirkanos.uptimekuma.core.model.KumaNotification
 import net.kirkanos.uptimekuma.core.model.PushRegistration
+import net.kirkanos.uptimekuma.core.model.PushTransport
 
 /** In-memory [KumaNotificationRepository]; [save] assigns increasing ids to new notifications. */
 class FakeKumaNotificationRepository(
@@ -46,6 +49,7 @@ class FakeKumaNotificationRepository(
 class FakePushRepository(
     var distributors: List<String> = listOf("io.heckel.ntfy"),
     initialRegistration: PushRegistration? = null,
+    var transports: Set<PushTransport> = setOf(PushTransport.NTFY),
 ) : PushRepository {
     val registration = MutableStateFlow(initialRegistration)
     val state =
@@ -64,23 +68,39 @@ class FakePushRepository(
 
     override fun observeState(): Flow<PushSetupState> = state
 
+    override fun observeTransport(): Flow<PushTransport?> =
+        registration.map { reg -> reg?.takeIf { it.kumaNotificationId != null }?.transport }
+
+    override fun availableTransports(): Set<PushTransport> = transports
+
     override fun availableDistributors(): List<String> = distributors
 
     override suspend fun setUp(
-        ntfyToken: String,
+        config: PushTransportConfig,
         applyToAllMonitors: Boolean,
-        distributor: String?,
     ) {
         error?.let {
             state.value = PushSetupState.Error(it.message.orEmpty())
             throw it
         }
         registration.value =
-            PushRegistration(
-                endpoint = "https://ntfy.example.org/upFAKE?up=1",
-                kumaNotificationId = 1,
-                distributor = distributor ?: distributors.firstOrNull(),
-            )
+            when (config) {
+                is PushTransportConfig.Ntfy -> {
+                    PushRegistration(
+                        endpoint = "https://ntfy.example.org/upFAKE?up=1",
+                        kumaNotificationId = 1,
+                        distributor = config.distributor ?: distributors.firstOrNull(),
+                    )
+                }
+
+                is PushTransportConfig.Firebase -> {
+                    PushRegistration(
+                        endpoint = config.relayUrl.trimEnd('/') + "/v1/fcm/FAKE_TOKEN",
+                        kumaNotificationId = 1,
+                        transport = PushTransport.FIREBASE,
+                    )
+                }
+            }
         state.value = PushSetupState.Active
     }
 

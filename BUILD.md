@@ -20,22 +20,62 @@ JVM makes local builds and CI (`actions/setup-java` with Temurin 21) identical. 
 ```bash
 export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"   # macOS example
 
-./gradlew assembleDebug                         # debug APK  -> app/build/outputs/apk/debug/app-debug.apk
+./gradlew assembleFullDebug                     # debug APK  -> app/build/outputs/apk/full/debug/app-full-debug.apk
+./gradlew assembleFossDebug                     # debug APK without Firebase -> app/build/outputs/apk/foss/debug/app-foss-debug.apk
 ./gradlew ktlintCheck detekt                    # static analysis (ktlint_official style, detekt config in config/detekt/detekt.yml)
 ./gradlew ktlintFormat                          # auto-format
-./gradlew testDebugUnitTest                     # JUnit 5 unit tests of every module (pure JVM modules alias their `test` task to this name)
-./gradlew assembleRelease                       # minified release APK; unsigned unless signing is configured (see below)
+./gradlew lintDebug lintFullDebug lintFossDebug # Android lint (libraries: lintDebug, app: one task per flavor)
+./gradlew testDebugUnitTest testFullDebugUnitTest testFossDebugUnitTest   # JUnit 5 unit tests of every module (pure JVM modules alias `test` to testDebugUnitTest)
+./gradlew assembleRelease                       # minified release APKs of both flavors; unsigned unless signing is configured (see below)
 ./gradlew assembleRelease -PsignReleaseWithDebugKey=true   # same, signed with the debug key (installable, never distribute)
 python3 scripts/check-translations.py           # every string in values/ also in values-de/
+python3 scripts/check-android-regex.py          # no unescaped braces in Regex literals (ICU)
+python3 scripts/check-foss-apk.py app/build/outputs/apk/foss/debug/app-foss-debug.apk   # no Firebase / gms class in foss
 ./gradlew :core:kuma-client:integrationTest :core:data:testDebugUnitTest -Pintegration   # against the dev Kuma
 ```
+
+The full local gate before a commit:
+
+```bash
+./gradlew ktlintFormat ktlintCheck detekt lintDebug lintFullDebug lintFossDebug \
+  assembleFullDebug assembleFossDebug testDebugUnitTest testFullDebugUnitTest testFossDebugUnitTest \
+  assembleRelease -PsignReleaseWithDebugKey=true
+python3 scripts/check-android-regex.py && python3 scripts/check-translations.py
+python3 scripts/check-foss-apk.py app/build/outputs/apk/foss/debug/app-foss-debug.apk
+```
+
+## Product flavors
+
+`:app` has one flavor dimension, `distribution`:
+
+| Flavor | Push transports | Extra dependency | Output |
+|---|---|---|---|
+| `full` (default) | ntfy (UnifiedPush) and Firebase (user's own project) | `fullImplementation(projects.pushFcm)`: firebase-messaging (BoM 35.1.0), play-services-base | `uptime-kuma-android-<version>.apk` |
+| `foss` | ntfy (UnifiedPush) only | none | `uptime-kuma-android-<version>-foss.apk` |
+
+All Firebase code lives in `:push-fcm`. `:push` only defines the `FirebaseTransport` interface with an
+optional Hilt binding (`@BindsOptionalOf`), so it compiles without Firebase; `:push-fcm` binds it. In
+`foss` the optional is empty: the setup screen skips the transport picker and the repository reports
+`FIREBASE_UNAVAILABLE`. No `google-services.json` and no google-services Gradle plugin are used; the user's
+Firebase values are entered at runtime (see [docs/push/firebase.md](docs/push/firebase.md#app-setup)).
+
+Verification that `foss` is free of Google code: `scripts/check-foss-apk.py` searches every dex of the
+unminified `foss` debug APK for `Lcom/google/firebase/…` and `Lcom/google/android/gms/…` type
+descriptors (CI and the release workflow run it). As of this change it reports 0 for `foss` and 1422 for
+`full`; the merged `foss` manifest has no Firebase/gms component, permission or meta-data. `foss` still
+contains other `com.google.*` packages that are plain open-source libraries pulled in by the UnifiedPush
+connector (Tink `com.google.crypto`, protobuf, gson, errorprone annotations), not Google services.
+
+Both flavors share `applicationId` and the signing key. The baseline profile is generated against
+`fullRelease` (`:baselineprofile` uses `missingDimensionStrategy("distribution", "full")`) and merged into
+`app/src/main/generated/baselineProfiles` (`baselineProfile.mergeIntoMain = true`), so both flavors ship it.
 
 CI (`.github/workflows/ci.yml`) has three jobs:
 
 | Job | Runs |
 |---|---|
-| `build` | `scripts/check-translations.py`, then `./gradlew ktlintCheck detekt lintDebug assembleDebug testDebugUnitTest` |
-| `release-build` | `./gradlew assembleRelease :baselineprofile:assemble -PsignReleaseWithDebugKey=true`; reports the APK size, uploads APK + R8 mapping/usage |
+| `build` | `scripts/check-translations.py`, `scripts/check-android-regex.py`, then `./gradlew ktlintCheck detekt lintDebug lintFullDebug lintFossDebug assembleFullDebug assembleFossDebug testDebugUnitTest testFullDebugUnitTest testFossDebugUnitTest`, then `scripts/check-foss-apk.py` on the foss debug APK |
+| `release-build` | `./gradlew assembleRelease :baselineprofile:assemble -PsignReleaseWithDebugKey=true`; reports both APK sizes, uploads both APKs + R8 mappings |
 | `integration` | Kuma as service container (matrix 2.5.8, 2.4.0 allowed to fail), `infra/kuma-seed` setup + seed, then the integration tests |
 
 All jobs cache Gradle via `gradle/actions/setup-gradle` (read-only on branches other than `main`), and a
@@ -64,8 +104,9 @@ cannot be installed) unless `-PsignReleaseWithDebugKey=true` is passed, which si
 debug keystore (CI uses this on pull requests; the baseline profile tasks need it too, because the
 plugin's `nonMinifiedRelease`/`benchmarkRelease` build types copy the release signing config). The `Release` GitHub workflow (`.github/workflows/release.yml`, triggered by
 `v*` tags) decodes the secret `KEYSTORE_BASE64` into `release.keystore`, exports the three
-password/alias secrets, runs `assembleRelease`, and publishes `uptime-kuma-android-<version>.apk`
-plus a `.sha256` file and the R8 `mapping.txt` as a GitHub release. Required repository secrets:
+password/alias secrets, runs `assembleRelease` (both flavors) plus the foss class check, and publishes
+`uptime-kuma-android-<version>.apk` (`full`) and `uptime-kuma-android-<version>-foss.apk`, each with a
+`.sha256` file and its R8 mapping, as a GitHub release. Required repository secrets:
 `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`.
 
 Create a keystore with `keytool -genkeypair -v -keystore release.keystore -alias uptimekuma -keyalg RSA -keysize 4096 -validity 10000`
@@ -85,7 +126,8 @@ core/data                     Android library: repositories, Room, DataStore, Hi
 core/ui                       Android library: Material 3 theme (KumaTheme) and shared composables
 core/testing                  pure Kotlin/JVM test fixtures (fakes, JUnit 5 extensions)
 feature/*                     Compose feature modules (kuma.android.feature)
-push/                         UnifiedPush receiver + WorkManager
+push/                         push setup (both transports), UnifiedPush receiver, alert handling, WorkManager
+push-fcm/                     Firebase transport (FirebaseMessagingService, runtime FirebaseApp init); `full` flavor only
 widget/                       Glance app widget
 baselineprofile/              baseline profile generator + startup macrobenchmarks (see docs/performance.md)
 scripts/                      repository tooling (translation check)
@@ -122,6 +164,7 @@ support, configuration cache and build cache enabled.
 | OkHttp | 5.5.1 |
 | socket.io-client | 2.1.2 |
 | UnifiedPush connector | 3.3.5 |
+| Firebase BoM (`full` only) | 35.1.0 (firebase-messaging 26.0.1), play-services-base 18.11.1 |
 | Vico charts | 3.3.1 |
 | JUnit | 6.1.3 |
 | MockK / Turbine / Robolectric | 1.14.11 / 1.2.1 / 4.17 |

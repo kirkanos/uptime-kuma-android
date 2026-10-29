@@ -10,6 +10,7 @@ import net.kirkanos.uptimekuma.core.testing.MainDispatcherExtension
 import net.kirkanos.uptimekuma.push.data.FakeDistributorGateway
 import net.kirkanos.uptimekuma.push.data.FakeDistributorGateway.Companion.NTFY
 import net.kirkanos.uptimekuma.push.data.FakeDistributorGateway.Companion.OTHER
+import net.kirkanos.uptimekuma.push.data.FakeFirebaseSettingsStore
 import net.kirkanos.uptimekuma.push.data.FakeKumaNotificationRepository
 import net.kirkanos.uptimekuma.push.data.FakeRegistrationStore
 import net.kirkanos.uptimekuma.push.data.FakeScheduler
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import java.util.Optional
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PushSetupViewModelTest {
@@ -36,10 +38,23 @@ class PushSetupViewModelTest {
 
     private fun viewModel(): PushSetupViewModel {
         val dispatcher = mainDispatcher.testDispatcher
+        val relayTokens = FakeTokenStore()
+        val firebaseSettings = FakeFirebaseSettingsStore()
         val repository =
-            PushRepositoryImpl(kuma, gateway, store, tokens, FakeScheduler(), { "Pixel" }, dispatcher)
+            PushRepositoryImpl(
+                kuma,
+                gateway,
+                store,
+                tokens,
+                FakeScheduler(),
+                { "Pixel" },
+                dispatcher,
+                Optional.empty(),
+                firebaseSettings,
+                relayTokens,
+            )
         gateway.onRegister = { repository.onServiceEvent(PushServiceEvent.NewEndpoint(ENDPOINT)) }
-        return PushSetupViewModel(repository, gateway, tokens, dispatcher)
+        return PushSetupViewModel(repository, gateway, tokens, relayTokens, firebaseSettings, dispatcher)
     }
 
     @Test

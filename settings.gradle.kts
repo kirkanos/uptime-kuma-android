@@ -53,5 +53,7 @@ include(":feature:statuspage")
 include(":feature:notifications")
 include(":feature:settings")
 include(":push")
+// Firebase transport; only the `full` app flavor depends on it, `foss` stays free of Google libraries.
+include(":push-fcm")
 include(":widget")
 include(":baselineprofile")

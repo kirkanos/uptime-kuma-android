@@ -2,8 +2,9 @@
 
 Native Android client for a self-hosted [Uptime Kuma](https://github.com/louislam/uptime-kuma) 2.x
 instance. Live status, history and management of your monitors, with high-priority alerts delivered
-through your own [ntfy](https://ntfy.sh) server via [UnifiedPush](https://unifiedpush.org).
-No Google services, no relay server, no tracking.
+either through your own [ntfy](https://ntfy.sh) server via [UnifiedPush](https://unifiedpush.org)
+(no Google services at all) or through Firebase Cloud Messaging of your own Firebase project and a small
+relay you host (see [Push options](#push-options)). No tracking.
 
 Status: pre-release (0.1.0 in preparation). License: GPL-3.0-or-later.
 
@@ -14,8 +15,9 @@ Status: pre-release (0.1.0 in preparation). License: GPL-3.0-or-later.
 - **Monitor details**: response-time chart (3 h to 7 days), uptime 24 h / 30 d / 1 y, certificate
   expiry, important events, pause / resume / delete.
 - **Monitor editor** for all 34 Kuma monitor types (driven by a spec of Kuma's own form), tags, clone.
-- **Alerts on your phone**: Kuma sends a webhook to your ntfy server, ntfy delivers it to the app via
-  UnifiedPush. Per-monitor mute, recovery and certificate alerts, quiet hours, alert history.
+- **Alerts on your phone**: Kuma sends a webhook to your ntfy server (delivered via UnifiedPush) or to
+  your FCM relay (delivered via Firebase Cloud Messaging). Per-monitor mute, recovery and certificate
+  alerts, quiet hours, alert history.
 - **Maintenance windows**: list, details and editor for every strategy (manual, single, cron,
   recurring).
 - **Status pages**: list, rendered view, editor, incidents, and a viewer for any public
@@ -37,13 +39,39 @@ _Screenshots will be added with the first release (`fastlane/metadata/android/en
 - Android 12 (API 31) or newer.
 - **Uptime Kuma 2.x**. Developed and tested against 2.5.8, see [Compatibility](#compatibility).
   1.x servers are rejected at login.
-- For push alerts: a self-hosted **ntfy** server reachable by Kuma and by the phone, and a
-  **UnifiedPush distributor** on the phone, normally the ntfy Android app
-  ([F-Droid](https://f-droid.org/packages/io.heckel.ntfy/),
-  [GitHub](https://github.com/binwiederhier/ntfy-android/releases), Google Play). Without push the
-  app still works; you only see changes while it is open.
+- For push alerts, one of (details in [Push options](#push-options)):
+  - a self-hosted **ntfy** server reachable by Kuma and by the phone, and a **UnifiedPush
+    distributor** on the phone, normally the ntfy Android app
+    ([F-Droid](https://f-droid.org/packages/io.heckel.ntfy/),
+    [GitHub](https://github.com/binwiederhier/ntfy-android/releases), Google Play), or
+  - **Google Play services** on the phone, your own (free) **Firebase project** and the small **FCM
+    relay** from `relay/`, reachable by Kuma (`full` APK only).
 
-## Setup
+  Without push the app still works; you only see changes while it is open.
+
+## Push options
+
+The push setup screen first asks how alerts should reach the device. Both options use the same Kuma
+`webhook` notification (one per device, created by the app) with the same JSON body, and the same
+alert handling in the app (mutes, quiet hours, history).
+
+| | ntfy (UnifiedPush) | Firebase (own project) |
+|---|---|---|
+| Path | Kuma -> your ntfy server -> ntfy app -> this app | Kuma -> your relay -> Google FCM -> this app |
+| Google services | none | Google Play services required |
+| Permanent notification | ntfy shows one for its connection; hide it by turning off that notification channel in ntfy's app settings | none |
+| Delivery and battery | very good while ntfy is allowed to run in the background (battery optimization off) | best: FCM high-priority messages wake the app even in Doze, no extra connection |
+| You run | an ntfy server | a stateless relay (Docker image, holds your Firebase service account key) |
+| You create | ntfy users and a publish token | a Firebase project with an Android app for this package, then enter or import its `google-services.json` values |
+| APK | `full` and `foss` | `full` only |
+
+Setting up one option tears down the other one (its Kuma notification is deleted, UnifiedPush is
+unregistered or the FCM token deleted). Firebase details:
+[docs/push/firebase.md](docs/push/firebase.md). ntfy details: [docs/push/README.md](docs/push/README.md).
+
+## Setup (ntfy)
+
+For the Firebase option see [docs/push/firebase.md](docs/push/firebase.md#app-setup) instead.
 
 ### 1. ntfy server
 
@@ -75,20 +103,31 @@ docker compose exec ntfy ntfy token add --label kuma-<device> kuma    # tk_... i
 ### 4. This app
 
 1. Install the app (below) and log in with your Kuma URL, username, password (and 2FA code).
-2. Settings -> *Push notifications*: pick ntfy as distributor, enter the `tk_...` token, choose
+2. Settings -> *Push notifications*: choose *ntfy (UnifiedPush)* (only asked in the `full` APK), pick
+   ntfy as distributor, enter the `tk_...` token, choose
    whether all monitors should alert. The app creates a webhook notification in Kuma named after
    your device and sends a test alert.
 3. Optional: per-monitor mute on a monitor's detail page; quiet hours and recovery alerts in Settings.
 
-Logging out removes this device's webhook notification from Kuma and unregisters from UnifiedPush.
+Logging out removes this device's webhook notification from Kuma and unregisters from UnifiedPush
+(or deletes the FCM token).
 
 ## Install
 
-- **GitHub Releases**: download `uptime-kuma-android-<version>.apk` from this repository's Releases
-  page and compare it with the `.sha256` file next to it.
+Two APKs per release, same package name and signing key (you can switch by installing the other one
+over it):
+
+| APK | Push options | Google libraries |
+|---|---|---|
+| `uptime-kuma-android-<version>.apk` (`full`) | ntfy or Firebase | Firebase Messaging, Play services base (inactive until you set up the Firebase option) |
+| `uptime-kuma-android-<version>-foss.apk` (`foss`) | ntfy | none (no `com.google.firebase` / `com.google.android.gms` class in the APK) |
+
+- **GitHub Releases**: download one of the APKs from this repository's Releases page and compare it
+  with the `.sha256` file next to it.
 - **[Obtainium](https://github.com/ImranR98/Obtainium)**: add this repository's GitHub URL as an app
   source to get updates automatically from the Releases page.
-- F-Droid: metadata is prepared in `fastlane/metadata/android/`; not submitted yet.
+- F-Droid: metadata is prepared in `fastlane/metadata/android/`; not submitted yet (F-Droid would
+  build the `foss` flavor).
 
 Release APKs are signed with the project's release key; the signature stays the same across updates.
 
@@ -98,9 +137,9 @@ Requires a JDK 17+ to launch Gradle (the build itself runs on an auto-provisione
 Android SDK (platform 37, build-tools 36.0.0). See [BUILD.md](BUILD.md) for details, signing and CI.
 
 ```bash
-./gradlew assembleDebug                                   # debug APK -> app/build/outputs/apk/debug/
-./gradlew ktlintCheck detekt lintDebug testDebugUnitTest  # what CI runs
-./gradlew assembleRelease -PsignReleaseWithDebugKey=true  # minified release, installable, NOT for distribution
+./gradlew assembleFullDebug assembleFossDebug             # debug APKs -> app/build/outputs/apk/{full,foss}/debug/
+./gradlew ktlintCheck detekt lintFullDebug lintFossDebug testDebugUnitTest testFullDebugUnitTest testFossDebugUnitTest
+./gradlew assembleRelease -PsignReleaseWithDebugKey=true  # minified release (both flavors), installable, NOT for distribution
 ```
 
 The version (`VERSION_NAME`, `VERSION_CODE`) lives in `gradle.properties`.
@@ -119,10 +158,14 @@ Every pull request runs the integration tests (`:core:kuma-client:integrationTes
 
 ## Privacy
 
-The app has no analytics, no crash reporting, no ads and no Google services. It talks only to the
-servers you configure: your Uptime Kuma instance and, for push, your ntfy server (through the ntfy
-app). Your Kuma session token and the ntfy token are stored encrypted with the Android Keystore and
-are excluded from backups. Nothing leaves the triangle phone - Kuma - ntfy.
+The app has no analytics, no crash reporting and no ads. It talks only to the servers you configure:
+your Uptime Kuma instance and, for push, your ntfy server (through the ntfy app) or, with the
+Firebase option, Google's FCM servers of your own Firebase project (through Google Play services). With
+ntfy nothing leaves the triangle phone - Kuma - ntfy; with Firebase the alert content passes your relay
+and Google's FCM. The `foss` APK contains no Google library at all, the `full` APK initializes Firebase
+only after you set up the Firebase option (no automatic initialization, FCM auto-init off, no
+Analytics). Your Kuma session token, the ntfy token and the relay token are stored encrypted with the
+Android Keystore and are excluded from backups.
 
 ## Contributing and security
 

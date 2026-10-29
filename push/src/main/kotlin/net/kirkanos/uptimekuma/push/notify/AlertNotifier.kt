@@ -17,6 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import net.kirkanos.uptimekuma.core.model.AlertRecord
 import net.kirkanos.uptimekuma.core.model.MonitorStatus
 import net.kirkanos.uptimekuma.core.model.PushEvent
+import net.kirkanos.uptimekuma.push.AlertPresenter
 import net.kirkanos.uptimekuma.push.NotificationIntents
 import net.kirkanos.uptimekuma.push.R
 import net.kirkanos.uptimekuma.push.alerts.AlertDecision
@@ -46,11 +47,11 @@ class AlertNotifier
         private val preferences: DataStoreAlertPreferencesRepository,
         private val gate: AlertGate,
         private val alertLog: AlertHistoryStore,
-    ) {
+    ) : AlertPresenter {
         private val manager = NotificationManagerCompat.from(context)
 
         /** Shows the event. Returns `false` if it was dropped (duplicate, suppressed) or could not be posted. */
-        fun show(event: PushEvent): Boolean {
+        override fun show(event: PushEvent): Boolean {
             val monitorId = event.monitorId
             val status = event.status
             val downSince = monitorId?.let(history::downSince)
