@@ -38,12 +38,13 @@ data class MonitorSpec(
     fun fieldsOf(type: String): List<FieldSpec> = type(type)?.fields.orEmpty().mapNotNull { fields[it] }
 
     companion object {
-        const val RESOURCE = "monitor-types.json"
+        // Absolute path: R8 repackages classes, so a lookup relative to the class breaks in release builds.
+        const val RESOURCE = "net/kirkanos/uptimekuma/core/domain/editor/monitor-types.json"
 
         /** The spec copied from the repository's `spec/` folder at build time (classpath resource). */
         val bundled: MonitorSpec by lazy {
             val stream =
-                checkNotNull(MonitorSpec::class.java.getResourceAsStream(RESOURCE)) {
+                checkNotNull(MonitorSpec::class.java.classLoader?.getResourceAsStream(RESOURCE)) {
                     "$RESOURCE missing from the classpath"
                 }
             parse(stream.bufferedReader().use { it.readText() })

@@ -88,6 +88,7 @@ fun KumaApp(
                 onDone = {
                     if (route.fromOnboarding) navController.goToDashboard() else navController.popBackStack()
                 },
+                onSkip = if (route.fromOnboarding) ({ navController.goToDashboard() }) else null,
             )
         }
 

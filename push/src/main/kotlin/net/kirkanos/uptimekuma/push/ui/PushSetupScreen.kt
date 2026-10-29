@@ -78,6 +78,8 @@ private const val DONT_KILL_MY_APP_URL = "https://dontkillmyapp.com"
 fun PushSetupRoute(
     onDone: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Shown as "Set up later" while push is not active (onboarding); `null` hides it. */
+    onSkip: (() -> Unit)? = null,
     viewModel: PushSetupViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -117,6 +119,7 @@ fun PushSetupRoute(
                 onOpenUrl = { url -> context.openUrl(url) },
                 onOpenDistributor = { pkg -> context.openApp(pkg) },
                 onDone = onDone,
+                onSkip = onSkip,
             ),
         modifier = modifier,
     )
@@ -137,6 +140,7 @@ data class PushSetupActions(
     /** Opens the distributor app (package name); it must run once to start its connection service. */
     val onOpenDistributor: (String) -> Unit = {},
     val onDone: () -> Unit = {},
+    val onSkip: (() -> Unit)? = null,
 )
 
 @Composable
@@ -177,6 +181,13 @@ fun PushSetupScreen(
             PushSetupPhase.Form -> SetupForm(state, actions)
             PushSetupPhase.Working -> Progress(text = stringResource(R.string.push_setup_working))
             PushSetupPhase.Active -> ActiveSection(state, actions)
+        }
+
+        val skip = actions.onSkip
+        if (skip != null && state.phase != PushSetupPhase.Active) {
+            TextButton(onClick = skip, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.push_setup_later))
+            }
         }
 
         BatteryHintCard(onOpenUrl = actions.onOpenUrl)

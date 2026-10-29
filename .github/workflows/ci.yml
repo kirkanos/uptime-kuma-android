@@ -35,6 +35,9 @@ jobs:
       - name: Check translations (values vs values-de)
         run: python3 scripts/check-translations.py
 
+      - name: Check regex literals for Android (ICU) compatibility
+        run: python3 scripts/check-android-regex.py
+
       - name: ktlint, detekt, lint, build debug APK, unit tests
         run: ./gradlew ktlintCheck detekt lintDebug assembleDebug testDebugUnitTest --stacktrace
 

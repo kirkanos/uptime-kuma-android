@@ -50,7 +50,7 @@
     <string name="push_token_show">Show token</string>
     <string name="push_token_hide">Hide token</string>
     <string name="push_apply_all">Alert for all existing monitors</string>
-    <string name="push_apply_all_help">Attaches this device to every monitor. Enable it for new monitors in Uptime Kuma.</string>
+    <string name="push_apply_all_help">Attaches this device to every monitor and makes it the default for new monitors.</string>
     <string name="push_setup_button">Set up</string>
     <string name="push_setup_working">Registering with ntfy and Uptime Kuma…</string>
     <string name="push_success_title">Push notifications are active</string>
@@ -105,4 +105,5 @@
     <string name="push_mute_8h">For 8 hours</string>
     <string name="push_mute_24h">For 24 hours</string>
     <string name="push_mute_indefinitely">Until unmuted</string>
+    <string name="push_setup_later">Set up later</string>
 </resources>

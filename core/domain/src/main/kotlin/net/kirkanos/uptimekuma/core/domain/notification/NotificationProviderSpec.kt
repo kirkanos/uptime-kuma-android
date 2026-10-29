@@ -31,12 +31,13 @@ data class NotificationProviderSpec(
     fun providersIn(category: ProviderCategory): List<ProviderSpec> = providers.filter { category in it.categories }
 
     companion object {
-        const val RESOURCE = "notification-providers.json"
+        // Absolute path: R8 repackages classes, so a lookup relative to the class breaks in release builds.
+        const val RESOURCE = "net/kirkanos/uptimekuma/core/domain/notification/notification-providers.json"
 
         /** The spec copied from the repository's `spec/` folder at build time (classpath resource). */
         val bundled: NotificationProviderSpec by lazy {
             val stream =
-                checkNotNull(NotificationProviderSpec::class.java.getResourceAsStream(RESOURCE)) {
+                checkNotNull(NotificationProviderSpec::class.java.classLoader?.getResourceAsStream(RESOURCE)) {
                     "$RESOURCE missing from the classpath"
                 }
             parse(stream.bufferedReader().use { it.readText() })
@@ -335,12 +336,13 @@ internal object NotificationDefaults {
 
 /** Cleans texts extracted from Vue templates. */
 internal object SpecText {
-    private val tCall = Regex("""\${'$'}t\(\s*(['"])(.*?)\1\s*(?:,\s*\{(.*)})?\s*\)""")
-    private val argPair = Regex("""(\w+)\s*:\s*['"]?([^,'"}]+)['"]?""")
+    // Braces are always escaped: Android's ICU regex engine rejects a bare "}" that the JVM accepts.
+    private val tCall = Regex("""\${'$'}t\(\s*(['"])(.*?)\1\s*(?:,\s*\{(.*)\})?\s*\)""")
+    private val argPair = Regex("""(\w+)\s*:\s*['"]?([^,'"\}]+)['"]?""")
     private val i18nKey = Regex("^[A-Za-z0-9]+$")
     private const val KEY_GROUP = 2
     private const val ARGS_GROUP = 3
-    private val mustache = Regex("""^\{\{\s*(.*?)\s*}}$""")
+    private val mustache = Regex("""^\{\{\s*(.*?)\s*\}\}$""")
 
     class Default(
         val value: Any?,
