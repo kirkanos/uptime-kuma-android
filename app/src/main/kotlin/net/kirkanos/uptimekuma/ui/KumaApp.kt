@@ -13,6 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
+import net.kirkanos.uptimekuma.feature.maintenance.MaintenanceListRoute
+import net.kirkanos.uptimekuma.feature.maintenance.maintenanceGraph
 import net.kirkanos.uptimekuma.feature.monitors.DashboardRoute
 import net.kirkanos.uptimekuma.feature.monitors.MonitorDetailRoute
 import net.kirkanos.uptimekuma.feature.monitors.dashboardScreen
@@ -82,10 +84,13 @@ fun KumaApp(
 
         monitorDetailScreen(onBack = { navController.popBackStack() })
 
+        maintenanceGraph(navController, onMonitorClick = { id -> navController.navigate(MonitorDetailRoute(id)) })
+
         composable<SettingsDestination> {
             SettingsScreen(
                 onBack = { navController.popBackStack() },
                 onPushSetup = { navController.navigate(PushSetupDestination(fromOnboarding = false)) },
+                onMaintenance = { navController.navigate(MaintenanceListRoute) },
             )
         }
     }

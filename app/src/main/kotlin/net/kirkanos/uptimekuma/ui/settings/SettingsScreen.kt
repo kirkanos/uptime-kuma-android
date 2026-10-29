@@ -43,6 +43,7 @@ import net.kirkanos.uptimekuma.R
 import net.kirkanos.uptimekuma.core.domain.SessionRepository
 import net.kirkanos.uptimekuma.core.model.ServerConfig
 import net.kirkanos.uptimekuma.core.ui.theme.KumaTheme
+import net.kirkanos.uptimekuma.feature.maintenance.MaintenanceSettingsItem
 import javax.inject.Inject
 
 /**
@@ -73,10 +74,11 @@ class SettingsViewModel
 fun SettingsScreen(
     onBack: () -> Unit,
     onPushSetup: () -> Unit,
+    onMaintenance: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val config by viewModel.serverConfig.collectAsStateWithLifecycle()
-    SettingsContent(config = config, onBack = onBack, onPushSetup = onPushSetup, onLogout = viewModel::logout)
+    SettingsContent(config, onBack, onPushSetup, onLogout = viewModel::logout, onMaintenance = onMaintenance)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,6 +88,7 @@ private fun SettingsContent(
     onBack: () -> Unit,
     onPushSetup: () -> Unit,
     onLogout: () -> Unit,
+    onMaintenance: () -> Unit = {},
 ) {
     var confirmLogout by rememberSaveable { mutableStateOf(false) }
     Scaffold(
@@ -119,6 +122,7 @@ private fun SettingsContent(
                 leadingContent = { Icon(Icons.Outlined.Notifications, contentDescription = null) },
                 modifier = Modifier.clickable(onClick = onPushSetup),
             )
+            MaintenanceSettingsItem(onClick = onMaintenance)
             ListItem(
                 headlineContent = {
                     Text(
