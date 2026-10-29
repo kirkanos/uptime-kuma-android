@@ -1,0 +1,19 @@
+<p>Native Android-App für deinen selbst gehosteten <b>Uptime Kuma 2.x</b>-Server. Sieh den Status aller Monitore auf einen Blick, prüfe Antwortzeiten und Zertifikate, verwalte Monitore, Wartungsfenster und Statusseiten und lass dich über deinen eigenen <b>ntfy</b>-Server per <b>UnifiedPush</b> auf dem Handy alarmieren.</p>
+
+<p><b>Funktionen</b></p>
+<ul>
+<li>Live-Dashboard mit Heartbeat-Balken, Verfügbarkeit, Gruppen, Tags, Suche und Filtern</li>
+<li>Monitor-Details: Antwortzeit-Diagramm, Verfügbarkeit 24 h / 30 T / 1 J, Zertifikatsablauf, wichtige Ereignisse</li>
+<li>Monitore aller Typen anlegen und bearbeiten, Tags verwalten, pausieren, fortsetzen und löschen</li>
+<li>Push-Alarme über ntfy und UnifiedPush, Stummschalten pro Monitor, Ruhezeiten, Alarmverlauf</li>
+<li>Wartungsfenster und Statusseiten inklusive Vorfällen</li>
+<li>Widget für den Startbildschirm und Kachel für die Schnelleinstellungen</li>
+<li>Anmeldung mit Zwei-Faktor-Authentifizierung, offline mit dem letzten bekannten Stand</li>
+<li>Material 3 mit dynamischen Farben und dunklem Design, Deutsch und Englisch</li>
+</ul>
+
+<p><b>Voraussetzungen</b>: ein Uptime-Kuma-2.x-Server. Für Push-Alarme ein selbst gehosteter ntfy-Server und die ntfy-App als UnifiedPush-Verteiler.</p>
+
+<p><b>Datenschutz</b>: kein Tracking, keine Analyse, keine Werbung, keine Google-Dienste. Die App spricht nur mit deinem Kuma-Server und, für Push, mit deinem ntfy-Server.</p>
+
+<p>Dies ist ein inoffizieller Client und gehört nicht zum Uptime-Kuma-Projekt.</p>

@@ -1,0 +1,1 @@
+Your self-hosted Uptime Kuma on Android, with push alerts via ntfy/UnifiedPush

@@ -25,9 +25,26 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"  
 ./gradlew ktlintFormat                          # auto-format
 ./gradlew testDebugUnitTest                     # JUnit 5 unit tests of every module (pure JVM modules alias their `test` task to this name)
 ./gradlew assembleRelease                       # minified release APK; unsigned unless signing is configured (see below)
+./gradlew assembleRelease -PsignReleaseWithDebugKey=true   # same, signed with the debug key (installable, never distribute)
+python3 scripts/check-translations.py           # every string in values/ also in values-de/
+./gradlew :core:kuma-client:integrationTest :core:data:testDebugUnitTest -Pintegration   # against the dev Kuma
 ```
 
-The CI job runs exactly: `./gradlew ktlintCheck detekt assembleDebug testDebugUnitTest --stacktrace`.
+CI (`.github/workflows/ci.yml`) has three jobs:
+
+| Job | Runs |
+|---|---|
+| `build` | `scripts/check-translations.py`, then `./gradlew ktlintCheck detekt lintDebug assembleDebug testDebugUnitTest` |
+| `release-build` | `./gradlew assembleRelease :baselineprofile:assemble -PsignReleaseWithDebugKey=true`; reports the APK size, uploads APK + R8 mapping/usage |
+| `integration` | Kuma as service container (matrix 2.5.8, 2.4.0 allowed to fail), `infra/kuma-seed` setup + seed, then the integration tests |
+
+All jobs cache Gradle via `gradle/actions/setup-gradle` (read-only on branches other than `main`), and a
+new push to the same ref cancels the running pipeline.
+
+## Version
+
+`VERSION_NAME` and `VERSION_CODE` in `gradle.properties` are the single source; `app/build.gradle.kts`
+reads them. The release workflow refuses tags other than `v<VERSION_NAME>`.
 
 ## Release signing
 
@@ -43,10 +60,12 @@ The CI job runs exactly: `./gradlew ktlintCheck detekt assembleDebug testDebugUn
 2. Environment variables `KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`.
 
 If neither is complete the release build type is left unsigned (the build still succeeds, the APK
-cannot be installed). The `Release` GitHub workflow (`.github/workflows/release.yml`, triggered by
+cannot be installed) unless `-PsignReleaseWithDebugKey=true` is passed, which signs it with the local
+debug keystore (CI uses this on pull requests; the baseline profile tasks need it too, because the
+plugin's `nonMinifiedRelease`/`benchmarkRelease` build types copy the release signing config). The `Release` GitHub workflow (`.github/workflows/release.yml`, triggered by
 `v*` tags) decodes the secret `KEYSTORE_BASE64` into `release.keystore`, exports the three
 password/alias secrets, runs `assembleRelease`, and publishes `uptime-kuma-android-<version>.apk`
-plus a `.sha256` file as a GitHub release. Required repository secrets:
+plus a `.sha256` file and the R8 `mapping.txt` as a GitHub release. Required repository secrets:
 `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`.
 
 Create a keystore with `keytool -genkeypair -v -keystore release.keystore -alias uptimekuma -keyalg RSA -keysize 4096 -validity 10000`
@@ -68,6 +87,9 @@ core/testing                  pure Kotlin/JVM test fixtures (fakes, JUnit 5 exte
 feature/*                     Compose feature modules (kuma.android.feature)
 push/                         UnifiedPush receiver + WorkManager
 widget/                       Glance app widget
+baselineprofile/              baseline profile generator + startup macrobenchmarks (see docs/performance.md)
+scripts/                      repository tooling (translation check)
+fastlane/metadata/android/    store/F-Droid listing texts (en-US, de-DE)
 ```
 
 Convention plugins: `kuma.android.application`, `kuma.android.library`, `kuma.android.library.compose`,

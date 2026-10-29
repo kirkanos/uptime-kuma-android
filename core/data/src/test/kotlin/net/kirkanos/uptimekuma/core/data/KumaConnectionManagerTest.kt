@@ -3,7 +3,11 @@ package net.kirkanos.uptimekuma.core.data
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
@@ -14,6 +18,7 @@ import net.kirkanos.uptimekuma.core.data.connection.ConnectionTimings
 import net.kirkanos.uptimekuma.core.data.connection.KumaApiFactory
 import net.kirkanos.uptimekuma.core.data.connection.KumaConnectionManager
 import net.kirkanos.uptimekuma.core.data.connection.KumaConnectionManager.Companion.TOKEN_KEY
+import net.kirkanos.uptimekuma.core.data.connection.NetworkMonitor
 import net.kirkanos.uptimekuma.core.kumaclient.KumaClientState
 import net.kirkanos.uptimekuma.core.kumaclient.KumaEvent
 import net.kirkanos.uptimekuma.core.kumaclient.LoginResponse
@@ -44,6 +49,10 @@ class KumaConnectionManagerTest {
     private val stored = ServerConfig(baseUrl = "https://kuma.example", username = "admin")
     private lateinit var configStore: FakeConfigStore
     private val scopes = mutableListOf<CoroutineScope>()
+    private val network = MutableSharedFlow<Long?>(replay = 1)
+    private var networkSubscriptions = 0
+    private val networkMonitor =
+        NetworkMonitor { network.onStart { networkSubscriptions++ }.onCompletion { networkSubscriptions-- } }
 
     @AfterEach
     fun cancelScopes() = scopes.forEach { it.cancel() }
@@ -58,6 +67,7 @@ class KumaConnectionManagerTest {
             logoutHooks = setOf(LogoutHook { events += "hook(token=${secrets.values[TOKEN_KEY]})" }),
             scope = CoroutineScope(SupervisorJob() + StandardTestDispatcher(testScheduler)).also { scopes += it },
             timings = timings,
+            networkMonitor = networkMonitor,
         )
     }
 
@@ -296,5 +306,67 @@ class KumaConnectionManagerTest {
             assertEquals(clearsBefore + 1, cache.clears)
             assertTrue(apis.first().closed)
             assertEquals("https://other.example", configStore.current()?.baseUrl)
+        }
+
+    @Test
+    fun `network change in foreground reconnects at once and logs in by token again`() =
+        runTest {
+            secrets.values[TOKEN_KEY] = "jwt-1"
+            network.emit(100L)
+            val m = manager(stored)
+            m.setForeground(true)
+            advanceUntilIdle()
+            val api = apis.single()
+            assertEquals(1, networkSubscriptions)
+            assertFalse("reconnectNow" in api.calls, "the initial network is not a change")
+
+            network.emit(null) // offline: nothing to do, Socket.IO notices on its own
+            advanceUntilIdle()
+            assertFalse("reconnectNow" in api.calls)
+
+            network.emit(200L) // back online on another network (e.g. Wi-Fi -> mobile)
+            runCurrent()
+            assertEquals(1, api.calls.count { it == "reconnectNow" })
+            assertEquals(ConnectionState.Connecting, m.state.value)
+            api.setState(KumaClientState.Connected)
+            runCurrent()
+            api.setState(KumaClientState.Ready(autoLogin = false))
+            advanceUntilIdle()
+            assertEquals(2, api.calls.count { it == "loginByToken:jwt-1" })
+            assertEquals("2.5.8", connected(m.state.value))
+            assertEquals(1, apis.size, "same client, no socket leak")
+        }
+
+    @Test
+    fun `network changes are ignored in background and the callback is unregistered`() =
+        runTest {
+            secrets.values[TOKEN_KEY] = "jwt-1"
+            network.emit(100L)
+            val m = manager(stored)
+            m.setForeground(true)
+            advanceUntilIdle()
+            m.setForeground(false)
+            advanceUntilIdle()
+            assertEquals(0, networkSubscriptions, "no network callback while in background")
+            network.emit(200L)
+            advanceUntilIdle()
+            assertTrue(apis.none { "reconnectNow" in it.calls })
+        }
+
+    @Test
+    fun `a dropped transport during a request resets authentication until the token login succeeds`() =
+        runTest {
+            secrets.values[TOKEN_KEY] = "jwt-1"
+            val m = manager(stored)
+            m.setForeground(true)
+            advanceUntilIdle()
+            val api = apis.single()
+            api.setState(KumaClientState.ConnectFailed("timeout", reconnecting = true))
+            runCurrent()
+            assertTrue(m.state.value is ConnectionState.Failed)
+            val call = async { runCatching { m.withApi { it.getTags() } } }
+            advanceTimeBy(timings.readyTimeoutMillis + 1)
+            val error = (call.await().exceptionOrNull() as KumaException).error
+            assertEquals(KumaError.Kind.NETWORK, error.kind, "fails with the transport error, not a stale session")
         }
 }

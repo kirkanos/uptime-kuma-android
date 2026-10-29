@@ -17,8 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,7 +63,8 @@ fun UptimeBadge(
             stringResource(R.string.core_ui_uptime_description, text)
         }
     Surface(
-        modifier = modifier.semantics { contentDescription = description },
+        // One node with the spoken form ("Uptime 99.9 percent"), not the badge plus its raw text.
+        modifier = modifier.clearAndSetSemantics { contentDescription = description },
         shape = CircleShape,
         color = color.copy(alpha = 0.18f).compositeOver(MaterialTheme.colorScheme.surface),
         contentColor = MaterialTheme.colorScheme.onSurface,

@@ -1,0 +1,68 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please do not post passwords, tokens or private server URLs.
+        Security problems: see SECURITY.md instead of opening an issue.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: Settings -> About
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: kuma-version
+    attributes:
+      label: Uptime Kuma version
+      placeholder: 2.5.8
+    validations:
+      required: true
+  - type: input
+    id: android
+    attributes:
+      label: Android version and device
+      placeholder: Android 15, Pixel 8
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Login / connection
+        - Dashboard / monitor details
+        - Monitor editor
+        - Push alerts (ntfy / UnifiedPush)
+        - Maintenance / status pages
+        - Widget / Quick Settings tile
+        - Other
+  - type: input
+    id: push
+    attributes:
+      label: Push setup (if relevant)
+      description: ntfy server version, ntfy app version, distributor
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: "Optional: `adb logcat -s KumaData KumaPushService AlertNotifier` output around the problem (remove tokens)."
+      render: text

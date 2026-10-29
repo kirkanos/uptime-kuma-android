@@ -3,6 +3,7 @@ package net.kirkanos.uptimekuma.core.data.connection
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
@@ -13,8 +14,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -71,6 +75,7 @@ internal class KumaConnectionManager
         private val logoutHooks: Set<@JvmSuppressWildcards LogoutHook>,
         @DataScope private val scope: CoroutineScope,
         private val timings: ConnectionTimings,
+        private val networkMonitor: NetworkMonitor = NetworkMonitor.NONE,
     ) {
         private val sync = KumaEventSync(cache)
         private val mutex = Mutex()
@@ -79,6 +84,7 @@ internal class KumaConnectionManager
         private var graceJob: Job? = null
 
         @Volatile private var foreground = false
+        private val foregroundFlow = MutableStateFlow(false)
 
         @Volatile private var interactiveLogin = false
 
@@ -112,6 +118,16 @@ internal class KumaConnectionManager
                     }
                 }
             }
+            // Only while in foreground: a changed default network means the live socket is dead or
+            // waiting in backoff, so reconnect right away. The first value of every subscription is
+            // the current network (no change) and is skipped.
+            scope.launch {
+                @OptIn(ExperimentalCoroutinesApi::class)
+                foregroundFlow
+                    .flatMapLatest { inForeground ->
+                        if (inForeground) networkMonitor.defaultNetwork().drop(1) else emptyFlow()
+                    }.collect { network -> if (network != null) onNetworkChanged() }
+            }
         }
 
         /** One socket plus the coroutines that feed its events into the cache. */
@@ -138,6 +154,7 @@ internal class KumaConnectionManager
 
         fun setForeground(isForeground: Boolean) {
             foreground = isForeground
+            foregroundFlow.value = isForeground
             graceJob?.cancel()
             graceJob =
                 scope.launch {
@@ -439,6 +456,18 @@ internal class KumaConnectionManager
             if (session === s && !s.closed) mutableState.value = newState
         }
 
+        /** The device got (another) default network while in foreground: skip the reconnect backoff. */
+        private suspend fun onNetworkChanged() {
+            mutex.withLock {
+                val s = session?.takeIf { !it.closed } ?: return
+                if (!foreground) return
+                DataLog.i("Default network changed, reconnecting now")
+                s.authenticated.value = false
+                setState(s, ConnectionState.Connecting)
+                s.api.reconnectNow()
+            }
+        }
+
         // ---- socket callbacks -------------------------------------------------------------------
 
         private suspend fun onClientState(
@@ -449,7 +478,9 @@ internal class KumaConnectionManager
                 KumaClientState.Idle -> {}
 
                 KumaClientState.Connecting -> {
-                    if (!s.authenticated.value) setState(s, ConnectionState.Connecting)
+                    // connect() or reconnectNow(): a new transport, never authenticated yet.
+                    s.authenticated.value = false
+                    setState(s, ConnectionState.Connecting)
                 }
 
                 KumaClientState.Connected -> {
@@ -469,6 +500,7 @@ internal class KumaConnectionManager
                 }
 
                 is KumaClientState.ConnectFailed -> {
+                    s.authenticated.value = false
                     setState(s, ConnectionState.Failed(KumaError(KumaError.Kind.NETWORK, clientState.message)))
                 }
             }

@@ -1,0 +1,1 @@
+Erste Version: Live-Dashboard und Monitor-Details, Monitor-Editor für alle Typen, Push-Alarme über ntfy/UnifiedPush mit Stummschalten pro Monitor und Ruhezeiten, Wartungsfenster, Statusseiten, Widget und Schnelleinstellungs-Kachel. Benötigt Uptime Kuma 2.x.

@@ -34,6 +34,14 @@ interface KumaApi {
     /** Disconnects and releases all resources; the instance cannot be used afterwards. */
     fun close() = disconnect()
 
+    /**
+     * Drops the current transport (if any) and connects again right away, skipping Socket.IO's
+     * reconnect backoff (up to 30 s). Used when the device switched networks or got connectivity
+     * back: the old TCP connection is dead but would only be noticed after the ping timeout.
+     * No-op when [connect] was never called or after [disconnect]/[close].
+     */
+    fun reconnectNow() {}
+
     /** Suspends until the server sent `loginRequired`/`autoLogin` on the current connection. */
     suspend fun awaitReady(timeoutMillis: Long = DEFAULT_TIMEOUT_MILLIS): KumaClientState.Ready
 

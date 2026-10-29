@@ -111,6 +111,19 @@ class KumaClient(
         }
     }
 
+    override fun reconnectNow() {
+        synchronized(lock) {
+            val current = socket ?: return
+            // Listeners first, so the old socket's disconnect does not report state for the new one.
+            current.off()
+            current.close()
+            failPendingAcks("Reconnecting")
+            // Set before connecting: callbacks of the new socket wait for `lock` (isCurrent) and win.
+            mutableState.value = KumaClientState.Connecting
+            socket = createSocket().also { it.connect() }
+        }
+    }
+
     override fun disconnect() {
         synchronized(lock) {
             socket?.let {

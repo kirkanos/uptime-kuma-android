@@ -1,6 +1,7 @@
 package net.kirkanos.uptimekuma.core.data.cache
 
-import androidx.room.withTransaction
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
 import net.kirkanos.uptimekuma.core.data.db.KumaDatabase
 import net.kirkanos.uptimekuma.core.data.db.MaintenanceMonitorEntity
 import net.kirkanos.uptimekuma.core.data.db.TagEntity
@@ -26,8 +27,16 @@ internal class RoomKumaCache
         private val stats get() = db.statsDao()
         private val maintenance get() = db.maintenanceDao()
 
+        /**
+         * One write transaction; DAO calls inside [block] run on the same writer connection. Uses Room's
+         * connection API (instead of `withTransaction`) so the cache also works with an `SQLiteDriver`,
+         * e.g. the bundled driver in JVM tests.
+         */
+        private suspend fun <R> transaction(block: suspend () -> R): R =
+            db.useWriterConnection { connection -> connection.immediateTransaction { block() } }
+
         override suspend fun replaceMonitors(monitors: Collection<MonitorDto>) =
-            db.withTransaction {
+            transaction {
                 val ids = monitors.map { it.id }
                 this.monitors.deleteAllExcept(ids)
                 this.monitors.deleteAllTags()
@@ -40,7 +49,7 @@ internal class RoomKumaCache
             }
 
         override suspend fun upsertMonitors(monitors: Collection<MonitorDto>) =
-            db.withTransaction {
+            transaction {
                 this.monitors.deleteTagsOf(monitors.map { it.id })
                 writeMonitors(monitors)
                 monitors.forEach { setMaintenanceInternal(it.id, it.maintenance) }
@@ -54,7 +63,7 @@ internal class RoomKumaCache
         }
 
         override suspend fun deleteMonitor(monitorId: Long) =
-            db.withTransaction {
+            transaction {
                 monitors.delete(monitorId)
                 monitors.deleteTagsOf(listOf(monitorId))
                 heartbeats.deleteOf(monitorId)
@@ -75,14 +84,14 @@ internal class RoomKumaCache
             monitorId: Long,
             beats: List<Heartbeat>,
             replace: Boolean,
-        ) = db.withTransaction {
+        ) = transaction {
             if (replace) heartbeats.deleteOf(monitorId)
             heartbeats.upsert(beats.filter { it.monitorId == monitorId }.map { it.toEntity() })
             heartbeats.trim(monitorId, HeartbeatBuffer.KEEP_RECENT, HeartbeatBuffer.KEEP_IMPORTANT)
         }
 
         override suspend fun addHeartbeat(beat: Heartbeat) =
-            db.withTransaction {
+            transaction {
                 heartbeats.upsert(listOf(beat.toEntity()))
                 heartbeats.trim(beat.monitorId, HeartbeatBuffer.KEEP_RECENT, HeartbeatBuffer.KEEP_IMPORTANT)
             }
@@ -107,14 +116,14 @@ internal class RoomKumaCache
         private suspend fun updateUptime(
             monitorId: Long,
             change: (UptimeEntity) -> UptimeEntity,
-        ) = db.withTransaction {
+        ) = transaction {
             stats.upsertUptime(change(stats.uptime(monitorId) ?: UptimeEntity(monitorId)))
         }
 
         override suspend fun putCert(cert: CertInfo) = stats.upsertCert(cert.toEntity())
 
         override suspend fun replaceNotifications(notifications: List<NotificationDto>) =
-            db.withTransaction {
+            transaction {
                 val dao = db.notificationDao()
                 dao.deleteAllExcept(notifications.map { it.id })
                 dao.upsert(notifications.map { it.toEntity() })
@@ -123,14 +132,14 @@ internal class RoomKumaCache
         override suspend fun deleteNotification(id: Long) = db.notificationDao().delete(id)
 
         override suspend fun replaceTags(tags: List<Tag>) =
-            db.withTransaction {
+            transaction {
                 val dao = db.tagDao()
                 dao.deleteAllExcept(tags.map { it.id })
                 dao.upsert(tags.map { it.toEntity() })
             }
 
         override suspend fun replaceMaintenanceMonitors(monitorIds: Set<Long>) =
-            db.withTransaction {
+            transaction {
                 maintenance.deleteAll()
                 maintenance.upsert(monitorIds.map { MaintenanceMonitorEntity(it) })
             }
@@ -152,7 +161,7 @@ internal class RoomKumaCache
         }
 
         override suspend fun clear() =
-            db.withTransaction {
+            transaction {
                 monitors.deleteAll()
                 monitors.deleteAllTags()
                 heartbeats.deleteAll()

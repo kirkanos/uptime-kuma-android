@@ -252,6 +252,12 @@ internal class FakeKumaApi(
         disconnect()
     }
 
+    /** Drops the transport; tests drive the new one with [setState] (Connected, then Ready). */
+    override fun reconnectNow() {
+        calls += "reconnectNow"
+        mutableState.value = KumaClientState.Connecting
+    }
+
     fun setState(state: KumaClientState) {
         mutableState.value = state
     }
