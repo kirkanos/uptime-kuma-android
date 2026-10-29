@@ -110,6 +110,41 @@ class MonitorEditorRepositoryTest {
         }
 
     @Test
+    fun `add drops fields an older server does not know and retries`() =
+        runTest {
+            var attempts = 0
+            remote.responses["add"] = { args ->
+                attempts++
+                val payload = args.single() as JsonObject
+                if ("retryInterval" in payload) {
+                    JsonValues.toJson(
+                        mapOf(
+                            "ok" to false,
+                            "msg" to "SQLITE_ERROR: table monitor has no column named retry_interval",
+                        ),
+                    )
+                } else {
+                    AckFixtures.response("add.ok")
+                }
+            }
+            val draft =
+                MonitorDrafts
+                    .newDraft(spec, "http")
+                    .with("name", "n")
+                    .with("url", "https://example.com")
+            assertEquals(18L, repo.save(draft))
+            assertEquals(2, attempts)
+            assertFalse(
+                "ntpWarnThreshold" in (
+                    remote.calls
+                        .last()
+                        .second
+                        .single() as JsonObject
+                ),
+            )
+        }
+
+    @Test
     fun `add sends the add payload then attaches tags`() =
         runTest {
             remote.responses["add"] = { AckFixtures.response("add.ok") }

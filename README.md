@@ -113,7 +113,7 @@ Every pull request runs the integration tests (`:core:kuma-client:integrationTes
 | Kuma | Status | Notes |
 |---|---|---|
 | 2.5.8 | supported, reference | API docs (`docs/kuma-api/`) and fixtures were recorded from it |
-| 2.4.0 | works with a limitation (CI job allowed to fail) | Login, live sync, beats, charts, pause/resume, notifications and push work. **Creating or editing monitors fails**: Kuma 2.4 writes every key of the monitor payload as a database column and rejects the 2.5-only fields `ntp*Threshold` and `sshAuthMethod` (`SQLITE_ERROR: table monitor has no column named ...`) |
+| 2.4.0 | works (CI job allowed to fail) | Everything works, including creating and editing monitors: Kuma 2.4 rejects 2.5-only monitor fields (`ntp*Threshold`, `sshAuthMethod`) with `no column named …`, and the app retries without the reported field. Verified live: 33 of 34 monitor types can be created; the SFTP type only exists from Kuma 2.5.4. |
 | 2.0 - 2.3 | untested | logged as "untested 2.x" and allowed |
 | 1.x | not supported | rejected at login |
 

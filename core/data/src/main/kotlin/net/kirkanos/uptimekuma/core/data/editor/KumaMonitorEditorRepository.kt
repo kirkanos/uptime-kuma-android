@@ -63,7 +63,7 @@ internal class KumaMonitorEditorRepository
             val existing = draft.id
             val id =
                 if (existing == null) {
-                    val ack = remote.call("add", JsonValues.toJson(builder.forAdd(draft)))
+                    val ack = addTolerantToOlderServers(builder.forAdd(draft))
                     ack["monitorID"].let { JsonValues.toKotlin(it) }.asId()
                         ?: throw KumaException(KumaError(KumaError.Kind.UNKNOWN, "add ack without monitorID"))
                 } else {
@@ -78,6 +78,26 @@ internal class KumaMonitorEditorRepository
                 throw TagSyncException(id, e)
             }
             return id
+        }
+
+        /**
+         * `add` imports the payload 1:1 as DB columns, so an older Kuma (e.g. 2.4) rejects fields that
+         * only exist in newer versions with "SQLITE_ERROR: table monitor has no column named X". Drop
+         * exactly that field and retry; the server then uses its own default for it.
+         */
+        private suspend fun addTolerantToOlderServers(payload: Map<String, Any?>): JsonObject {
+            val fields = LinkedHashMap(payload)
+            repeat(MAX_UNKNOWN_COLUMN_RETRIES) {
+                try {
+                    return remote.call("add", JsonValues.toJson(fields))
+                } catch (e: KumaException) {
+                    // Kuma (redbean) stores camelCase keys as snake_case columns and reports the column.
+                    val column = UNKNOWN_COLUMN.find(e.error.message.orEmpty())?.groupValues?.get(1) ?: throw e
+                    val key = fields.keys.firstOrNull { it == column || it.toSnakeCase() == column } ?: throw e
+                    fields.remove(key)
+                }
+            }
+            return remote.call("add", JsonValues.toJson(fields))
         }
 
         private suspend fun syncTags(
@@ -145,5 +165,13 @@ internal class KumaMonitorEditorRepository
             @Suppress("UNCHECKED_CAST")
             return (JsonValues.toKotlin(monitor) as? Map<String, Any?>)
                 ?: throw KumaException(KumaError(KumaError.Kind.UNKNOWN, "getMonitor ack without monitor"))
+        }
+
+        private fun String.toSnakeCase(): String = replace(CAMEL_HUMP) { "_" + it.value.lowercase() }
+
+        private companion object {
+            val CAMEL_HUMP = Regex("[A-Z]")
+            const val MAX_UNKNOWN_COLUMN_RETRIES = 8
+            val UNKNOWN_COLUMN = Regex("""no column named (\w+)""")
         }
     }
