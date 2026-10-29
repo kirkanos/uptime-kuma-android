@@ -11,5 +11,5 @@ data class ServerInfo(
 ) {
     /** True when the server advertises a newer release than the one it is running. */
     val updateAvailable: Boolean
-        get() = latestVersion != null && latestVersion != version
+        get() = latestVersion != null && ServerDetails.compareVersions(latestVersion, version) > 0
 }

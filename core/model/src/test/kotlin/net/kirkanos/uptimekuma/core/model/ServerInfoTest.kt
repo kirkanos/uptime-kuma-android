@@ -16,6 +16,8 @@ class ServerInfoTest {
     fun `no update when latest version is unknown or equal`() {
         assertFalse(ServerInfo(version = "2.0.0").updateAvailable)
         assertFalse(ServerInfo(version = "2.0.0", latestVersion = "2.0.0").updateAvailable)
+        // Kuma's update check can report an older release than the running one (seen: 2.5.8 vs 2.5.5).
+        assertFalse(ServerInfo(version = "2.5.8", latestVersion = "2.5.5").updateAvailable)
     }
 
     @Test
