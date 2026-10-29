@@ -81,8 +81,9 @@ First public version.
 - CI: lint, detekt, ktlint, unit tests, translation check, minified release build signed with a
   throwaway key, integration tests against Uptime Kuma 2.5.8 and 2.4.0 containers. Both flavors are
   built, linted and tested; CI fails if the `foss` APK contains a Firebase or Play services class.
-- Release workflow builds the signed APKs for `vX.Y.Z` tags (tag must match `VERSION_NAME`) and
-  publishes `uptime-kuma-android-<version>.apk` (`full`) and `uptime-kuma-android-<version>-foss.apk`,
+- Release pipeline (Woodpecker, release key sops-encrypted in `signing/`, never stored at GitHub)
+  builds the signed APKs for `vX.Y.Z` tags (tag must match `VERSION_NAME`) and publishes them as a
+  GitHub release: `uptime-kuma-android-<version>.apk` (`full`) and `uptime-kuma-android-<version>-foss.apk`,
   each with a SHA-256 checksum and the R8 mapping file.
 
 [Unreleased]: https://keepachangelog.com/en/1.1.0/

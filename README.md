@@ -131,6 +131,12 @@ over it):
   build the `foss` flavor).
 
 Release APKs are signed with the project's release key; the signature stays the same across updates.
+SHA-256 fingerprint of the signing certificate (check with `apksigner verify --print-certs` or
+[AppVerifier](https://github.com/soupslurpr/AppVerifier)):
+
+```
+7A:11:2B:64:2B:2D:6F:47:74:EC:1B:3F:41:DC:83:8D:B9:78:3F:E6:73:FB:5F:09:C0:CD:C1:C3:F6:7D:A7:3D
+```
 
 ## Build from source
 

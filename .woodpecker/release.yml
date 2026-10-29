@@ -1,0 +1,78 @@
+# Release: builds the signed APKs (full + foss) for a tag vX.Y.Z and publishes them as a GitHub
+# release. Same approach as MagicPortal: the release key is sops-encrypted in signing/ (age
+# recipient of the stack .env.enc files) and decrypted with the Woodpecker secret sops_age_key, so
+# GitHub never sees the key. Pull request checks stay in GitHub Actions (.github/workflows/ci.yml).
+#
+# Woodpecker needs: this repository activated and trusted (volumes), secrets sops_age_key and
+# github_release_token (fine-grained token, this repository only, "Contents: read and write").
+#
+# The SDK image ships platform 36; the app compiles against 37 ("platforms;android-37.0"), installed
+# per run. The Gradle home (wrapper, dependencies, the JDK 21 daemon toolchain from foojay) lives on
+# the agent's host. The agent is x86_64: AAPT2 from Google's Maven exists for Linux only there.
+labels:
+  backend: docker
+
+when:
+  - event: tag
+    ref: refs/tags/v*
+
+steps:
+  - name: check tag
+    image: alpine:3
+    commands:
+      - TAG_VERSION="${CI_COMMIT_TAG#v}"
+      - VERSION_NAME=$(sed -n 's/^VERSION_NAME=//p' gradle.properties)
+      - echo "$CI_COMMIT_TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$' || (echo "Release tags must look like vX.Y.Z, got $CI_COMMIT_TAG" && exit 1)
+      - test "$TAG_VERSION" = "$VERSION_NAME" || (echo "Tag $CI_COMMIT_TAG does not match VERSION_NAME=$VERSION_NAME in gradle.properties" && exit 1)
+      - echo "Releasing $VERSION_NAME (versionCode $(sed -n 's/^VERSION_CODE=//p' gradle.properties))"
+
+  - name: decrypt release key
+    image: registry.kirkanos.net/images/ci-build:alpine
+    pull: true
+    environment:
+      SOPS_AGE_KEY:
+        from_secret: sops_age_key
+    commands:
+      - sops --decrypt --input-type binary --output-type binary --output signing/release.jks signing/release.jks.enc
+      - sops --decrypt --input-type dotenv --output-type dotenv --output signing/signing.env signing/signing.env.enc
+
+  - name: build signed apks
+    image: ghcr.io/cirruslabs/android-sdk:36
+    volumes:
+      - /services/common/gradle-uptime-kuma-android:/root/.gradle
+    environment:
+      GRADLE_OPTS: -Dorg.gradle.daemon=false
+    commands:
+      - yes | sdkmanager --licenses > /dev/null
+      - sdkmanager --install "platforms;android-37.0" > /dev/null
+      - set -a && . signing/signing.env && set +a
+      - export KEYSTORE_FILE=$PWD/signing/release.jks
+      # assembleFossDebug: unminified foss APK for the "no Google classes" check below.
+      - ./gradlew --console=plain assembleRelease assembleFossDebug
+      - rm -f signing/release.jks signing/signing.env
+      - mkdir -p dist
+      - export VERSION="${CI_COMMIT_TAG#v}"
+      - mv app/build/outputs/apk/full/release/app-full-release.apk "dist/uptime-kuma-android-$VERSION.apk"
+      - mv app/build/outputs/apk/foss/release/app-foss-release.apk "dist/uptime-kuma-android-$VERSION-foss.apk"
+      # R8 mappings to de-obfuscate stack traces users report.
+      - cp app/build/outputs/mapping/fullRelease/mapping.txt "dist/uptime-kuma-android-$VERSION-mapping.txt"
+      - cp app/build/outputs/mapping/fossRelease/mapping.txt "dist/uptime-kuma-android-$VERSION-foss-mapping.txt"
+      - export APKSIGNER=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)/apksigner
+      - for apk in dist/*.apk; do $APKSIGNER verify --print-certs "$apk" | grep -m1 SHA-256 || exit 1; done
+      - cd dist && for apk in *.apk; do sha256sum "$apk" > "$apk.sha256"; done && cat *.sha256
+
+  - name: foss without google classes
+    image: python:3-alpine
+    commands:
+      - python3 scripts/check-foss-apk.py app/build/outputs/apk/foss/debug/app-foss-debug.apk
+
+  - name: github release
+    image: woodpeckerci/plugin-release
+    settings:
+      api_key:
+        from_secret: github_release_token
+      files:
+        - "dist/*"
+      title: ${CI_COMMIT_TAG}
+      generate_release_notes: true
+      file_exists: fail

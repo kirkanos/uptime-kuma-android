@@ -61,7 +61,7 @@ Firebase values are entered at runtime (see [docs/push/firebase.md](docs/push/fi
 
 Verification that `foss` is free of Google code: `scripts/check-foss-apk.py` searches every dex of the
 unminified `foss` debug APK for `Lcom/google/firebase/…` and `Lcom/google/android/gms/…` type
-descriptors (CI and the release workflow run it). As of this change it reports 0 for `foss` and 1422 for
+descriptors (CI and the release pipeline run it). As of this change it reports 0 for `foss` and 1422 for
 `full`; the merged `foss` manifest has no Firebase/gms component, permission or meta-data. `foss` still
 contains other `com.google.*` packages that are plain open-source libraries pulled in by the UnifiedPush
 connector (Tink `com.google.crypto`, protobuf, gson, errorprone annotations), not Google services.
@@ -84,7 +84,7 @@ new push to the same ref cancels the running pipeline.
 ## Version
 
 `VERSION_NAME` and `VERSION_CODE` in `gradle.properties` are the single source; `app/build.gradle.kts`
-reads them. The release workflow refuses tags other than `v<VERSION_NAME>`.
+reads them. The release pipeline refuses tags other than `v<VERSION_NAME>`.
 
 ## Release signing
 
@@ -102,15 +102,28 @@ reads them. The release workflow refuses tags other than `v<VERSION_NAME>`.
 If neither is complete the release build type is left unsigned (the build still succeeds, the APK
 cannot be installed) unless `-PsignReleaseWithDebugKey=true` is passed, which signs it with the local
 debug keystore (CI uses this on pull requests; the baseline profile tasks need it too, because the
-plugin's `nonMinifiedRelease`/`benchmarkRelease` build types copy the release signing config). The `Release` GitHub workflow (`.github/workflows/release.yml`, triggered by
-`v*` tags) decodes the secret `KEYSTORE_BASE64` into `release.keystore`, exports the three
-password/alias secrets, runs `assembleRelease` (both flavors) plus the foss class check, and publishes
-`uptime-kuma-android-<version>.apk` (`full`) and `uptime-kuma-android-<version>-foss.apk`, each with a
-`.sha256` file and its R8 mapping, as a GitHub release. Required repository secrets:
-`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`.
+plugin's `nonMinifiedRelease`/`benchmarkRelease` build types copy the release signing config).
 
-Create a keystore with `keytool -genkeypair -v -keystore release.keystore -alias uptimekuma -keyalg RSA -keysize 4096 -validity 10000`
-and encode it with `base64 -w0 release.keystore` (Linux) / `base64 -i release.keystore` (macOS).
+Releases are built by **Woodpecker**, not by GitHub Actions, so GitHub never holds the release key
+(same approach as the maintainer's other apps):
+
+- `signing/release.jks.enc`: the release keystore (PKCS12, alias `uptimekuma`, RSA 4096, valid
+  30 years), sops-encrypted (binary) for the maintainer's age recipient.
+- `signing/signing.env.enc`: `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` (sops, dotenv).
+- `.woodpecker/release.yml`, on tags `vX.Y.Z`: checks the tag against `VERSION_NAME`, decrypts both
+  files with the Woodpecker secret `sops_age_key`, runs `./gradlew assembleRelease assembleFossDebug`
+  with `KEYSTORE_FILE` and the three values from `signing.env`, deletes the decrypted key, verifies the
+  signatures with `apksigner`, runs `scripts/check-foss-apk.py`, and publishes
+  `uptime-kuma-android-<version>.apk` (`full`) and `uptime-kuma-android-<version>-foss.apk`, each with a
+  `.sha256` file and its R8 mapping, as a GitHub release (`woodpeckerci/plugin-release`, secret
+  `github_release_token`: fine-grained token for this repository, *Contents: read and write*).
+  The repository must be *trusted* in Woodpecker (the Gradle home is a host volume).
+
+Certificate SHA-256: `7A:11:2B:64:2B:2D:6F:47:74:EC:1B:3F:41:DC:83:8D:B9:78:3F:E6:73:FB:5F:09:C0:CD:C1:C3:F6:7D:A7:3D`.
+
+Decrypt locally (needs the age key): `sops --decrypt --input-type binary --output-type binary
+signing/release.jks.enc > release.jks`. **Do not lose the key**: Android installs an update only with the
+same signature. A copy belongs in the password manager.
 
 ## Project layout
 

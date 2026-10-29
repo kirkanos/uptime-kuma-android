@@ -48,4 +48,4 @@ Copy the keys from `values/strings.xml` of a module into `values-<lang>/strings.
 
 1. Update `VERSION_NAME` / `VERSION_CODE` in `gradle.properties`, move the `Unreleased` section of
    CHANGELOG.md to the new version, add `fastlane/metadata/android/*/changelogs/<versionCode>.txt`.
-2. Tag `vX.Y.Z` (must equal `VERSION_NAME`) and push the tag; the Release workflow does the rest.
+2. Tag `vX.Y.Z` (must equal `VERSION_NAME`) and push the tag; the Woodpecker release pipeline (`.woodpecker/release.yml`) does the rest.

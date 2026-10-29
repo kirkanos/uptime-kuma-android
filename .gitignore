@@ -22,3 +22,7 @@ infra/.data/
 
 # Claude Code worktrees
 .claude/
+
+# Decrypted release key material and release output (see BUILD.md, Release signing)
+signing/signing.env
+/dist/
