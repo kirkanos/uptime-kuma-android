@@ -10,6 +10,7 @@ import net.kirkanos.uptimekuma.push.di.PushScope
 import net.kirkanos.uptimekuma.push.firebase.FirebaseSettingsStore
 import net.kirkanos.uptimekuma.push.firebase.FirebaseTransport
 import net.kirkanos.uptimekuma.push.notify.NotificationChannels
+import net.kirkanos.uptimekuma.push.notify.ReminderAlarm
 import java.util.Optional
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,22 +19,28 @@ import javax.inject.Singleton
  * Call [initialize] from `Application.onCreate`: creates the notification channels, initializes Firebase with the
  * user's stored project values (`full` flavor only; must happen before `FirebaseMessagingService` is bound, which
  * Android does only after `Application.onCreate`) and, if ntfy push is set up, re-registers with the saved
- * distributor (idempotent; a changed endpoint is then pushed to Kuma).
+ * distributor (idempotent; a changed endpoint is then pushed to Kuma). Also sets the reminder alarm of open DOWN
+ * alerts again (lost when the app was force-stopped) and keeps it in line with the reminder setting.
  */
 @Singleton
 class PushInitializer
     @Inject
-    constructor(
+    internal constructor(
         @ApplicationContext private val context: Context,
         private val repository: PushRepositoryImpl,
         @PushScope private val scope: CoroutineScope,
         private val firebase: Optional<FirebaseTransport>,
         private val firebaseSettings: FirebaseSettingsStore,
+        private val reminderAlarm: ReminderAlarm,
     ) {
         fun initialize() {
             NotificationChannels.ensure(context)
             initializeFirebase()
             scope.launch { repository.reRegisterIfConfigured() }
+            scope.launch {
+                reminderAlarm.reschedule()
+                reminderAlarm.followSettings()
+            }
         }
 
         /**

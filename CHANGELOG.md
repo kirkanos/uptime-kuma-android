@@ -7,6 +7,14 @@ All notable changes to this project are documented in this file. The format is b
 
 ## [Unreleased]
 
+### Added
+
+- Repeating DOWN alerts: an outage rings again every 10 minutes (Settings → *Repeat while down*: off,
+  5, 10, 15, 30 or 60 minutes) until the monitor is back up or you acknowledge the alert, with the new
+  *Acknowledge* button or by tapping the notification. Before each reminder the app syncs with Kuma
+  and closes the alert if the monitor is no longer down (lost UP push, paused, maintenance, deleted).
+  Reminders use an exact alarm, ring in Doze and survive reboots and app updates.
+
 ## [0.1.0] - 2026-10-29
 
 First public version.

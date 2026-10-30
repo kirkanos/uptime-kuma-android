@@ -121,4 +121,10 @@ token there. Non-secret config lives in the `kuma_settings` DataStore. Both are 
   keeps the old transport working.
 - Endpoint changes (new UnifiedPush endpoint, rotated FCM token) are stored in `PushRegistration.endpoint` and
   written to Kuma by `EndpointUpdateWorker`.
+- Repeating DOWN alerts: a shown DOWN stays open in `ActiveDownAlerts` (SharedPreferences, one JSON entry per
+  monitor) until an UP / other status arrives or the user acknowledges it (notification button ->
+  `AlertReminderReceiver`, or tapping the alert -> `MainActivity` -> `AlertNotifier.acknowledge`). `ReminderAlarm`
+  keeps one `setExactAndAllowWhileIdle` alarm (`USE_EXACT_ALARM`; inexact fallback) for the earliest due reminder
+  (`ReminderPlan`), re-armed on app start, reboot and update. `ReminderRunner` syncs once before ringing and resolves alerts of
+  monitors that are no longer down, so a lost UP push cannot ring forever; if the sync fails it rings anyway.
 - Details: [push/README.md](push/README.md) (ntfy), [push/firebase.md](push/firebase.md) (Firebase).

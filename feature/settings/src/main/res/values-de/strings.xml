@@ -21,6 +21,12 @@
     <string name="settings_quiet_hours_summary_on">%1$s – %2$s: nur Ausfälle (DOWN) melden sich</string>
     <string name="settings_quiet_start">Beginn</string>
     <string name="settings_quiet_end">Ende</string>
+    <string name="settings_repeat_down">Wiederholen, solange down</string>
+    <string name="settings_repeat_down_summary_off">Aus: ein Ausfall meldet sich einmal</string>
+    <string name="settings_repeat_down_summary_on">Alle %1$d Min., bis du bestätigst oder der Monitor wieder läuft</string>
+    <string name="settings_repeat_down_off">Aus</string>
+    <string name="settings_repeat_down_every">Alle %1$d Minuten</string>
+    <string name="settings_repeat_down_info">Ein DOWN-Alarm meldet sich erneut, bis du ihn antippst, auf „Bestätigen“ tippst oder der Monitor wieder erreichbar ist. Vor jeder Erinnerung fragt die App bei Kuma nach, ob der Monitor noch down ist.</string>
     <string name="settings_system_notifications">System-Benachrichtigungseinstellungen</string>
     <string name="settings_system_notifications_summary">Töne, Vibration und Wichtigkeit pro Kanal</string>
     <string name="settings_alert_history">Alarmverlauf</string>

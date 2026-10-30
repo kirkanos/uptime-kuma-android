@@ -17,9 +17,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import net.kirkanos.uptimekuma.core.model.AlertRecord
 import net.kirkanos.uptimekuma.core.model.MonitorStatus
 import net.kirkanos.uptimekuma.core.model.PushEvent
+import net.kirkanos.uptimekuma.core.model.RepeatInterval
 import net.kirkanos.uptimekuma.push.AlertPresenter
 import net.kirkanos.uptimekuma.push.NotificationIntents
 import net.kirkanos.uptimekuma.push.R
+import net.kirkanos.uptimekuma.push.alerts.ActiveDownAlert
+import net.kirkanos.uptimekuma.push.alerts.ActiveDownAlerts
 import net.kirkanos.uptimekuma.push.alerts.AlertDecision
 import net.kirkanos.uptimekuma.push.alerts.AlertGate
 import net.kirkanos.uptimekuma.push.alerts.AlertHistoryStore
@@ -37,16 +40,22 @@ import javax.inject.Singleton
  * Every non-duplicate event is written to the in-app alert history ([AlertHistoryStore]); the user's
  * [AlertPreferences][net.kirkanos.uptimekuma.core.model.AlertPreferences] (mutes, quiet hours, UP / certificate
  * switches) decide via [AlertGate] whether it also becomes a system notification.
+ *
+ * A shown DOWN alert stays open in [ActiveDownAlerts] and rings again every
+ * [repeatDown][net.kirkanos.uptimekuma.core.model.AlertPreferences.repeatDown] ([ReminderAlarm], [ReminderRunner])
+ * until the monitor recovers or the user acknowledges it: with the notification's button, or by tapping it.
  */
 @Singleton
 class AlertNotifier
     @Inject
-    constructor(
+    internal constructor(
         @ApplicationContext private val context: Context,
         private val history: AlertHistory,
         private val preferences: DataStoreAlertPreferencesRepository,
         private val gate: AlertGate,
         private val alertLog: AlertHistoryStore,
+        private val active: ActiveDownAlerts,
+        private val alarm: ReminderAlarm,
     ) : AlertPresenter {
         private val manager = NotificationManagerCompat.from(context)
 
@@ -56,8 +65,10 @@ class AlertNotifier
             val status = event.status
             val downSince = monitorId?.let(history::downSince)
             if (!history.accept(monitorId, event.timeMillis, status)) return false
-            val decision = gate.decide(event, preferences.current())
+            val prefs = preferences.current()
+            val decision = gate.decide(event, prefs)
             alertLog.record(event.toRecord(gate.nowMillis(), notified = decision == AlertDecision.SHOW))
+            if (monitorId != null) trackOpenAlert(event, monitorId, decision, downSince)
             if (decision != AlertDecision.SHOW) {
                 Log.i(LOG_TAG, "Alert not shown: $decision")
                 // A silent recovery still resolves the monitor's DOWN notification.
@@ -67,9 +78,23 @@ class AlertNotifier
             NotificationChannels.ensure(context)
             val notification =
                 when {
-                    monitorId == null -> buildGeneric(event)
-                    status == null -> buildMonitorInfo(event, monitorId)
-                    else -> buildMonitorAlert(event, monitorId, status, downSince)
+                    monitorId == null -> {
+                        buildGeneric(event)
+                    }
+
+                    status == null -> {
+                        buildMonitorInfo(event, monitorId)
+                    }
+
+                    else -> {
+                        buildMonitorAlert(
+                            event,
+                            monitorId,
+                            status,
+                            downSince,
+                            prefs.repeatDown != RepeatInterval.OFF,
+                        )
+                    }
                 }
             val tag = if (monitorId == null) TAG_GENERIC else monitorTag(monitorId, status)
             val posted = post(tag, NOTIFICATION_ID, notification)
@@ -82,6 +107,135 @@ class AlertNotifier
             manager.cancel(monitorTag(monitorId, MonitorStatus.DOWN), NOTIFICATION_ID)
         }
 
+        /**
+         * Stops the reminders of the monitor's open DOWN alert. A notification that is still shown stays, silently,
+         * marked as acknowledged. No-op if nothing is open. Called from the notification button and when the user
+         * opens the monitor from the notification.
+         */
+        fun acknowledge(monitorId: Long) {
+            val alert = active.update(monitorId) { it.copy(acknowledged = true) } ?: return
+            alarm.reschedule()
+            if (!isShown(monitorTag(monitorId, MonitorStatus.DOWN))) return
+            val res = context.resources
+            val notification =
+                downBuilder(alert.toEvent(), monitorId, res.getString(R.string.push_alert_down_title, name(alert)))
+                    .setSubText(res.getString(R.string.push_alert_acknowledged))
+                    .setSilent(true)
+                    .build()
+            post(monitorTag(monitorId, MonitorStatus.DOWN), NOTIFICATION_ID, notification)
+        }
+
+        /** The monitor is no longer down although no UP push arrived: close its alert. */
+        internal fun resolve(monitorId: Long) {
+            active.remove(monitorId)
+            cancel(monitorId)
+        }
+
+        /** Rings the open DOWN alert of [alert]'s monitor again. */
+        internal fun remind(
+            alert: ActiveDownAlert,
+            nowMillis: Long,
+        ) {
+            val res = context.resources
+            val since = alert.downSince
+            val title =
+                if (since != null && nowMillis > since) {
+                    res.getString(
+                        R.string.push_alert_still_down_title_duration,
+                        name(alert),
+                        formatDuration(
+                            res,
+                            nowMillis - since,
+                        ),
+                    )
+                } else {
+                    res.getString(R.string.push_alert_still_down_title, name(alert))
+                }
+            NotificationChannels.ensure(context)
+            val notification =
+                downBuilder(alert.toEvent(), alert.monitorId, title)
+                    .addAction(acknowledgeAction(alert.monitorId))
+                    .build()
+            if (post(monitorTag(alert.monitorId, MonitorStatus.DOWN), NOTIFICATION_ID, notification)) {
+                postSummary(notification.channelId)
+            }
+            active.update(alert.monitorId) { it.copy(lastAlertAt = nowMillis, reminders = it.reminders + 1) }
+        }
+
+        /** Opens or closes the monitor's entry in [ActiveDownAlerts] and moves the reminder alarm accordingly. */
+        private fun trackOpenAlert(
+            event: PushEvent,
+            monitorId: Long,
+            decision: AlertDecision,
+            downSince: Long?,
+        ) {
+            val changed =
+                when {
+                    event.status == MonitorStatus.DOWN && decision == AlertDecision.SHOW -> {
+                        active.put(ActiveDownAlert.of(event, monitorId, downSince, gate.nowMillis()))
+                        true
+                    }
+
+                    // Any other heartbeat status ends the outage; a muted DOWN must not ring later.
+                    event.status != null || decision == AlertDecision.MUTED -> {
+                        active.remove(monitorId)
+                    }
+
+                    else -> {
+                        false
+                    }
+                }
+            if (changed) alarm.reschedule()
+        }
+
+        private fun name(alert: ActiveDownAlert): String =
+            alert.monitorName ?: context.resources.getString(R.string.push_monitor_fallback_name, alert.monitorId)
+
+        /** The DOWN notification without actions; the first alert and reminders add the acknowledge button. */
+        private fun downBuilder(
+            event: PushEvent,
+            monitorId: Long,
+            title: String,
+        ): NotificationCompat.Builder =
+            baseBuilder(NotificationChannels.MONITOR_DOWN, monitorId)
+                .setContentTitle(title)
+                .setContentText(event.message)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(bigText(event)))
+                .setSubText(event.target)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_ERROR)
+                .setColor(COLOR_DOWN)
+                .setGroup(GROUP_MONITORS)
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+                .applyWhen(event.timeMillis)
+
+        private fun acknowledgeAction(monitorId: Long): NotificationCompat.Action {
+            val intent =
+                Intent(context, AlertReminderReceiver::class.java)
+                    .setAction(AlertReminderReceiver.ACTION_ACKNOWLEDGE)
+                    .putExtra(AlertReminderReceiver.EXTRA_MONITOR_ID, monitorId)
+            val pending =
+                PendingIntent.getBroadcast(
+                    context,
+                    monitorId.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                )
+            return NotificationCompat.Action
+                .Builder(R.drawable.ic_stat_kuma, context.getString(R.string.push_action_acknowledge), pending)
+                .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
+                .setShowsUserInterface(false)
+                .build()
+        }
+
+        private fun isShown(tag: String): Boolean =
+            runCatching {
+                context
+                    .getSystemService(NotificationManager::class.java)
+                    ?.activeNotifications
+                    ?.any { it.tag == tag && it.id == NOTIFICATION_ID }
+            }.getOrNull() ?: false
+
         fun canPostNotifications(): Boolean =
             manager.areNotificationsEnabled() && hasPostNotificationsPermission(context)
 
@@ -90,6 +244,7 @@ class AlertNotifier
             monitorId: Long,
             status: MonitorStatus,
             downSince: Long?,
+            acknowledgeButton: Boolean,
         ): Notification {
             val res = context.resources
             val name = event.monitorName ?: res.getString(R.string.push_monitor_fallback_name, monitorId)
@@ -123,15 +278,19 @@ class AlertNotifier
                         NotificationChannels.MAINTENANCE to res.getString(R.string.push_alert_maintenance_title, name)
                     }
                 }
-            val isDown = status == MonitorStatus.DOWN
+            if (status == MonitorStatus.DOWN) {
+                val builder = downBuilder(event, monitorId, title)
+                if (acknowledgeButton) builder.addAction(acknowledgeAction(monitorId))
+                return builder.build()
+            }
             return baseBuilder(channel, monitorId)
                 .setContentTitle(title)
                 .setContentText(event.message)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(bigText(event)))
                 .setSubText(event.target)
-                .setPriority(if (isDown) NotificationCompat.PRIORITY_HIGH else NotificationCompat.PRIORITY_DEFAULT)
-                .setCategory(if (isDown) NotificationCompat.CATEGORY_ERROR else NotificationCompat.CATEGORY_STATUS)
-                .setColor(if (isDown) COLOR_DOWN else COLOR_UP)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setCategory(NotificationCompat.CATEGORY_STATUS)
+                .setColor(COLOR_UP)
                 .setGroup(GROUP_MONITORS)
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
                 .applyWhen(event.timeMillis)

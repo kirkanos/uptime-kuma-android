@@ -21,6 +21,12 @@
     <string name="settings_quiet_hours_summary_on">%1$s – %2$s: only outages (DOWN) alert</string>
     <string name="settings_quiet_start">Start</string>
     <string name="settings_quiet_end">End</string>
+    <string name="settings_repeat_down">Repeat while down</string>
+    <string name="settings_repeat_down_summary_off">Off: an outage alerts once</string>
+    <string name="settings_repeat_down_summary_on">Every %1$d min until you acknowledge it or the monitor is back up</string>
+    <string name="settings_repeat_down_off">Off</string>
+    <string name="settings_repeat_down_every">Every %1$d minutes</string>
+    <string name="settings_repeat_down_info">A DOWN alert rings again until you tap it, press Acknowledge, or the monitor recovers. Before each reminder the app checks with Kuma that the monitor is still down.</string>
     <string name="settings_system_notifications">System notification settings</string>
     <string name="settings_system_notifications_summary">Sounds, vibration and importance per channel</string>
     <string name="settings_alert_history">Alert history</string>

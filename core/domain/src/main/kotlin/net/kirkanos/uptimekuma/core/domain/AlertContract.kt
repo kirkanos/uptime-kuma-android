@@ -5,6 +5,7 @@ import net.kirkanos.uptimekuma.core.model.AlertPreferences
 import net.kirkanos.uptimekuma.core.model.AlertRecord
 import net.kirkanos.uptimekuma.core.model.MonitorMute
 import net.kirkanos.uptimekuma.core.model.QuietHours
+import net.kirkanos.uptimekuma.core.model.RepeatInterval
 
 /** Local alert preferences (which push alerts become notifications). Implemented in :push (DataStore). */
 interface AlertPreferencesRepository {
@@ -18,6 +19,8 @@ interface AlertPreferencesRepository {
     suspend fun setNotifyOnCertExpiry(enabled: Boolean)
 
     suspend fun setQuietHours(quietHours: QuietHours)
+
+    suspend fun setRepeatDown(interval: RepeatInterval)
 
     /** Mutes notifications of [monitorId] until [untilMillis] (`null` = until [unmute]). The cache still syncs. */
     suspend fun mute(

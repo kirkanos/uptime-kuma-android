@@ -10,6 +10,7 @@ import net.kirkanos.uptimekuma.core.model.AlertPreferences
 import net.kirkanos.uptimekuma.core.model.AlertRecord
 import net.kirkanos.uptimekuma.core.model.MonitorMute
 import net.kirkanos.uptimekuma.core.model.QuietHours
+import net.kirkanos.uptimekuma.core.model.RepeatInterval
 
 /** In-memory [AlertPreferencesRepository]; [preferences] can be set directly. */
 class FakeAlertPreferencesRepository(
@@ -32,6 +33,10 @@ class FakeAlertPreferencesRepository(
 
     override suspend fun setQuietHours(quietHours: QuietHours) {
         preferences.value = preferences.value.copy(quietHours = quietHours)
+    }
+
+    override suspend fun setRepeatDown(interval: RepeatInterval) {
+        preferences.value = preferences.value.copy(repeatDown = interval)
     }
 
     override suspend fun mute(

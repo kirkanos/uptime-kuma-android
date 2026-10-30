@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.runTest
 import net.kirkanos.uptimekuma.core.model.AlertPreferences
 import net.kirkanos.uptimekuma.core.model.MonitorMute
 import net.kirkanos.uptimekuma.core.model.QuietHours
+import net.kirkanos.uptimekuma.core.model.RepeatInterval
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -57,6 +58,17 @@ class DataStoreAlertPreferencesRepositoryTest {
             assertEquals(false, prefs.notifyOnUp)
             assertEquals(false, prefs.notifyOnCertExpiry)
             assertEquals(QuietHours(true, 23 * 60, 6 * 60 + 30), prefs.quietHours)
+        }
+
+    @Test
+    fun `repeat interval is persisted, off included`() =
+        runTest {
+            val repo = repository()
+            assertEquals(RepeatInterval.DEFAULT, repo.observePreferences().first().repeatDown)
+            repo.setRepeatDown(RepeatInterval.THIRTY_MINUTES)
+            assertEquals(RepeatInterval.THIRTY_MINUTES, repo.observePreferences().first().repeatDown)
+            repo.setRepeatDown(RepeatInterval.OFF)
+            assertEquals(RepeatInterval.OFF, repo.observePreferences().first().repeatDown)
         }
 
     @Test

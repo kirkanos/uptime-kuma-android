@@ -25,6 +25,7 @@ import net.kirkanos.uptimekuma.core.domain.AlertPreferencesRepository
 import net.kirkanos.uptimekuma.core.model.AlertPreferences
 import net.kirkanos.uptimekuma.core.model.MonitorMute
 import net.kirkanos.uptimekuma.core.model.QuietHours
+import net.kirkanos.uptimekuma.core.model.RepeatInterval
 import net.kirkanos.uptimekuma.push.di.PushScope
 import java.io.IOException
 import java.time.Clock
@@ -86,6 +87,10 @@ class DataStoreAlertPreferencesRepository internal constructor(
         }
     }
 
+    override suspend fun setRepeatDown(interval: RepeatInterval) {
+        edit { it[KEY_REPEAT_DOWN] = interval.minutes ?: 0 }
+    }
+
     override suspend fun mute(
         monitorId: Long,
         untilMillis: Long?,
@@ -134,6 +139,7 @@ class DataStoreAlertPreferencesRepository internal constructor(
                     startMinuteOfDay = this[KEY_QUIET_START] ?: QuietHours.DEFAULT_START,
                     endMinuteOfDay = this[KEY_QUIET_END] ?: QuietHours.DEFAULT_END,
                 ),
+            repeatDown = this[KEY_REPEAT_DOWN]?.let(RepeatInterval::ofMinutes) ?: RepeatInterval.DEFAULT,
             mutes = mutes,
         )
     }
@@ -146,6 +152,7 @@ class DataStoreAlertPreferencesRepository internal constructor(
         val KEY_QUIET_ENABLED = booleanPreferencesKey("quiet_enabled")
         val KEY_QUIET_START = intPreferencesKey("quiet_start_minute")
         val KEY_QUIET_END = intPreferencesKey("quiet_end_minute")
+        val KEY_REPEAT_DOWN = intPreferencesKey("repeat_down_minutes")
 
         fun muteKey(monitorId: Long): Preferences.Key<Long> = longPreferencesKey("$MUTE_PREFIX$monitorId")
     }

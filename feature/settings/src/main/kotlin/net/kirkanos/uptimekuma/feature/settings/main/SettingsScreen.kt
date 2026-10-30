@@ -7,9 +7,13 @@ import android.content.res.Configuration
 import android.provider.Settings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -21,6 +25,7 @@ import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.NotificationsActive
+import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material.icons.outlined.VerifiedUser
@@ -31,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -42,6 +48,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +64,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.kirkanos.uptimekuma.core.domain.PushSetupState
 import net.kirkanos.uptimekuma.core.model.AlertPreferences
 import net.kirkanos.uptimekuma.core.model.QuietHours
+import net.kirkanos.uptimekuma.core.model.RepeatInterval
 import net.kirkanos.uptimekuma.core.model.ServerConfig
 import net.kirkanos.uptimekuma.core.model.ServerInfo
 import net.kirkanos.uptimekuma.core.ui.format.currentLocale
@@ -95,6 +103,7 @@ internal fun SettingsEntry(
                 onQuietHoursEnabled = viewModel::setQuietHoursEnabled,
                 onQuietHoursStart = viewModel::setQuietHoursStart,
                 onQuietHoursEnd = viewModel::setQuietHoursEnd,
+                onRepeatDown = viewModel::setRepeatDown,
                 onSystemNotificationSettings = { openNotificationSettings(context) },
                 onLogout = viewModel::logout,
             ),
@@ -112,6 +121,7 @@ internal data class SettingsActions(
     val onQuietHoursEnabled: (Boolean) -> Unit = {},
     val onQuietHoursStart: (Int) -> Unit = {},
     val onQuietHoursEnd: (Int) -> Unit = {},
+    val onRepeatDown: (RepeatInterval) -> Unit = {},
     val onSystemNotificationSettings: () -> Unit = {},
     val onLogout: () -> Unit = {},
 )
@@ -129,6 +139,7 @@ internal fun SettingsContent(
 ) {
     var confirmLogout by rememberSaveable { mutableStateOf(false) }
     var quietEdit by rememberSaveable { mutableStateOf<QuietHoursEdit?>(null) }
+    var repeatEdit by rememberSaveable { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val prefs = state.alertPreferences
     Scaffold(
@@ -162,6 +173,14 @@ internal fun SettingsContent(
                 icon = Icons.Outlined.VerifiedUser,
                 checked = prefs.notifyOnCertExpiry,
                 onCheckedChange = actions.onNotifyOnCertExpiry,
+            )
+            ClickRow(
+                title = stringResource(R.string.settings_repeat_down),
+                summary =
+                    prefs.repeatDown.minutes?.let { stringResource(R.string.settings_repeat_down_summary_on, it) }
+                        ?: stringResource(R.string.settings_repeat_down_summary_off),
+                icon = Icons.Outlined.Repeat,
+                onClick = { repeatEdit = true },
             )
             QuietHoursRows(
                 quietHours = prefs.quietHours,
@@ -261,6 +280,16 @@ internal fun SettingsContent(
             },
         )
     }
+    if (repeatEdit) {
+        RepeatDownDialog(
+            selected = prefs.repeatDown,
+            onDismiss = { repeatEdit = false },
+            onSelect = {
+                repeatEdit = false
+                actions.onRepeatDown(it)
+            },
+        )
+    }
     if (confirmLogout) {
         AlertDialog(
             onDismissRequest = { confirmLogout = false },
@@ -279,6 +308,51 @@ internal fun SettingsContent(
             },
         )
     }
+}
+
+@Composable
+private fun RepeatDownDialog(
+    selected: RepeatInterval,
+    onDismiss: () -> Unit,
+    onSelect: (RepeatInterval) -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_repeat_down)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                Text(
+                    stringResource(R.string.settings_repeat_down_info),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+                RepeatInterval.entries.forEach { interval ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = interval == selected,
+                                    role = Role.RadioButton,
+                                    onClick = { onSelect(interval) },
+                                ).padding(vertical = 4.dp),
+                    ) {
+                        RadioButton(selected = interval == selected, onClick = null)
+                        Text(
+                            interval.minutes?.let { stringResource(R.string.settings_repeat_down_every, it) }
+                                ?: stringResource(R.string.settings_repeat_down_off),
+                            modifier = Modifier.padding(start = 16.dp),
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.settings_cancel)) }
+        },
+    )
 }
 
 @Composable

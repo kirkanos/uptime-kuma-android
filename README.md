@@ -46,7 +46,7 @@ delivered through infrastructure you run yourself.
 | 📊 **Dashboard** | All monitors with live status, heartbeat bar, uptime, response time; groups, tags, search, "problems first" sorting and filters. Real-time updates over Kuma's Socket.IO API. |
 | 🔎 **Monitor details** | Response-time chart (3 h to 1 week), uptime 24 h / 30 d / 1 y, certificate expiry, important events, pause, resume, delete. |
 | ✏️ **Monitor editor** | All 34 Kuma monitor types, generated from a spec of Kuma's own form: defaults, validation, conditions, tags, notifications, clone, push URLs. |
-| 🔔 **Push alerts** | High-priority notifications for down, recovery and certificate expiry. Per-monitor mute, quiet hours, alert history. Tapping an alert opens the monitor. |
+| 🔔 **Push alerts** | High-priority notifications for down, recovery and certificate expiry. A DOWN alert rings again until you acknowledge it or the monitor recovers. Per-monitor mute, quiet hours, alert history. Tapping an alert opens the monitor. |
 | 🛠️ **Maintenance** | Maintenance windows with every strategy: manual, single, cron and recurring. |
 | 🌐 **Status pages** | Rendered view, editor, incidents, and a viewer for any public `/status/<slug>` link without login. |
 | ⚙️ **Administration** | All 108 notification providers, general settings, reverse proxy and Cloudflare tunnel, password and 2FA, API keys, proxies, Docker hosts, remote browsers, monitor history. |

@@ -20,6 +20,10 @@
     <string name="push_alert_up_title_duration">%1$s ist nach %2$s wieder erreichbar</string>
     <string name="push_alert_pending_title">%1$s ist ausstehend</string>
     <string name="push_alert_maintenance_title">%1$s ist in Wartung</string>
+    <string name="push_alert_still_down_title">%1$s ist weiterhin down</string>
+    <string name="push_alert_still_down_title_duration">%1$s ist seit %2$s down</string>
+    <string name="push_alert_acknowledged">Bestätigt</string>
+    <string name="push_action_acknowledge">Bestätigen</string>
     <string name="push_monitor_fallback_name">Monitor #%1$d</string>
     <string name="push_generic_title">Uptime Kuma</string>
     <string name="push_generic_text">Neue Nachricht von Uptime Kuma</string>

@@ -7,6 +7,8 @@ data class AlertPreferences(
     /** Notify about Kuma's TLS certificate expiry warnings. */
     val notifyOnCertExpiry: Boolean = true,
     val quietHours: QuietHours = QuietHours(),
+    /** Repeat a DOWN alert at this interval until the monitor recovers or the alert is acknowledged. */
+    val repeatDown: RepeatInterval = RepeatInterval.DEFAULT,
     /** Active and expired mutes by monitor id; check [MonitorMute.isActive]. */
     val mutes: Map<Long, MonitorMute> = emptyMap(),
 ) {
@@ -41,6 +43,28 @@ data class QuietHours(
     }
 }
 
+/** How often an unacknowledged DOWN alert rings again. [minutes] `null` = never. */
+enum class RepeatInterval(
+    val minutes: Int?,
+) {
+    OFF(null),
+    FIVE_MINUTES(5),
+    TEN_MINUTES(10),
+    FIFTEEN_MINUTES(15),
+    THIRTY_MINUTES(30),
+    ONE_HOUR(60),
+    ;
+
+    val millis: Long? get() = minutes?.let { it * MINUTE }
+
+    companion object {
+        val DEFAULT: RepeatInterval = TEN_MINUTES
+
+        /** The interval stored as [minutes] (0 = [OFF]); unknown values fall back to [DEFAULT]. */
+        fun ofMinutes(minutes: Int): RepeatInterval = entries.firstOrNull { (it.minutes ?: 0) == minutes } ?: DEFAULT
+    }
+}
+
 /** Notifications of one monitor are suppressed until [untilMillis] (`null` = until unmuted). */
 data class MonitorMute(
     val monitorId: Long,
@@ -63,7 +87,8 @@ enum class MuteDuration(
     fun untilMillis(nowMillis: Long): Long? = millis?.let { nowMillis + it }
 }
 
-private const val HOUR = 3_600_000L
+private const val MINUTE = 60_000L
+private const val HOUR = 60 * MINUTE
 
 /** One received push alert, kept in the in-app alert history (newest first, bounded). */
 data class AlertRecord(

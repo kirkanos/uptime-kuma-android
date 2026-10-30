@@ -14,6 +14,7 @@ import net.kirkanos.uptimekuma.core.domain.ServerInfoRepository
 import net.kirkanos.uptimekuma.core.domain.SessionRepository
 import net.kirkanos.uptimekuma.core.model.AlertPreferences
 import net.kirkanos.uptimekuma.core.model.QuietHours
+import net.kirkanos.uptimekuma.core.model.RepeatInterval
 import net.kirkanos.uptimekuma.core.model.ServerConfig
 import net.kirkanos.uptimekuma.core.model.ServerInfo
 import javax.inject.Inject
@@ -61,6 +62,10 @@ class SettingsViewModel
 
         fun setQuietHoursEnd(minuteOfDay: Int) {
             updateQuietHours { it.copy(endMinuteOfDay = minuteOfDay) }
+        }
+
+        fun setRepeatDown(interval: RepeatInterval) {
+            viewModelScope.launch { alertPreferences.setRepeatDown(interval) }
         }
 
         fun logout() {
