@@ -1,0 +1,1 @@
+Update hint: the app checks GitHub once a day and shows a hint on the dashboard when a new version is available (can be turned off in the settings).

@@ -1,0 +1,1 @@
+Update-Hinweis: Die App fragt einmal am Tag bei GitHub nach und zeigt im Dashboard einen Hinweis, wenn eine neue Version verfügbar ist (in den Einstellungen abschaltbar).

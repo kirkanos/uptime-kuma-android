@@ -7,6 +7,8 @@ All notable changes to this project are documented in this file. The format is b
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-30
+
 ### Added
 
 - Update hint: once a day the app asks GitHub for the latest release and shows a hint on the dashboard
@@ -104,6 +106,7 @@ First public version.
   GitHub release: `uptime-kuma-android-<version>.apk` (`full`) and `uptime-kuma-android-<version>-foss.apk`,
   each with a SHA-256 checksum and the R8 mapping file.
 
-[Unreleased]: https://github.com/kirkanos/uptime-kuma-android/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/kirkanos/uptime-kuma-android/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/kirkanos/uptime-kuma-android/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/kirkanos/uptime-kuma-android/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/kirkanos/uptime-kuma-android/releases/tag/v0.1.0
