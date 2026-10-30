@@ -1,0 +1,1 @@
+Repeating DOWN alerts: an outage rings again every 10 minutes (configurable: off, 5 to 60 minutes) until the monitor is back up or you acknowledge the alert. Before each reminder the app checks with Kuma whether the monitor is still down.

@@ -1,0 +1,1 @@
+Wiederholte DOWN-Alarme: Ein Ausfall klingelt alle 10 Minuten erneut (einstellbar: aus, 5 bis 60 Minuten), bis der Monitor wieder UP ist oder du den Alarm bestätigst. Vor jeder Erinnerung prüft die App bei Kuma, ob der Monitor noch down ist.
