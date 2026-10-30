@@ -43,6 +43,9 @@
 
     <!-- About -->
     <string name="settings_version">Version</string>
+    <string name="settings_check_updates">Check for app updates</string>
+    <string name="settings_check_updates_summary">Asks GitHub once a day for a new release of this app</string>
+    <string name="settings_update_available">%1$s · version %2$s is available, tap to download</string>
     <string name="settings_license">License</string>
     <string name="settings_license_summary">GNU General Public License v3.0</string>
     <string name="settings_source">Source code</string>

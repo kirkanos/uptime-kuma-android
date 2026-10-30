@@ -6,10 +6,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import net.kirkanos.uptimekuma.core.model.AppUpdate
 import net.kirkanos.uptimekuma.core.model.ConnectionState
 import net.kirkanos.uptimekuma.core.model.DisplayStatus
 import net.kirkanos.uptimekuma.core.model.KumaError
 import net.kirkanos.uptimekuma.core.model.KumaException
+import net.kirkanos.uptimekuma.core.testing.FakeAppUpdateRepository
 import net.kirkanos.uptimekuma.core.testing.FakeMonitorRepository
 import net.kirkanos.uptimekuma.core.testing.FakeSessionRepository
 import net.kirkanos.uptimekuma.core.testing.MainDispatcherExtension
@@ -30,6 +32,7 @@ class DashboardViewModelTest {
     private val now = 1_761_700_000_000L
     private val monitors = FakeMonitorRepository.withSampleData(now)
     private val session = FakeSessionRepository(SampleData.serverConfig)
+    private val updates = FakeAppUpdateRepository()
 
     private fun TestScope.collect(vm: DashboardViewModel) {
         backgroundScope.launch { vm.state.collect {} }
@@ -39,7 +42,7 @@ class DashboardViewModelTest {
     @Test
     fun `emits loading first, then rows, counts and tags`() =
         runTest(mainDispatcher.testDispatcher) {
-            val vm = DashboardViewModel(monitors, session)
+            val vm = DashboardViewModel(monitors, session, updates)
             vm.state.test {
                 assertTrue(awaitItem().loading)
                 val loaded = awaitItem()
@@ -55,7 +58,7 @@ class DashboardViewModelTest {
     @Test
     fun `search, status and tag filters narrow the rows`() =
         runTest(mainDispatcher.testDispatcher) {
-            val vm = DashboardViewModel(monitors, session)
+            val vm = DashboardViewModel(monitors, session, updates)
             collect(vm)
 
             vm.onQueryChange("node")
@@ -93,7 +96,7 @@ class DashboardViewModelTest {
     @Test
     fun `problems first puts the down monitor on top`() =
         runTest(mainDispatcher.testDispatcher) {
-            val vm = DashboardViewModel(monitors, session)
+            val vm = DashboardViewModel(monitors, session, updates)
             collect(vm)
             vm.toggleProblemsFirst()
             advanceUntilIdle()
@@ -107,7 +110,7 @@ class DashboardViewModelTest {
     @Test
     fun `collapsing a group hides its children`() =
         runTest(mainDispatcher.testDispatcher) {
-            val vm = DashboardViewModel(monitors, session)
+            val vm = DashboardViewModel(monitors, session, updates)
             collect(vm)
             vm.toggleGroup(11)
             advanceUntilIdle()
@@ -121,7 +124,7 @@ class DashboardViewModelTest {
     @Test
     fun `live updates from the repository are reflected`() =
         runTest(mainDispatcher.testDispatcher) {
-            val vm = DashboardViewModel(monitors, session)
+            val vm = DashboardViewModel(monitors, session, updates)
             collect(vm)
             monitors.monitors.value = monitors.monitors.value.drop(1)
             advanceUntilIdle()
@@ -131,7 +134,7 @@ class DashboardViewModelTest {
     @Test
     fun `connection state is exposed`() =
         runTest(mainDispatcher.testDispatcher) {
-            val vm = DashboardViewModel(monitors, session)
+            val vm = DashboardViewModel(monitors, session, updates)
             collect(vm)
             session.connectionState.value = ConnectionState.LoginRequired
             advanceUntilIdle()
@@ -142,7 +145,7 @@ class DashboardViewModelTest {
     fun `refresh calls syncOnce and toggles refreshing`() =
         runTest(mainDispatcher.testDispatcher) {
             session.delayMillis = 100
-            val vm = DashboardViewModel(monitors, session)
+            val vm = DashboardViewModel(monitors, session, updates)
             collect(vm)
             vm.refresh()
             vm.refresh()
@@ -156,7 +159,7 @@ class DashboardViewModelTest {
     fun `refresh failure is shown once`() =
         runTest(mainDispatcher.testDispatcher) {
             session.syncError = KumaException(KumaError(KumaError.Kind.NETWORK))
-            val vm = DashboardViewModel(monitors, session)
+            val vm = DashboardViewModel(monitors, session, updates)
             collect(vm)
             vm.refresh()
             advanceUntilIdle()
@@ -174,7 +177,7 @@ class DashboardViewModelTest {
     fun `refresh returning false reports unauthorized`() =
         runTest(mainDispatcher.testDispatcher) {
             session.syncResult = false
-            val vm = DashboardViewModel(monitors, session)
+            val vm = DashboardViewModel(monitors, session, updates)
             collect(vm)
             vm.refresh()
             advanceUntilIdle()
@@ -183,5 +186,22 @@ class DashboardViewModelTest {
                 vm.state.value.refreshError
                     ?.kind,
             )
+        }
+
+    @Test
+    fun `checks for app updates and hides a dismissed one`() =
+        runTest(mainDispatcher.testDispatcher) {
+            updates.update.value = AppUpdate("9.0.0", "https://github.com/kirkanos/uptime-kuma-android/releases")
+            val vm = DashboardViewModel(monitors, session, updates)
+            collect(vm)
+            assertEquals(1, updates.checks)
+            assertEquals(
+                "9.0.0",
+                vm.state.value.appUpdate
+                    ?.version,
+            )
+            vm.dismissAppUpdate("9.0.0")
+            advanceUntilIdle()
+            assertNull(vm.state.value.appUpdate)
         }
 }

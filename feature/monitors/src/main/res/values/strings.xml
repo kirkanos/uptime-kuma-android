@@ -42,6 +42,9 @@
     <string name="monitors_login_required">Your session has expired. Log in again to get live updates.</string>
     <string name="monitors_log_in">Log in</string>
     <string name="monitors_retry">Retry</string>
+    <string name="monitors_app_update">Version %1$s of the app is available.</string>
+    <string name="monitors_app_update_open">Download</string>
+    <string name="monitors_app_update_later">Later</string>
 
     <!-- Detail -->
     <string name="monitors_back">Back</string>

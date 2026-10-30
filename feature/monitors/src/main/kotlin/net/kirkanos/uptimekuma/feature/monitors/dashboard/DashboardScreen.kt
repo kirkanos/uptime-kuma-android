@@ -30,6 +30,7 @@ import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SearchOff
 import androidx.compose.material.icons.outlined.Settings
@@ -42,6 +43,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -67,6 +69,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -79,6 +82,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import net.kirkanos.uptimekuma.core.model.AppUpdate
 import net.kirkanos.uptimekuma.core.model.ConnectionState
 import net.kirkanos.uptimekuma.core.model.DisplayStatus
 import net.kirkanos.uptimekuma.core.model.KumaError
@@ -127,6 +131,7 @@ internal class DashboardActions(
     val onReLogin: () -> Unit = {},
     val onAddMonitor: () -> Unit = {},
     val onManageTags: () -> Unit = {},
+    val onDismissAppUpdate: (String) -> Unit = {},
 )
 
 @Composable
@@ -155,6 +160,7 @@ internal fun DashboardEntry(
                 onReLogin = onReLogin,
                 onAddMonitor = onAddMonitor,
                 onManageTags = onManageTags,
+                onDismissAppUpdate = viewModel::dismissAppUpdate,
             )
         }
     DashboardScreen(state = state, actions = actions)
@@ -222,8 +228,15 @@ private fun MonitorListContent(
     nowMillis: Long,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 96.dp)) {
-        item(key = "connection", contentType = "connection") {
-            ConnectionBanner(state.connection, onRetry = actions.onRefresh, onReLogin = actions.onReLogin)
+        // One item for all banners: a banner appearing later grows the first item instead of being inserted
+        // above the scroll anchor, where it would stay out of sight.
+        item(key = "banners", contentType = "banners") {
+            Column {
+                ConnectionBanner(state.connection, onRetry = actions.onRefresh, onReLogin = actions.onReLogin)
+                state.appUpdate?.let { update ->
+                    AppUpdateBanner(update, onDismiss = { actions.onDismissAppUpdate(update.version) })
+                }
+            }
         }
         item(key = "summary", contentType = "summary") { SummaryHeader(state.counts) }
         item(key = "search", contentType = "search") {
@@ -326,6 +339,39 @@ private fun ConnectionBanner(
 
         is ConnectionState.Connected, ConnectionState.Disconnected, ConnectionState.NotConfigured -> {
             // Normal states: no banner.
+        }
+    }
+}
+
+@Composable
+private fun AppUpdateBanner(
+    update: AppUpdate,
+    onDismiss: () -> Unit,
+) {
+    val uriHandler = LocalUriHandler.current
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+    ) {
+        Column(Modifier.padding(start = 16.dp, end = 8.dp, top = 12.dp, bottom = 4.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Outlined.NewReleases, contentDescription = null, modifier = Modifier.size(20.dp))
+                Text(
+                    text = stringResource(R.string.monitors_app_update, update.version),
+                    modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.monitors_app_update_later), color = LocalContentColor.current)
+                }
+                TextButton(onClick = { uriHandler.openUri(update.url) }) {
+                    Text(stringResource(R.string.monitors_app_update_open), color = LocalContentColor.current)
+                }
+            }
         }
     }
 }

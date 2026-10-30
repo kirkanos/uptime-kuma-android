@@ -14,6 +14,6 @@
 
 <p><b>Requirements</b>: an Uptime Kuma 2.x server. For push alerts a self-hosted ntfy server and the ntfy app as UnifiedPush distributor, or (GitHub build only) Google Play services, your own free Firebase project and the small relay from the repository.</p>
 
-<p><b>Privacy</b>: no tracking, no analytics, no ads. This build contains no Google services; it only talks to your Kuma server and, for push, to your ntfy server. The GitHub releases also offer a "full" build with the optional Firebase push method.</p>
+<p><b>Privacy</b>: no tracking, no analytics, no ads. This build contains no Google services; it only talks to your Kuma server and, for push, to your ntfy server, plus once a day to GitHub to look for a new app version (can be turned off). The GitHub releases also offer a "full" build with the optional Firebase push method.</p>
 
 <p>This is an unofficial client and not affiliated with the Uptime Kuma project.</p>

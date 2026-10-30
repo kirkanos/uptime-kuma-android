@@ -53,6 +53,7 @@ delivered through infrastructure you run yourself.
 | 🏠 **Widget and tile** | Home screen widget and Quick Settings tile with the overall status, updated without polling. |
 | 🔐 **Login** | Username and password, two-factor authentication (TOTP), servers without authentication, sub-path installations. |
 | 🎨 **Design** | Material You with dynamic color, dark mode, English and German. |
+| ⬆️ **Updates** | Hint on the dashboard when a new version is on GitHub Releases (one check a day, can be turned off). |
 
 ## Push alerts
 
@@ -153,7 +154,9 @@ Every pull request runs integration tests against real Uptime Kuma containers.
 ## Privacy
 
 The app talks only to the servers you configure: your Uptime Kuma instance and, for push, your ntfy
-server or your relay and Firebase project. With ntfy nothing leaves the triangle phone, Kuma and ntfy;
+server or your relay and Firebase project. The one exception is the update check: once a day the app
+asks GitHub's API for the latest release of this app (no identifiers besides your IP address); turn it
+off under Settings → *Check for app updates*. With ntfy nothing leaves the triangle phone, Kuma and ntfy;
 with Firebase the alert text passes Google's FCM servers. Firebase is only initialized after you choose
 it (no automatic initialization, no Analytics), and the `foss` APK contains no Google library at all.
 Session token, ntfy token and relay token are encrypted with the Android Keystore and excluded from

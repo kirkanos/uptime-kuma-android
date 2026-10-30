@@ -12,8 +12,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.kirkanos.uptimekuma.core.domain.AppUpdateRepository
 import net.kirkanos.uptimekuma.core.domain.MonitorRepository
 import net.kirkanos.uptimekuma.core.domain.SessionRepository
+import net.kirkanos.uptimekuma.core.model.AppUpdate
 import net.kirkanos.uptimekuma.core.model.ConnectionState
 import net.kirkanos.uptimekuma.core.model.DisplayStatus
 import net.kirkanos.uptimekuma.core.model.KumaError
@@ -32,6 +34,8 @@ data class DashboardUiState(
     val refreshing: Boolean = false,
     /** Transient error of the last manual refresh, shown once as a snackbar. */
     val refreshError: KumaError? = null,
+    /** Newer app release the user has not dismissed yet. */
+    val appUpdate: AppUpdate? = null,
 )
 
 private data class RefreshState(
@@ -45,6 +49,7 @@ class DashboardViewModel
     constructor(
         monitorRepository: MonitorRepository,
         private val sessionRepository: SessionRepository,
+        private val appUpdates: AppUpdateRepository,
     ) : ViewModel() {
         private val filter = MutableStateFlow(DashboardFilter())
         private val refresh = MutableStateFlow(RefreshState())
@@ -55,7 +60,8 @@ class DashboardViewModel
                 filter,
                 refresh,
                 sessionRepository.observeConnectionState(),
-            ) { monitors, filter, refresh, connection ->
+                appUpdates.observeUpdate(),
+            ) { monitors, filter, refresh, connection, update ->
                 DashboardUiState(
                     loading = monitors == null,
                     rows = monitors?.let { MonitorList.rows(it, filter) }.orEmpty(),
@@ -65,8 +71,18 @@ class DashboardViewModel
                     connection = connection,
                     refreshing = refresh.refreshing,
                     refreshError = refresh.error,
+                    appUpdate = update?.takeUnless { it.dismissed },
                 )
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), DashboardUiState())
+
+        init {
+            // Throttled to one request a day by the repository.
+            viewModelScope.launch { appUpdates.check() }
+        }
+
+        fun dismissAppUpdate(version: String) {
+            viewModelScope.launch { appUpdates.dismiss(version) }
+        }
 
         fun onQueryChange(query: String) {
             filter.update { it.copy(query = query) }

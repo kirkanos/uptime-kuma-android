@@ -24,10 +24,12 @@ import androidx.compose.material.icons.outlined.Dns
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.NotificationsActive
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.TaskAlt
+import androidx.compose.material.icons.outlined.Update
 import androidx.compose.material.icons.outlined.VerifiedUser
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,6 +65,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.kirkanos.uptimekuma.core.domain.PushSetupState
 import net.kirkanos.uptimekuma.core.model.AlertPreferences
+import net.kirkanos.uptimekuma.core.model.AppUpdate
 import net.kirkanos.uptimekuma.core.model.QuietHours
 import net.kirkanos.uptimekuma.core.model.RepeatInterval
 import net.kirkanos.uptimekuma.core.model.ServerConfig
@@ -104,6 +107,7 @@ internal fun SettingsEntry(
                 onQuietHoursStart = viewModel::setQuietHoursStart,
                 onQuietHoursEnd = viewModel::setQuietHoursEnd,
                 onRepeatDown = viewModel::setRepeatDown,
+                onCheckAppUpdates = viewModel::setCheckAppUpdates,
                 onSystemNotificationSettings = { openNotificationSettings(context) },
                 onLogout = viewModel::logout,
             ),
@@ -122,6 +126,7 @@ internal data class SettingsActions(
     val onQuietHoursStart: (Int) -> Unit = {},
     val onQuietHoursEnd: (Int) -> Unit = {},
     val onRepeatDown: (RepeatInterval) -> Unit = {},
+    val onCheckAppUpdates: (Boolean) -> Unit = {},
     val onSystemNotificationSettings: () -> Unit = {},
     val onLogout: () -> Unit = {},
 )
@@ -230,10 +235,13 @@ internal fun SettingsContent(
 
             HorizontalDivider(Modifier.padding(top = 8.dp))
             SectionHeader(stringResource(R.string.settings_section_about))
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.settings_version)) },
-                supportingContent = { Text(appVersion ?: "–") },
-                leadingContent = { Icon(Icons.Outlined.Info, contentDescription = null) },
+            VersionRow(appVersion, state.appUpdate, onOpen = { uriHandler.openUri(it.url) })
+            SwitchRow(
+                title = stringResource(R.string.settings_check_updates),
+                summary = stringResource(R.string.settings_check_updates_summary),
+                icon = Icons.Outlined.Update,
+                checked = state.checkAppUpdates,
+                onCheckedChange = actions.onCheckAppUpdates,
             )
             ClickRow(
                 title = stringResource(R.string.settings_license),
@@ -418,6 +426,35 @@ private fun ServerRows(
 }
 
 @Composable
+private fun VersionRow(
+    appVersion: String?,
+    update: AppUpdate?,
+    onOpen: (AppUpdate) -> Unit,
+) {
+    if (update == null) {
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.settings_version)) },
+            supportingContent = { Text(appVersion ?: "–") },
+            leadingContent = { Icon(Icons.Outlined.Info, contentDescription = null) },
+        )
+        return
+    }
+    ListItem(
+        headlineContent = { Text(stringResource(R.string.settings_version)) },
+        supportingContent = {
+            Text(
+                stringResource(R.string.settings_update_available, appVersion ?: "–", update.version),
+                color = MaterialTheme.colorScheme.primary,
+            )
+        },
+        leadingContent = {
+            Icon(Icons.Outlined.NewReleases, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+        },
+        modifier = Modifier.clickable { onOpen(update) },
+    )
+}
+
+@Composable
 private fun SectionHeader(text: String) {
     Text(
         text = text,
@@ -485,6 +522,7 @@ private fun SettingsPreview() {
                     serverConfig = ServerConfig(baseUrl = "https://uptime.example.org", username = "admin"),
                     serverInfo = ServerInfo(version = "2.5.8"),
                     alertPreferences = AlertPreferences(quietHours = QuietHours(enabled = true)),
+                    appUpdate = AppUpdate("0.3.0", "https://github.com/kirkanos/uptime-kuma-android/releases"),
                 ),
             appVersion = "0.0.1",
             administrationEntries =

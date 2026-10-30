@@ -42,6 +42,9 @@
     <string name="monitors_login_required">Deine Sitzung ist abgelaufen. Melde dich erneut an, um Live-Updates zu erhalten.</string>
     <string name="monitors_log_in">Anmelden</string>
     <string name="monitors_retry">Erneut versuchen</string>
+    <string name="monitors_app_update">Version %1$s der App ist verfügbar.</string>
+    <string name="monitors_app_update_open">Herunterladen</string>
+    <string name="monitors_app_update_later">Später</string>
 
     <!-- Detail -->
     <string name="monitors_back">Zurück</string>

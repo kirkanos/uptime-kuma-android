@@ -94,6 +94,14 @@ token there. Non-secret config lives in the `kuma_settings` DataStore. Both are 
 - `addNotification`/`testNotification` payloads are built like the web UI's dialog: provider fields plus `name`,
   `type`, `isDefault`, `active`, `applyExisting` in one flat object.
 
+### App update check (`GitHubAppUpdateRepository`)
+
+`GET https://api.github.com/repos/kirkanos/uptime-kuma-android/releases/latest` (skips drafts and
+pre-releases), at most once a day, triggered when the dashboard opens; result, check time and the
+dismissed version live in the `app_update` DataStore. `tag_name` is compared with the installed
+`versionName` (a `-debug` suffix is ignored); links only ever point to this repository's release pages.
+Failures are logged and retried on the next dashboard visit. Settings → *Check for app updates* turns it off.
+
 ### Tests
 
 - `./gradlew :core:kuma-client:test` and `:core:data:testDebugUnitTest`: fixture-driven (`fixtures/kuma-2.5.8`, path

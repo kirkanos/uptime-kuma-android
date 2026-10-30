@@ -10,9 +10,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.kirkanos.uptimekuma.core.domain.AlertPreferencesRepository
+import net.kirkanos.uptimekuma.core.domain.AppUpdateRepository
 import net.kirkanos.uptimekuma.core.domain.ServerInfoRepository
 import net.kirkanos.uptimekuma.core.domain.SessionRepository
 import net.kirkanos.uptimekuma.core.model.AlertPreferences
+import net.kirkanos.uptimekuma.core.model.AppUpdate
 import net.kirkanos.uptimekuma.core.model.QuietHours
 import net.kirkanos.uptimekuma.core.model.RepeatInterval
 import net.kirkanos.uptimekuma.core.model.ServerConfig
@@ -24,6 +26,9 @@ data class SettingsUiState(
     val serverConfig: ServerConfig? = null,
     val serverInfo: ServerInfo? = null,
     val alertPreferences: AlertPreferences = AlertPreferences(),
+    val checkAppUpdates: Boolean = true,
+    /** Newer app release, also when its dashboard hint was dismissed. */
+    val appUpdate: AppUpdate? = null,
 )
 
 /** App settings: server/account, alert preferences, logout. After logout the app returns to onboarding. */
@@ -34,14 +39,24 @@ class SettingsViewModel
         private val sessionRepository: SessionRepository,
         serverInfoRepository: ServerInfoRepository,
         private val alertPreferences: AlertPreferencesRepository,
+        private val appUpdates: AppUpdateRepository,
     ) : ViewModel() {
         val state: StateFlow<SettingsUiState> =
             combine(
                 sessionRepository.observeServerConfig(),
                 serverInfoRepository.observeServerInfo(),
                 alertPreferences.observePreferences(),
-            ) { config, info, prefs ->
-                SettingsUiState(loading = false, serverConfig = config, serverInfo = info, alertPreferences = prefs)
+                appUpdates.observeCheckEnabled(),
+                appUpdates.observeUpdate(),
+            ) { config, info, prefs, checkUpdates, update ->
+                SettingsUiState(
+                    loading = false,
+                    serverConfig = config,
+                    serverInfo = info,
+                    alertPreferences = prefs,
+                    checkAppUpdates = checkUpdates,
+                    appUpdate = update,
+                )
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), SettingsUiState())
 
         fun setNotifyOnUp(enabled: Boolean) {
@@ -66,6 +81,10 @@ class SettingsViewModel
 
         fun setRepeatDown(interval: RepeatInterval) {
             viewModelScope.launch { alertPreferences.setRepeatDown(interval) }
+        }
+
+        fun setCheckAppUpdates(enabled: Boolean) {
+            viewModelScope.launch { appUpdates.setCheckEnabled(enabled) }
         }
 
         fun logout() {

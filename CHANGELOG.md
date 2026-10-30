@@ -7,6 +7,12 @@ All notable changes to this project are documented in this file. The format is b
 
 ## [Unreleased]
 
+### Added
+
+- Update hint: once a day the app asks GitHub for the latest release and shows a hint on the dashboard
+  when a newer version is available (*Download* opens the release page, *Later* hides it until the
+  next version). The settings show the available version too and can turn the check off.
+
 ## [0.2.0] - 2026-10-30
 
 ### Added

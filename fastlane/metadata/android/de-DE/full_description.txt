@@ -14,6 +14,6 @@
 
 <p><b>Voraussetzungen</b>: ein Uptime-Kuma-2.x-Server. Für Push-Alarme ein selbst gehosteter ntfy-Server und die ntfy-App als UnifiedPush-Verteiler oder (nur GitHub-Version) Google-Play-Dienste, ein eigenes kostenloses Firebase-Projekt und das kleine Relay aus dem Repository.</p>
 
-<p><b>Datenschutz</b>: kein Tracking, keine Analyse, keine Werbung. Diese Version enthält keine Google-Dienste; sie spricht nur mit deinem Kuma-Server und, für Push, mit deinem ntfy-Server. Die GitHub-Releases bieten zusätzlich eine „full“-Version mit der optionalen Push-Methode über Firebase.</p>
+<p><b>Datenschutz</b>: kein Tracking, keine Analyse, keine Werbung. Diese Version enthält keine Google-Dienste; sie spricht nur mit deinem Kuma-Server und, für Push, mit deinem ntfy-Server, außerdem einmal am Tag mit GitHub, um nach einer neuen App-Version zu sehen (abschaltbar). Die GitHub-Releases bieten zusätzlich eine „full“-Version mit der optionalen Push-Methode über Firebase.</p>
 
 <p>Dies ist ein inoffizieller Client und gehört nicht zum Uptime-Kuma-Projekt.</p>

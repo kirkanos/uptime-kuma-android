@@ -5,8 +5,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import net.kirkanos.uptimekuma.core.model.AppUpdate
 import net.kirkanos.uptimekuma.core.model.QuietHours
 import net.kirkanos.uptimekuma.core.testing.FakeAlertPreferencesRepository
+import net.kirkanos.uptimekuma.core.testing.FakeAppUpdateRepository
 import net.kirkanos.uptimekuma.core.testing.FakeServerInfoRepository
 import net.kirkanos.uptimekuma.core.testing.FakeSessionRepository
 import net.kirkanos.uptimekuma.core.testing.MainDispatcherExtension
@@ -30,9 +32,10 @@ class SettingsViewModelTest {
     private val session = FakeSessionRepository(SampleData.serverConfig)
     private val serverInfo = FakeServerInfoRepository(SampleData.serverInfo)
     private val alerts = FakeAlertPreferencesRepository()
+    private val updates = FakeAppUpdateRepository()
 
     private fun TestScope.viewModel(): SettingsViewModel {
-        val vm = SettingsViewModel(session, serverInfo, alerts)
+        val vm = SettingsViewModel(session, serverInfo, alerts, updates)
         backgroundScope.launch { vm.state.collect {} }
         advanceUntilIdle()
         return vm
@@ -88,4 +91,21 @@ class SettingsViewModelTest {
         assertEquals("22:30", formatMinuteOfDay(22 * 60 + 30, Locale.GERMANY))
         assertEquals("07:05", formatMinuteOfDay(7 * 60 + 5, Locale.GERMANY))
     }
+
+    @Test
+    fun `shows a dismissed update and toggles update checks`() =
+        runTest(mainDispatcher.testDispatcher) {
+            updates.update.value = AppUpdate("9.0.0", "https://example.invalid", dismissed = true)
+            val vm = viewModel()
+            assertEquals(
+                "9.0.0",
+                vm.state.value.appUpdate
+                    ?.version,
+            )
+            assertTrue(vm.state.value.checkAppUpdates)
+            vm.setCheckAppUpdates(false)
+            advanceUntilIdle()
+            assertFalse(vm.state.value.checkAppUpdates)
+            assertNull(vm.state.value.appUpdate)
+        }
 }
