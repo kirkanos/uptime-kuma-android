@@ -1,6 +1,5 @@
 package net.kirkanos.uptimekuma
 
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -12,7 +11,9 @@ class AppVersionTest {
     }
 
     @Test
-    fun `version code starts at one`() {
-        assertEquals(1, BuildConfig.VERSION_CODE)
+    fun `version comes from gradle properties`() {
+        // VERSION_CODE grows with every release; only its range is stable.
+        assertTrue(BuildConfig.VERSION_CODE >= 1)
+        assertTrue(Regex("""\d+\.\d+\.\d+(-debug)?""").matches(BuildConfig.VERSION_NAME), BuildConfig.VERSION_NAME)
     }
 }
